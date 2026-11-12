@@ -181,6 +181,71 @@ results.mobileMenu = await evaluate(`(async () => {
   return { opened, closedByEscape: document.getElementById('mobile-nav').hidden };
 })()`);
 
+/* ---------- Tablet ---------- */
+await viewport(820, 1180, true);
+await load(url);
+await shot('qa-tablet-hero.png');
+results.tabletOverflow = await evaluate(`document.documentElement.scrollWidth > window.innerWidth ? document.documentElement.scrollWidth : false`);
+await send('Runtime.evaluate', { expression: `document.getElementById('roles').scrollIntoView({ behavior: 'instant' })` });
+await wait(400);
+await shot('qa-tablet-roles.png');
+
+/* ---------- Keyboard (real key events, so :focus-visible applies) ---------- */
+await viewport(1440, 1000);
+await load(url);
+const press = async (key, code, keyCode) => {
+  const base = { key, code, windowsVirtualKeyCode: keyCode, nativeVirtualKeyCode: keyCode };
+  await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', ...base });
+  if (key === 'Enter') await send('Input.dispatchKeyEvent', { type: 'char', text: '\r', ...base });
+  if (key === ' ') await send('Input.dispatchKeyEvent', { type: 'char', text: ' ', ...base });
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', ...base });
+  await wait(60);
+};
+const describeFocus = `(() => {
+  const el = document.activeElement;
+  if (!el || el === document.body) return null;
+  let ring = getComputedStyle(el).outlineStyle !== 'none' && parseFloat(getComputedStyle(el).outlineWidth) > 0;
+  if (el.closest('svg')) ring = parseFloat(getComputedStyle(el.querySelector('circle:not(.hit)')).strokeWidth) > 0;
+  if (el.type === 'file') ring = getComputedStyle(el.nextElementSibling).outlineStyle !== 'none';
+  if (el.classList.contains('input')) ring = getComputedStyle(el).boxShadow !== 'none';
+  const r = el.getBoundingClientRect();
+  const label = (el.getAttribute('aria-label') || el.innerText || el.id || el.tagName).trim().replace(/\\s+/g, ' ').slice(0, 36);
+  return { tag: el.tagName.toLowerCase(), label, ring, onScreen: r.width > 0 && r.right > 0 && r.left < innerWidth };
+})()`;
+const stops = [];
+for (let i = 0; i < 70; i++) {
+  await press('Tab', 'Tab', 9);
+  stops.push(await evaluate(describeFocus));
+}
+results.keyboard = {
+  firstStopIsVisibleSkipLink: stops[0]?.label === 'Skip to content' && stops[0]?.onScreen,
+  stopsWithoutFocusRing: stops.filter((s) => s && !s.ring).map((s) => `${s.tag}: ${s.label}`),
+  stopsOffScreen: stops.filter((s) => s && !s.onScreen).map((s) => `${s.tag}: ${s.label}`),
+  order: stops.map((s) => (s ? `${s.tag}: ${s.label}` : '(body)')),
+};
+await evaluate(`document.querySelector('#role-c summary').focus()`);
+await press('Enter', 'Enter', 13);
+const openedByEnter = await evaluate(`document.getElementById('role-c').open`);
+await press(' ', 'Space', 32);
+const closedBySpace = !(await evaluate(`document.getElementById('role-c').open`));
+results.keyboard.roleToggle = { openedByEnter, closedBySpace };
+
+/* ---------- Accessibility tree and headings ---------- */
+await evaluate(`document.querySelectorAll('details').forEach(d => d.open = true)`);
+await wait(200);
+await send('Accessibility.enable');
+const ax = await send('Accessibility.getFullAXTree');
+const controls = ['link', 'button', 'textbox', 'combobox', 'checkbox', 'DisclosureTriangle'];
+results.unnamedControls = ax.nodes
+  .filter((n) => !n.ignored && controls.includes(n.role?.value) && !(n.name?.value || '').trim())
+  .map((n) => n.role.value);
+results.headingOutline = await evaluate(`(() => {
+  const hs = [...document.querySelectorAll('h1,h2,h3,h4,h5,h6')];
+  const skips = [];
+  hs.forEach((h, i) => { const lvl = +h.tagName[1], prev = i ? +hs[i - 1].tagName[1] : 0; if (lvl > prev + 1) skips.push(h.tagName + ' after H' + prev + ': ' + h.textContent.trim().slice(0, 40)); });
+  return { count: hs.length, skips };
+})()`);
+
 await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
 await viewport(1440, 1000);
 await load(url);

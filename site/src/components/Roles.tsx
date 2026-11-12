@@ -73,7 +73,9 @@ function RoleItem({ role, open, onToggle, onApply }: ItemProps) {
 
       <div className="role-body">
         <div>
-          <h4>What you’ll do</h4>
+          <h3>
+            What you’ll do<span className="sr-only"> as {role.shortTitle}</span>
+          </h3>
           <ul className="ticks">
             {role.doing.map((item) => (
               <li key={item}>{item}</li>
@@ -81,7 +83,9 @@ function RoleItem({ role, open, onToggle, onApply }: ItemProps) {
           </ul>
         </div>
         <div>
-          <h4>What you’ll bring</h4>
+          <h3>
+            What you’ll bring<span className="sr-only"> to the {role.shortTitle} role</span>
+          </h3>
           <ul className="ticks">
             {role.bringing.map((item) => (
               <li key={item}>{item}</li>

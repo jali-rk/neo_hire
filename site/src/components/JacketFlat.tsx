@@ -109,7 +109,8 @@ export default function JacketFlat({ active, onActive }: Props) {
         })}
       </g>
 
-      {/* Pins: each links to its role */}
+      {/* Pins: each links to its role. Mouse and touch only: keyboard and screen-reader
+          users get the same links in the table next to the drawing. */}
       {ROLES.map((role, i) => {
         const [x, y] = POINTS[role.id].pin;
         return (
@@ -118,11 +119,10 @@ export default function JacketFlat({ active, onActive }: Props) {
             className={`pin fade${active === role.id ? ' is-active' : ''}`}
             style={delay(1.8 + i * 0.1)}
             href={`#role-${role.id}`}
+            tabIndex={-1}
             aria-label={`${role.letter}: ${role.shortTitle}`}
             onMouseEnter={() => onActive(role.id)}
             onMouseLeave={() => onActive(null)}
-            onFocus={() => onActive(role.id)}
-            onBlur={() => onActive(null)}
           >
             <g>
               {/* Larger invisible tap target for phones */}

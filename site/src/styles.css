@@ -397,7 +397,7 @@ button { font: inherit; }
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 28px 56px; padding: 4px 4px 36px 64px;
 }
-.role-body h4 {
+.role-body h3 {
   font: 500 12px/1.4 var(--f-mono); letter-spacing: .1em; text-transform: uppercase;
   color: var(--garnet); margin-bottom: 14px;
 }

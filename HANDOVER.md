@@ -85,11 +85,17 @@ A **one-page recruitment website** for **Aphrodite (Pvt) Ltd**, a Sri Lankan app
   - The SEO issue (missing `robots.txt`) is fixed.
   - The remaining Performance cost is about 310 ms of total blocking time from loading React.
 
+- **QA round 2** (`pnpm qa`, all passing):
+  - **Keyboard:** real Tab presses through 59 stops in a logical order (skip link → header → hero → spec-sheet rows → workflow owners → roles → FAQ → form → email card → footer). Every stop shows a focus ring, the skip link is first and visible, and Enter and Space open and close roles.
+  - **Accessibility tree:** no unnamed links, buttons or fields. The 38 headings have no skipped levels.
+  - **Reduced motion:** no animation; the drawing and pins show complete.
+  - **Tablet (820px):** no horizontal scroll; layouts stack correctly.
+
 ### Not verified yet
 
-- **Reduced motion:** the CSS is in place and `pnpm qa` now includes a check, but it hasn't been run.
-- **Manual keyboard and screen-reader pass.** Focus behaviour was only checked by script.
+- **Screen reader by ear** (VoiceOver). The accessibility tree was checked by script only.
 - **Other browsers:** Safari (especially iPhone) and Firefox.
+- **Lighthouse after round 2.** The re-run failed to write its report; re-run it on the deployed site.
 - **A real form submission end to end.** That needs a real inbox and a hosted site.
 - **Lighthouse on the deployed site.**
 
@@ -288,14 +294,14 @@ Deliberately **removed** from the Gemini version: the registration number "PV 00
 - [x] Scripted interaction checks (`pnpm qa`)
 - [x] Lighthouse run, issues fixed
 - [x] Link-preview image and `SITE_URL` tags
-- [ ] **Reduced motion:** run `pnpm qa` and check `reducedMotion` in the output. Expect `animation: "none"`, `dashoffset: "0px"` and `pinOpacity: "1"`
-- [ ] **Manual keyboard pass:**
-  - the skip link works
-  - Tab reaches the nav, spec rows, pins, role summaries, form fields and buttons, with a visible focus ring
-  - Enter and Space open roles and FAQ items
-- [ ] **Screen reader:** a quick pass with VoiceOver over the hero, one role and the form errors
+- [x] Reduced motion (scripted)
+- [x] Keyboard pass (scripted, real key events). The drawing's pins were taken out of the tab order: they duplicated the table rows. They still work with mouse and touch
+- [x] Accessibility tree and heading outline. "What you'll do" and "What you'll bring" are now `h3` (were `h4`), with the role name in screen-reader-only text
+- [x] Tablet (820px)
+- [ ] **Owner review of the page in a browser.** In progress; changes may follow
+- [ ] **Screen reader by ear:** a quick pass with VoiceOver over the hero, one role and the form errors
 - [ ] **Safari:** desktop Safari and iPhone, especially the SVG drawing, `<details>` and the form's file picker
-- [ ] Optional: reduce total blocking time (310 ms). React plus hydration is most of the 80 kB gzipped JS. Options: drop `StrictMode` in production (small), or move the static sections to plain HTML and hydrate only the form and spec sheet (bigger)
+- [ ] Optional: reduce total blocking time (310 ms). React plus hydration is most of the 80 kB gzipped JS. `StrictMode` has no production cost, so removing it won't help. Real options: switch to Preact (`@preact/preset-vite`, much smaller runtime), or render the static sections as plain HTML and hydrate only the spec sheet, roles and form
 - [ ] Optional: ESLint and Prettier
 
 ### Phase 2: Needs the owner
@@ -343,4 +349,5 @@ Deliberately **removed** from the Gemini version: the registration number "PV 00
 | 2026-11-12 | Owner asked for React + TypeScript + pnpm, kept as a one-pager. Rebuilt in Vite with build-time pre-rendering; content moved into `content.ts` |
 | 2026-11-12 | FormSubmit chosen for form-to-email: no server, free, supports CV attachments via a normal form post. Web3Forms was ruled out because attachments need a paid plan |
 | 2026-11-12 | First version committed and pushed to `github.com/jali-rk/neo_hire` (`243e0cf`) |
+| 2026-11-12 | QA round 2: keyboard, accessibility tree, reduced motion, tablet. Pins out of tab order; role subheadings to `h3` |
 | 2026-11-12 | QA round 1: layout fixes, floating mobile Apply bar removed (duplicated the header button), form-state fix, footer link underlined, `robots.txt`, link-preview image, `SITE_URL` tags and sitemap, `pnpm qa` script |
