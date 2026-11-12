@@ -182,7 +182,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
   return (
     <section className="section apply dark" id="apply" aria-labelledby="apply-title">
       <div className="wrap">
-        <div className="section-head">
+        <div className="section-head" data-reveal>
           <div>
             <p className="eyebrow">Apply</p>
             <h2 className="title" id="apply-title">
@@ -195,7 +195,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
           </p>
         </div>
 
-        <div className="apply-grid">
+        <div className="apply-grid" data-reveal>
           <div>
             {sent ? (
               <div className="success" ref={successRef} tabIndex={-1}>

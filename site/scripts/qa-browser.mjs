@@ -122,7 +122,7 @@ results.emptySubmit = await evaluate(`(async () => {
   };
 })()`);
 await send('Runtime.evaluate', { expression: `document.getElementById('apply').scrollIntoView({ behavior: 'instant' })` });
-await wait(300);
+await wait(1400);
 await shot('qa-form-errors-1440.png');
 
 // Valid submit is blocked by the placeholder-email guard (no navigation)
@@ -165,13 +165,13 @@ await load(url);
 await shot('qa-mobile-hero.png');
 results.mobileOverflow = await evaluate(`document.documentElement.scrollWidth > window.innerWidth ? document.documentElement.scrollWidth : false`);
 await send('Runtime.evaluate', { expression: `document.getElementById('careers').scrollIntoView({ behavior: 'instant' })` });
-await wait(400);
+await wait(1400);
 await shot('qa-mobile-careers.png');
 await evaluate(`(async () => { document.querySelector('.role-card .btn').click(); await new Promise(r => setTimeout(r, 400)); })()`);
 await shot('qa-mobile-role-dialog.png');
 await evaluate(`document.querySelector('dialog[open]')?.close()`);
 await send('Runtime.evaluate', { expression: `document.getElementById('apply').scrollIntoView({ behavior: 'instant' })` });
-await wait(400);
+await wait(1400);
 await shot('qa-mobile-apply.png');
 results.mobileMenu = await evaluate(`(async () => {
   window.scrollTo(0, 0);

@@ -4,7 +4,7 @@ export default function Divisions() {
   return (
     <section className="section" id="divisions" aria-labelledby="divisions-title">
       <div className="wrap">
-        <div className="section-head">
+        <div className="section-head" data-reveal>
           <div>
             <p className="eyebrow">Divisions</p>
             <h2 className="title" id="divisions-title">
@@ -17,7 +17,7 @@ export default function Divisions() {
           </p>
         </div>
 
-        <div className="divisions">
+        <div className="divisions" data-reveal="stagger">
           {DIVISIONS.map((d) => (
             <article className={`division division-${d.stage}`} key={d.name}>
               <div className="division-top">

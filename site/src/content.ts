@@ -51,6 +51,18 @@ export const HERO = {
   secondaryCta: 'Corporate overview',
 };
 
+/** The band under the hero. Each phrase appears in the original preview. */
+export const CRAFT_WORDS = [
+  '3D digital garment engineering',
+  'Precision pattern-making',
+  'Golden-seal prototypes',
+  'French seams',
+  'Silk linings',
+  'Custom engraved hardware',
+  'Inline and final AQL audits',
+  'Limited numbered capsules',
+];
+
 /* ------------------------------------------------------------------
    The company ("The House" in the original preview)
    ------------------------------------------------------------------ */

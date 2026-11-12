@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type React from 'react';
 import { OPEN_APPLICATION, OPEN_APPLICATION_CARD, ROLE_FILTERS, ROLES, type RoleCategory, type RoleId } from '../content';
 import RoleDialog from './RoleDialog';
 
@@ -12,10 +13,19 @@ export default function Careers({ openRole, onOpenRole, onApply }: Props) {
   const [filter, setFilter] = useState<RoleCategory | 'all'>('all');
   const shown = ROLES.filter((r) => filter === 'all' || r.category === filter);
 
+  /** A soft light follows the pointer across the card under it. */
+  const spotlight = (e: React.PointerEvent<HTMLUListElement>) => {
+    const card = (e.target as Element).closest<HTMLElement>('.role-card');
+    if (!card) return;
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    card.style.setProperty('--my', `${e.clientY - r.top}px`);
+  };
+
   return (
     <section className="section" id="careers" aria-labelledby="careers-title">
       <div className="wrap">
-        <div className="section-head">
+        <div className="section-head" data-reveal>
           <div>
             <p className="eyebrow">Careers</p>
             <h2 className="title" id="careers-title">
@@ -28,7 +38,7 @@ export default function Careers({ openRole, onOpenRole, onApply }: Props) {
           </p>
         </div>
 
-        <div className="filters" role="group" aria-label="Filter roles">
+        <div className="filters" role="group" aria-label="Filter roles" data-reveal>
           {ROLE_FILTERS.map((f) => (
             <button
               key={f.id}
@@ -42,7 +52,7 @@ export default function Careers({ openRole, onOpenRole, onApply }: Props) {
           ))}
         </div>
 
-        <ul className="role-cards" aria-live="polite">
+        <ul className="role-cards" aria-live="polite" data-reveal="stagger" onPointerMove={spotlight}>
           {shown.map((role) => (
             <li key={role.id} className="role-card">
               <p className="role-type">{role.type}</p>
@@ -78,7 +88,7 @@ export default function Careers({ openRole, onOpenRole, onApply }: Props) {
           ))}
         </ul>
 
-        <div className="open-app">
+        <div className="open-app" data-reveal>
           <div>
             <h3>{OPEN_APPLICATION_CARD.title}</h3>
             <p>{OPEN_APPLICATION_CARD.text}</p>

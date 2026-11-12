@@ -6,20 +6,31 @@ import { PauseIcon, PlayIcon } from './Icons';
 const assetUrl = (path: string) => (/^https?:\/\//.test(path) ? path : `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`);
 
 /**
- * The virtual fitting film. Plays muted and looped, with a pause button
- * (it doesn't autoplay for people who prefer reduced motion).
+ * The virtual fitting film: muted, looped, with a pause button.
+ * Web-optimised: nothing downloads until the film is near the screen, and it only
+ * plays while visible. It never autoplays for people who prefer reduced motion.
  * Until a film is added in CONFIG.fitOnVideo, the jacket drawing is shown instead.
  */
 export default function FitOnVideo() {
   const { src, webm, poster } = CONFIG.fitOnVideo;
   const video = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
+  const pausedByUser = useRef(false);
 
   useEffect(() => {
     const v = video.current;
-    if (!v) return;
+    if (!v || !('IntersectionObserver' in window)) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduce) v.play().catch(() => setPlaying(false));
+    if (reduce) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !pausedByUser.current) v.play().catch(() => setPlaying(false));
+        else if (!entry.isIntersecting) v.pause();
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(v);
+    return () => io.disconnect();
   }, []);
 
   if (!src) {
@@ -34,8 +45,13 @@ export default function FitOnVideo() {
   function toggle() {
     const v = video.current;
     if (!v) return;
-    if (v.paused) v.play().catch(() => undefined);
-    else v.pause();
+    if (v.paused) {
+      pausedByUser.current = false;
+      v.play().catch(() => undefined);
+    } else {
+      pausedByUser.current = true;
+      v.pause();
+    }
   }
 
   return (
@@ -46,7 +62,7 @@ export default function FitOnVideo() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster={poster ? assetUrl(poster) : undefined}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
