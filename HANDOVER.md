@@ -57,7 +57,9 @@ Current roles:
   - Source Sans 3 body text at 18px, AA contrast
   - the jacket drawing in cream lines on a dark pattern sheet
 - [x] **Hero wow moment** (`SilkCanvas.tsx`):
-  - full-screen live garnet satin drawn with a WebGL shader; it ripples softly around the cursor
+  - fine stone and gold threads flowing like draped silk over a near-black field, drawn with a WebGL shader; they ripple around the cursor
+  - the threads stay quiet behind the headline and catch light towards the right
+  - this replaced an earlier full-screen garnet satin that the owner found too heavy
   - headline lines rise out of masks on load; the rest fades up
   - a "Scroll to explore" cue
   - the header is see-through over the hero and turns to smoked glass on scroll
@@ -208,7 +210,7 @@ SITE_URL=https://careers.your-domain.lk pnpm build
         └── components/
             ├── Header.tsx        sticky header and mobile menu (NAV_LINKS shared with footer)
             ├── Hero.tsx          the preview's headline, subline and buttons over the silk
-            ├── SilkCanvas.tsx    the live satin animation (WebGL shader; colours and motion in FRAG)
+            ├── SilkCanvas.tsx    the hero thread animation (WebGL shader; colours, spacing and motion in FRAG)
             ├── Marquee.tsx       the craft-phrase band under the hero (phrases in CRAFT_WORDS)
             ├── CountUp.tsx       key figures that count up when they scroll into view
             ├── House.tsx         "The company": text, confidentiality note, 4 key figures
@@ -552,6 +554,7 @@ These were written by the previous build and are no longer on the site:
 | 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
 | 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
 | 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Source Sans 3<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
+| 2026-11-12 | **Owner review round 5:** the full-screen garnet silk felt too heavy ("a lot filling") → replaced with fine silk threads on near-black (stone threads, with every fourth in gold; light catches them; mostly empty space); headline side kept clean |
 | 2026-11-12 | **Preview hosted on GitHub Pages** (https://jali-rk.github.io/neo_hire/) via Actions, with noindex while placeholders remain |
 | 2026-11-12 | **Owner review round 4:** "film must start automatically" → muted forced, autoplay fallback on first interaction with a large play button. "More scroll animation, luxury feel" → masked title sweeps, focus-pull reveals, film curtain, drawing hairlines, scroll-linked drift, footer wordmark. The "static" look and click-to-play were caused by macOS Low Power Mode |
 | 2026-11-12 | **Fit-on film added:** an AI-generated 8 s clip (360p, 9:16) whose first and last frames differ, so it's made into a boomerang loop. The player keeps the film's own shape. Next: a 1080p regeneration with the fit-on loop prompt in §6 (the dress-always-on loop prompt was rejected: no fit-on effect) |

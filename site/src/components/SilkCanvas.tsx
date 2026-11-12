@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 
 /*
-  Live silk-satin backdrop for the hero, drawn with a single WebGL fragment shader.
-  - Folds drift slowly; the cloth ripples gently around the pointer.
-  - Renders at reduced resolution and pauses when off-screen or in a background tab.
+  Hero backdrop: fine silk threads flowing over the folds of draped cloth, in champagne and stone
+  on near-black, drawn by a single WebGL fragment shader. Mostly dark space; light only where threads catch it.
+  - Folds drift slowly; the threads ripple around the pointer.
+  - Pauses when off-screen or in a background tab.
   - Reduced motion: draws one still frame. No WebGL: the CSS gradient behind it shows instead.
 */
 
@@ -19,8 +20,8 @@ uniform float uTime;
 uniform vec2 uMouse;   // pointer, in the same space as p
 uniform float uPress;  // 0..1, eases in while the pointer moves
 
+// The surface of a draped length of silk: long, gently warped diagonal folds.
 float folds(vec2 p, float t) {
-  // Long, mostly parallel folds (like satin draped on a diagonal), gently warped
   vec2 q = p;
   q += 0.42 * vec2(sin(p.y * 0.8 + t * 0.30), sin(p.x * 0.6 - t * 0.24));
   float a = sin(q.x * 2.6 + q.y * 1.9 + t * 0.46);
@@ -36,32 +37,50 @@ float height(vec2 p, float t) {
   return h;
 }
 
+// Fine threads run across the folds; their spacing bends with the cloth.
+float threadCoord(vec2 p, float h) {
+  return (p.x * 0.5 - p.y * 0.9) * 9.5 + h * 1.7;
+}
+
 void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
-  vec2 p = uv * 1.9;
+  float scale = 1.9;
+  vec2 p = uv * scale;
   float t = uTime;
-  float e = 0.003;
+  float px = scale / uRes.y;             // one screen pixel, in p units
+
   float h0 = height(p, t);
-  float dx = (height(p + vec2(e, 0.0), t) - h0) / e;
-  float dy = (height(p + vec2(0.0, e), t) - h0) / e;
-  vec3 n = normalize(vec3(-dx * 0.55, -dy * 0.55, 1.0));
+  float hx = height(p + vec2(px, 0.0), t);
+  float hy = height(p + vec2(0.0, px), t);
 
-  // Light comes across the folds, so each fold catches a streak of highlight
+  // Light on the folds decides how brightly each thread catches it
+  vec3 n = normalize(vec3(-(hx - h0) / px * 0.55, -(hy - h0) / px * 0.55, 1.0));
   vec3 L = normalize(vec3(0.5, 0.42, 0.62));
-  vec3 H = normalize(L + vec3(0.0, 0.0, 1.0));
-  float diff = max(dot(n, L), 0.0);
-  float nh = max(dot(n, H), 0.0);
-  float spec = pow(nh, 34.0);
-  float sheen = pow(nh, 5.0);
+  float nh = max(dot(n, normalize(L + vec3(0.0, 0.0, 1.0))), 0.0);
+  float glint = pow(nh, 18.0);
+  float sheen = pow(nh, 4.0);
 
-  vec3 shadow = vec3(0.04, 0.028, 0.033);
-  vec3 garnet = vec3(0.33, 0.07, 0.12);
-  vec3 col = mix(shadow, garnet, pow(diff, 1.6));
-  col += vec3(0.55, 0.2, 0.26) * sheen * 0.06;
-  col += vec3(0.98, 0.85, 0.68) * spec * 0.42;
+  // Anti-aliased hairlines, about one pixel wide at any resolution
+  float c0 = threadCoord(p, h0);
+  float cx = threadCoord(p + vec2(px, 0.0), hx);
+  float cy = threadCoord(p + vec2(0.0, px), hy);
+  float perPx = max(length(vec2(cx - c0, cy - c0)), 1e-4);
+  float dist = abs(fract(c0 + 0.5) - 0.5) / perPx;
+  float line = 1.0 - smoothstep(0.35, 1.25, dist);
+  float accent = step(mod(floor(c0 + 0.5), 4.0), 0.5);   // every fourth thread is a gold one
 
-  float vig = smoothstep(1.45, 0.25, length(uv * vec2(0.8, 1.1)));
-  col *= mix(0.45, 1.0, vig);
+  // Quiet on the left (behind the headline), richer to the right
+  float mask = smoothstep(-0.7, 0.6, uv.x) * smoothstep(1.3, 0.3, length(uv * vec2(0.72, 1.0)));
+
+  vec3 col = vec3(0.055, 0.04, 0.045);
+  col += vec3(0.30, 0.07, 0.12) * sheen * 0.10 * mask;                 // faint garnet breath, not a fill
+  vec3 stone = vec3(0.55, 0.50, 0.46);
+  vec3 gold = vec3(0.86, 0.72, 0.52);
+  float strength = mix(0.10 + 0.45 * glint, 0.24 + 0.95 * glint, accent);
+  col += mix(stone, gold, accent) * line * strength * mask;
+  // A soft halo on the gold threads where the light catches them
+  float halo = exp(-dist * dist / 22.0) * accent * (0.04 + 0.16 * glint);
+  col += gold * halo * mask;
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -115,8 +134,8 @@ export default function SilkCanvas() {
     const t0 = performance.now();
 
     const resize = () => {
-      // Soft folds don't need full resolution: render smaller and let the browser scale up.
-      const scale = Math.min(window.devicePixelRatio || 1, 1.5) * 0.6;
+      // Hairlines need real pixels; cap the density so large screens stay light.
+      const scale = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.max(1, Math.round(canvas.clientWidth * scale));
       canvas.height = Math.max(1, Math.round(canvas.clientHeight * scale));
       gl.viewport(0, 0, canvas.width, canvas.height);

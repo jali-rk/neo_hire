@@ -193,14 +193,14 @@ button { font: inherit; }
   min-height: 100svh; display: flex; flex-direction: column;
   padding-top: 76px;
   /* Shown until (or instead of) the silk animation */
-  background: radial-gradient(90% 70% at 75% 30%, #4A1424 0%, #24161A 45%, var(--ink) 80%);
+  background: radial-gradient(80% 70% at 78% 40%, #1E1417 0%, #120D0F 70%);
 }
 .silk { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; opacity: 0; transition: opacity 2s ease; }
 .silk.is-ready { opacity: 1; }
 .hero-veil {
   position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(18, 13, 15, .82) 0%, rgba(18, 13, 15, .5) 42%, rgba(18, 13, 15, 0) 75%),
+    linear-gradient(90deg, rgba(18, 13, 15, .6) 0%, rgba(18, 13, 15, .25) 40%, rgba(18, 13, 15, 0) 70%),
     linear-gradient(180deg, rgba(18, 13, 15, .35) 0%, rgba(18, 13, 15, 0) 22%, rgba(18, 13, 15, 0) 70%, var(--ink) 100%);
 }
 .hero > .wrap { width: 100%; }
