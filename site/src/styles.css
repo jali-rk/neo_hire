@@ -17,9 +17,9 @@
   --champagne: #CDB088;   /* fine details on dark */
   --bronze: #8A6A42;      /* fine rules on light */
 
-  /* Elegant serif for large headings only (where it stays readable); humanist sans for all reading text */
+  /* Elegant serif for large headings only; a modern geometric sans (Futura lineage) for all reading text */
   --f-display: "Cormorant Garamond Variable", "Cormorant Garamond", Garamond, Georgia, serif;
-  --f-body: "Source Sans 3 Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Jost Variable", "Futura", "Century Gothic", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --wrap: 1200px;
   --gutter: clamp(16px, 4vw, 40px);
@@ -322,7 +322,7 @@ button { font: inherit; }
 .division > p + dl { margin-top: 22px; }
 .division dl div { display: flex; justify-content: space-between; gap: 16px; font-size: 1rem; }
 .division dt { color: var(--muted); flex: none; }
-.division dd { margin: 0; font-weight: 600; color: var(--ink); text-align: right; }
+.division dd { margin: 0; font-weight: 500; color: var(--ink); text-align: right; }
 @media (max-width: 960px) { .divisions { grid-template-columns: 1fr; } }
 
 /* ------------------------------------------------------------
@@ -389,7 +389,7 @@ button { font: inherit; }
 .role-facts { margin: 20px 0 0; display: grid; gap: 8px; font-size: .98rem; }
 .role-facts div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; }
 .role-facts dt { color: var(--muted); }
-.role-facts dd { margin: 0; font-weight: 600; color: var(--ink); }
+.role-facts dd { margin: 0; font-weight: 500; color: var(--ink); }
 .role-card-actions { margin-top: auto; padding-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
 .role-card .role-facts { margin-bottom: 4px; }
 

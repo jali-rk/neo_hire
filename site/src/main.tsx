@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import '@fontsource-variable/cormorant-garamond/wght.css';
 import '@fontsource-variable/cormorant-garamond/wght-italic.css';
-import '@fontsource-variable/source-sans-3/index.css';
+import '@fontsource-variable/jost/index.css';
 import './styles.css';
 import App from './App';
 

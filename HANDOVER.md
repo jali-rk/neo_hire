@@ -35,7 +35,7 @@ Current roles:
 | Headcount | **Never state how many people we're hiring.** The owner found "hiring five people" unprofessional |
 | Content | **Don't invent.** Use only the original preview's content. Anything new must be confirmed by the owner first |
 | Section order | **Follow the original preview:** hero → the company → divisions → 3D studio → careers → apply → footer |
-| Fonts and feel | **Luxurious and readable, balanced.** Bodoni everywhere was hard to read, and plain Source Serif everywhere lost the luxury feel. Now: an elegant serif (Cormorant Garamond) for large headings only, with italic accents; a plain sans (Source Sans 3) for all reading text |
+| Fonts and feel | **Luxurious and readable, balanced.** Bodoni everywhere was hard to read, and plain Source Serif everywhere lost the luxury feel. Now: an elegant serif (Cormorant Garamond) for large headings only, with italic accents; a modern geometric sans (Jost, in the Futura lineage) for all reading text |
 | Role details | **Not** a plain "+" expander. Each role has a card with a "View role details" button that opens a side panel |
 | 3D section | Must play a **video showing virtual 3D fitting** |
 | Language | English only |
@@ -54,7 +54,7 @@ Current roles:
   - dark hero and header with a champagne accent
   - Cormorant Garamond headings with italic accent phrases
   - tracked uppercase labels, buttons and navigation
-  - Source Sans 3 body text at 18px, AA contrast
+  - Jost body text at 18px, AA contrast
   - the jacket drawing in cream lines on a dark pattern sheet
 - [x] **Hero wow moment** (`SilkCanvas.tsx`):
   - fine stone and gold threads flowing like draped silk over a near-black field, drawn with a WebGL shader; they ripple around the cursor
@@ -105,7 +105,7 @@ Current roles:
 ### Verified (`pnpm qa`, Chrome, local production build): all passing
 
 - **Structure:** sections in the original preview's order. The page never mentions a headcount.
-- **Fonts:** Cormorant Garamond (headings) and Source Sans 3 (text) load; body text is 18px.
+- **Fonts:** Cormorant Garamond (headings) and Jost (text) load; body text is 18px.
 - **Hydration:** React hydrates with no errors. The only console message is the intended "set `CONFIG.careersEmail`" warning.
 - **Filters:** "Atelier & QC" shows only the two craft roles.
 - **Role panel:**
@@ -463,7 +463,7 @@ These were written by the previous build and are no longer on the site:
   - **Light:** the company, divisions and careers sections (shell and paper, with a garnet accent).
 - **Type:** keep the balance. The owner rejected both extremes.
   - **Cormorant Garamond** (weight 500–600) only for large headings: page and section titles, card titles, key figures, stage numbers, the wordmark. One phrase per title is set in *italic* in the accent colour.
-  - **Source Sans 3** for all reading text: body at 18px, form fields, details.
+  - **Jost** for all reading text: body at 18px, form fields, details.
   - **Labels** (eyebrows, buttons, navigation, filters, statuses): sans, uppercase, letter-spaced (0.12–0.22em), 12.5–14.5px, weight 600–700. Eyebrows have a short rule before them.
   - Don't set Cormorant below about 1.6rem, and don't use it for body text.
   - Both fonts are self-hosted through `@fontsource`.
@@ -553,10 +553,11 @@ These were written by the previous build and are no longer on the site:
 | 2026-11-12 | First design (Bodoni Moda, spec-sheet hero with the roles as points A–E) built as a prototype, then in React + TypeScript + pnpm with pre-rendering |
 | 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
 | 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
-| 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Source Sans 3<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
+| 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Jost<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
+| 2026-11-12 | **Owner review round 6:** the body font (Source Sans 3) felt plain → **Jost**, a geometric sans in the Futura lineage that pairs with Cormorant for a fashion-editorial look; bold values softened to weight 500; link-preview image updated |
 | 2026-11-12 | **Owner review round 5:** the full-screen garnet silk felt too heavy ("a lot filling") → replaced with fine silk threads on near-black (stone threads, with every fourth in gold; light catches them; mostly empty space); headline side kept clean |
 | 2026-11-12 | **Preview hosted on GitHub Pages** (https://jali-rk.github.io/neo_hire/) via Actions, with noindex while placeholders remain |
 | 2026-11-12 | **Owner review round 4:** "film must start automatically" → muted forced, autoplay fallback on first interaction with a large play button. "More scroll animation, luxury feel" → masked title sweeps, focus-pull reveals, film curtain, drawing hairlines, scroll-linked drift, footer wordmark. The "static" look and click-to-play were caused by macOS Low Power Mode |
 | 2026-11-12 | **Fit-on film added:** an AI-generated 8 s clip (360p, 9:16) whose first and last frames differ, so it's made into a boomerang loop. The player keeps the film's own shape. Next: a 1080p regeneration with the fit-on loop prompt in §6 (the dress-always-on loop prompt was rejected: no fit-on effect) |
 | 2026-11-12 | **Owner review round 3:** "more interactive, a wow animation in the first section, more luxury and modern" and "the preview's hero content is better" → live WebGL silk hero; the preview's hero wording restored; see-through header; scroll reveals, craft band, counting figures, studio stage highlight, card spotlight; web-optimised video player (lazy, plays only on screen) and the video brief in §6 |
-| 2026-11-12 | **Owner review round 2:** "the plain text lost the luxury feeling; make it balanced" → Cormorant Garamond for large headings with italic accents; dark hero and header; champagne accent; tracked uppercase labels and buttons; body text kept in Source Sans 3 at 18px for readability; section titles use the original preview's phrasing |
+| 2026-11-12 | **Owner review round 2:** "the plain text lost the luxury feeling; make it balanced" → Cormorant Garamond for large headings with italic accents; dark hero and header; champagne accent; tracked uppercase labels and buttons; body text kept in Jost at 18px for readability; section titles use the original preview's phrasing |
