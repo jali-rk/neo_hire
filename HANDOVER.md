@@ -239,7 +239,7 @@ Without a film configured, it shows the jacket drawing.
 - **Output:** 330 KB WebM and 490 KB MP4, at the film's own 9:16 shape. The frame fits the screen height.
 - **To improve:**
   - **Resolution:** 360p looks soft. Regenerate at **1080p**, or at least 720p, with the same prompt.
-  - **A natively seamless loop:** the "loop prompt" below. It needs no boomerang, so the motion never reverses.
+  - **A natively seamless loop:** the "fit-on loop prompt" below. The pieces sew on, then release back to their starting places, so the motion never reverses.
 
 ### Adding the film (one command)
 
@@ -311,13 +311,26 @@ Generate a still image first, then animate it. Going straight from text to video
 
 > Same scene and style, but a realistic 3D male avatar, and the pieces form a tailored ivory single-breasted jacket with a garnet satin lining. The lapels roll naturally and the shoulders settle cleanly as the jacket fits.
 
-### Loop prompt (for a natively seamless loop, no boomerang)
+### Fit-on loop prompt (natively seamless, keeps the fit-on effect)
 
-Generate at **1080p**, 9:16. It keeps the approved look (clothed base layer, faceless mannequin) and cycles back to its own first frame:
+An earlier "loop prompt" kept the dress on the whole time, which loses the fit-on effect. The owner rejected it. This version tells a full cycle instead: the pieces sew on, then release and float back to where they started, so the clip ends on its own first frame.
 
-> Luxury fashion-technology film, vertical 9:16, 8 seconds, seamless loop: the last frame must exactly match the first frame. A stylised 3D fashion display mannequin with a smooth, simplified, abstract form (no anatomical detail), a calm faceless head, and a modest long-sleeved high-neck charcoal bodysuit and leggings stands on a slowly turning circular platform in a dark, minimal studio with a soft warm key light. The mannequin wears a finished garnet-red silk wrap dress. During the clip, glowing champagne-gold seam lines trace along every seam of the dress one after another, as if a 3D virtual sewing simulation is checking the fit, and a faint wireframe mesh ripples once across the fabric and fades. The silk sways gently with realistic cloth physics as the platform completes exactly one full 360-degree turn at constant speed, so the dress ends in the same position it started. Camera locked off at chest height, shallow depth of field. Palette: deep charcoal, garnet silk, champagne-gold accents. Cinematic, premium. Silent, no text, no logos, no watermark.
+Settings: 9:16, **1080p** (at least 720p), **12 seconds**.
 
-Why it loops: one full 360° turn at constant speed, with a locked camera and the dress already on, so the start and end match. Then run `pnpm video take.mp4` with no `--boomerang`. If the last frame is slightly off, `--end` can trim to the frame that matches best.
+> Luxury fashion-technology film, vertical 9:16, 12 seconds, seamless loop: the final frame is identical to the first frame. A stylised 3D fashion display mannequin with a smooth, simplified, abstract form (no anatomical detail), a calm faceless head, and a modest long-sleeved high-neck charcoal bodysuit and leggings stands on a circular platform in a dark, minimal studio with a soft warm key light from the upper left. The camera is locked off at chest height, facing the mannequin, and does not move.
+>
+> 0–2 s: flat pattern pieces of a garnet-red silk wrap dress float in the air around the mannequin, gently drifting.
+> 2–6 s: thin glowing champagne-gold seam lines connect matching edges; the pieces glide onto the mannequin over the charcoal base layer and stitch together along the seams, then the silk drapes and settles with realistic cloth physics into a beautifully fitted long wrap dress. A faint wireframe mesh shows on the fabric and fades as it settles.
+> 6–8 s: the finished dress sways softly; the platform turns gently left and back to face the camera.
+> 8–12 s: the gold seam lines glow again, the seams release, and the pieces lift off and float back out to exactly the same positions they started in, ready to begin again.
+>
+> Palette: deep charcoal, garnet silk, champagne-gold accents. Photoreal cloth, cinematic, premium. Silent, no text, no logos, no watermark.
+
+**To guarantee the loop:** use image-to-video with the **same image as both the first and the last frame** (Google Flow / Veo 3.1 first-and-last-frame mode). Make the image first:
+
+> Vertical 9:16 photoreal studio image. A stylised 3D fashion display mannequin, smooth abstract form with no anatomical detail, faceless head, wearing a modest long-sleeved high-neck charcoal bodysuit and leggings, stands facing the camera on a dark circular platform in a dark, minimal studio with a soft warm key light from the upper left. Flat garnet-red silk wrap-dress pattern pieces (bodice fronts, sleeves, two skirt panels) float in the air on both sides, each with a thin champagne-gold outline. Cinematic, premium, no text.
+
+Then run `pnpm video take.mp4` with no `--boomerang`, and use `--end` if the last frame needs trimming. If the ends don't match well, use `--boomerang`: it already shows the fit-on.
 
 ### Extra lines that help
 
@@ -513,6 +526,6 @@ These were written by the previous build and are no longer on the site:
 | 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
 | 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
 | 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Source Sans 3<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
-| 2026-11-12 | **Fit-on film added:** an AI-generated 8 s clip (360p, 9:16) whose first and last frames differ, so it's made into a boomerang loop. The player keeps the film's own shape. Next: a 1080p regeneration with the loop prompt in §6 |
+| 2026-11-12 | **Fit-on film added:** an AI-generated 8 s clip (360p, 9:16) whose first and last frames differ, so it's made into a boomerang loop. The player keeps the film's own shape. Next: a 1080p regeneration with the fit-on loop prompt in §6 (the dress-always-on loop prompt was rejected: no fit-on effect) |
 | 2026-11-12 | **Owner review round 3:** "more interactive, a wow animation in the first section, more luxury and modern" and "the preview's hero content is better" → live WebGL silk hero; the preview's hero wording restored; see-through header; scroll reveals, craft band, counting figures, studio stage highlight, card spotlight; web-optimised video player (lazy, plays only on screen) and the video brief in §6 |
 | 2026-11-12 | **Owner review round 2:** "the plain text lost the luxury feeling; make it balanced" → Cormorant Garamond for large headings with italic accents; dark hero and header; champagne accent; tracked uppercase labels and buttons; body text kept in Source Sans 3 at 18px for readability; section titles use the original preview's phrasing |
