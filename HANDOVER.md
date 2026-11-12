@@ -4,6 +4,8 @@ Last updated: 2026-11-12, session 1 (after owner review round 1)
 
 This document is for anyone taking over the project. It covers what the site is, what's been decided, what's done and checked, and the full plan for what's left. You shouldn't need any other context.
 
+**Preview:** https://jali-rk.github.io/neo_hire/ (GitHub Pages; redeploys on every push to `main` that touches `site/`; hidden from search engines).
+
 **Quick status:** the site is built and checked in Chrome on desktop, tablet and mobile. It is **not live yet**. Waiting on the owner for the virtual-fitting video, the careers email, the domain and a few fact confirmations (§9, Phase 2).
 
 ---
@@ -161,6 +163,16 @@ SITE_URL=https://careers.your-domain.lk pnpm build
 4. `node scripts/prerender.mjs` renders the page into `dist/index.html` and adds the `SITE_URL` tags.
 
 `site/dist/` is a plain static site with relative paths, so it can be hosted anywhere.
+
+### Preview hosting (GitHub Pages)
+
+- **URL:** https://jali-rk.github.io/neo_hire/
+- **Workflow:** `.github/workflows/deploy-preview.yml` builds `site/` with pnpm 8 and Node 24, then deploys `site/dist` to Pages.
+  - It runs on every push to `main` that changes `site/`, or manually: Actions → "Deploy preview to GitHub Pages" → Run workflow.
+- **Build settings:** `SITE_URL=https://jali-rk.github.io/neo_hire` and **`NOINDEX=1`**. NOINDEX adds `<meta name="robots" content="noindex">` and a `Disallow: /` robots.txt, so search engines skip the preview while it still has placeholder content.
+- **Pages setting:** Settings → Pages → Source: GitHub Actions. This was switched on on 2026-11-12.
+- **The form on the preview:** it shows "Online applications aren't switched on yet" until `CONFIG.careersEmail` is set. Once it's set, FormSubmit works from the preview URL too.
+- **For the real launch:** deploy to the final domain with `SITE_URL=<domain>` and **without** `NOINDEX`. Either point a custom domain at Pages (Settings → Pages → Custom domain, then update `SITE_URL` in the workflow and remove `NOINDEX`), or use Netlify, Vercel or Cloudflare Pages (§10, Phase 3).
 
 **`pnpm qa`** (`scripts/qa-browser.mjs`) uses only Node 22+ and a local Chrome; there are no test dependencies. Set `CHROME=/path/to/chrome` if Chrome isn't at the default macOS location.
 
@@ -508,7 +520,7 @@ These were written by the previous build and are no longer on the site:
 ### Phase 3: Go live
 
 1. Set `CONFIG`, add the film, run `pnpm build && pnpm preview && pnpm qa`, and check the screenshots.
-2. **Deploy.** Set the environment variable `SITE_URL=https://<domain>` on the host.
+2. **Deploy.** Set the environment variable `SITE_URL=https://<domain>` on the host, and make sure `NOINDEX` is **not** set. (The GitHub Pages preview sets it.)
    - Netlify: base `site`, build `pnpm build`, publish `site/dist`
    - Vercel: root `site`, preset Vite, build `pnpm build`, output `dist`
    - Cloudflare Pages: root `site`, build `pnpm build`, output `dist`
@@ -540,6 +552,7 @@ These were written by the previous build and are no longer on the site:
 | 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
 | 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
 | 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Source Sans 3<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
+| 2026-11-12 | **Preview hosted on GitHub Pages** (https://jali-rk.github.io/neo_hire/) via Actions, with noindex while placeholders remain |
 | 2026-11-12 | **Owner review round 4:** "film must start automatically" → muted forced, autoplay fallback on first interaction with a large play button. "More scroll animation, luxury feel" → masked title sweeps, focus-pull reveals, film curtain, drawing hairlines, scroll-linked drift, footer wordmark. The "static" look and click-to-play were caused by macOS Low Power Mode |
 | 2026-11-12 | **Fit-on film added:** an AI-generated 8 s clip (360p, 9:16) whose first and last frames differ, so it's made into a boomerang loop. The player keeps the film's own shape. Next: a 1080p regeneration with the fit-on loop prompt in §6 (the dress-always-on loop prompt was rejected: no fit-on effect) |
 | 2026-11-12 | **Owner review round 3:** "more interactive, a wow animation in the first section, more luxury and modern" and "the preview's hero content is better" → live WebGL silk hero; the preview's hero wording restored; see-through header; scroll reveals, craft band, counting figures, studio stage highlight, card spotlight; web-optimised video player (lazy, plays only on screen) and the video brief in §6 |

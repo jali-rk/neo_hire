@@ -3,6 +3,7 @@
 //    full content before any JavaScript runs.
 // 2. If SITE_URL is set (e.g. SITE_URL=https://careers.example.lk pnpm build), adds the
 //    tags that need an absolute URL: canonical, og:url, og:image, plus a sitemap.
+// 3. If NOINDEX=1 (preview builds), tells search engines not to index the site.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -43,6 +44,13 @@ if (siteUrl) {
   console.log(`Added canonical, og:url, og:image and sitemap for ${siteUrl}`);
 } else {
   console.warn('SITE_URL not set: skipped canonical, og:url, og:image and sitemap. Set it for production builds.');
+}
+
+// Preview deployments (NOINDEX=1): ask search engines not to index the site yet.
+if (process.env.NOINDEX === '1') {
+  html = html.replace('</head>', '  <meta name="robots" content="noindex, nofollow" />\n  </head>');
+  await fs.writeFile(path.join(dist, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
+  console.log('NOINDEX=1: added robots noindex (preview build)');
 }
 
 await fs.writeFile(templatePath, html);
