@@ -143,7 +143,8 @@ export const ATELIER = {
   title: 'Precision, from digital twin',
   titleAccent: 'to final stitch.',
   intro: 'Every style moves through four stages, from 3D simulation in our Central Studio to controlled production with our partners.',
-  videoCaption: 'Virtual fitting in CLO 3D: each style is draped and fitted on a 3D avatar before any cloth is cut.',
+  /** Describes the process, so it stays true whether the film is a CLO 3D export or an illustrative film. */
+  videoCaption: 'Virtual fitting: every style is draped and fitted on a 3D avatar before any cloth is cut.',
   stages: [
     {
       title: 'CLO 3D digital twin and drape physics',

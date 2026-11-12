@@ -114,7 +114,7 @@ Current roles:
 - **Safari** (desktop and iPhone) and **Firefox**
 - **Lighthouse** on the reworked site. Earlier scores (before the rework): Performance 92, Accessibility 96, Best Practices 100, SEO 91; the issues it raised were fixed
 - **A real form submission end to end.** That needs the real inbox and hosting
-- **The video player with a real film.** The code path exists, but no film has been supplied
+- **The real film.** The player was verified with a sample clip; the actual film hasn't been supplied yet
 
 ---
 
@@ -130,6 +130,7 @@ pnpm build        # type-check, build, pre-render → site/dist/
 pnpm preview      # serve site/dist at http://localhost:4173
 pnpm typecheck    # TypeScript only
 pnpm qa           # browser checks + screenshots → site/qa-output/ (needs `pnpm preview` running and Chrome)
+pnpm video <file>  # turn a source film into the web-optimised fit-on video files (needs ffmpeg; §6)
 ```
 
 Production build with the real domain (adds canonical, `og:url`, `og:image` and the sitemap):
@@ -166,7 +167,8 @@ SITE_URL=https://careers.your-domain.lk pnpm build
     ├── public/                ← favicon.svg, og-image.png, robots.txt (+ video/ once supplied)
     ├── scripts/
     │   ├── prerender.mjs      ← build-time pre-render and SITE_URL tags
-    │   └── qa-browser.mjs     ← `pnpm qa`
+    │   ├── qa-browser.mjs     ← `pnpm qa`
+    │   └── optimize-video.sh  ← `pnpm video`: source film → 4:5 MP4, WebM and poster
     └── src/
         ├── content.ts         ← ★ settings and ALL page text (edit here first)
         ├── App.tsx            ← section order; which role panel is open; apply requests
@@ -215,39 +217,86 @@ SITE_URL=https://careers.your-domain.lk pnpm build
 
 ## 6. The virtual fitting video
 
-The 3D studio section has a video player. Until a film is supplied, it shows the jacket drawing instead.
+The 3D studio section has a web-optimised video player (`FitOnVideo.tsx`). It was tested end to end with a sample clip on 2026-11-12:
 
-**To add the film:**
+- nothing downloads at page load
+- when the film scrolls into view, only the smaller WebM file loads, and it plays
+- the pause button works, and the film pauses when scrolled away
+- it never autoplays under reduced motion
 
-1. Put the files in `site/public/video/`, for example `fit-on.mp4`, an optional `fit-on.webm`, and `fit-on-poster.jpg`.
-2. In `src/content.ts`, set:
+Until a film is supplied, it shows the jacket drawing.
 
-   ```ts
-   fitOnVideo: { src: 'video/fit-on.mp4', webm: 'video/fit-on.webm', poster: 'video/fit-on-poster.jpg' }
-   ```
+### Adding the film (one command)
 
-3. Run `pnpm build`.
+```bash
+cd site
+pnpm video path/to/source.mp4    # needs ffmpeg (brew install ffmpeg)
+```
 
-**Recommended spec:**
+This writes `public/video/fit-on.mp4` (H.264), `fit-on.webm` (VP9) and `fit-on-poster.jpg`:
 
-| Setting | Value |
-|---|---|
-| Aspect ratio | 4:5 portrait, e.g. 1080×1350 (the frame is 4:5; other ratios are cropped to fill) |
-| Length | 10–20 seconds, designed to loop smoothly |
-| Audio | None (it plays muted) |
-| Format | MP4 (H.264), under ~8 MB; a WebM copy is optional and smaller |
-| Poster | The first frame, as a JPG |
+- 1080×1350 (4:5), cropped from the centre
+- 30 fps, no audio, MP4 set to fast-start
 
-**Where the film can come from (the owner decides):**
+Then set this in `src/content.ts` and run `pnpm build`:
 
-- **Best: a CLO 3D export of a real Aphrodite garment.** CLO 3D can record a turntable or a fitting animation of the garment on an avatar. This is genuine, and it matches what the page says the studio does.
-- **An AI video generator** (for example Google Veo, OpenAI Sora or Runway), if no CLO 3D export is available yet. It must not be presented as a real product, and the caption may need adjusting. Starting prompt:
+```ts
+fitOnVideo: { src: 'video/fit-on.mp4', webm: 'video/fit-on.webm', poster: 'video/fit-on-poster.jpg' }
+```
 
-  > Photorealistic studio film, 4:5 vertical, 12-second seamless loop. A grey 3D avatar stands on a slowly rotating turntable in a dark, softly lit studio. A tailored ivory jacket with a garnet-red lining drapes onto the avatar as a 3D garment simulation: visible fine mesh lines fade as the fabric settles, the cloth falls naturally and tension is shown subtly. Clean, minimal, luxury fashion-tech feel. No text, no logos, no people.
+Aim for an MP4 under ~6 MB. If it's bigger, raise `-crf` in `scripts/optimize-video.sh` (e.g. 26) or shorten the clip.
 
-- **Not stock footage of someone else's product.** It would misrepresent the company.
+### Where the film should come from
 
----
+**Claude can't generate video.** It can write the prompt, prepare the files and wire the film in, as above. If you have an API key for a video model (for example Google's Gemini API for Veo), a script could call it from this project, but the account and its cost are yours.
+
+1. **Best (authentic): a CLO 3D export of a real Aphrodite garment.**
+   - CLO 3D can record the simulation and turntables of a garment on an avatar, and render them photorealistically.
+   - This is genuinely what the page describes.
+   - It's an ideal first task for the 3D Apparel Designer once hired.
+2. **Now (illustrative): an AI video model.** Current leaders for realistic fashion video:
+   - **Google Veo 3.1:** recommended. It's in Google Flow and the Gemini app (paid Google AI plan), which the owner already uses. It produces very realistic short clips, supports vertical 9:16 and **first and last frame control**.
+   - **Kling:** strong cloth motion; good image-to-video.
+   - **OpenAI Sora 2:** realistic, longer clips.
+   - **Runway:** good editing tools.
+   - Check each provider's current pricing and commercial-use terms before using a clip publicly.
+3. **Avoid stock footage of other brands' products.** It would misrepresent the company.
+
+**Honesty note:** an AI film is illustrative, not footage of an Aphrodite garment. The caption is worded to describe the process, so it stays true either way: "Virtual fitting: every style is draped and fitted on a 3D avatar before any cloth is cut." Don't add a caption claiming the film is a real collection piece unless it is.
+
+### How to generate it (best results)
+
+Generate a still image first, then animate it. Going straight from text to video gives less control.
+
+1. Make two stills, both 9:16 (Gemini image generation, Imagen, Midjourney, etc.):
+   - **Start frame:** the avatar on a platform with the flat garment pieces floating around them.
+   - **End frame:** the same avatar wearing the finished garment.
+2. In Veo 3.1 (Flow), use **first and last frame** mode with the prompt below. In Kling, use image-to-video with the start frame.
+3. Generate 3–4 takes, pick the best, then run `pnpm video take.mp4`. The script crops 9:16 to 4:5, so keep the subject centred with headroom.
+
+### Main prompt (womenswear)
+
+> Photorealistic luxury fashion-tech film, vertical 9:16, 8 seconds, slow and elegant.
+>
+> A realistic 3D digital avatar of a woman (calm neutral expression, dark hair in a low bun, seamless nude base layer) stands in a relaxed A-pose on a slowly turning circular platform in a dark, minimal studio. A soft warm key light falls from the upper left, with deep charcoal shadows.
+>
+> Flat pattern pieces of a garnet-red silk wrap dress float in the air around her, like a CLO 3D virtual sewing simulation. Thin glowing champagne-gold seam lines link matching edges. The pieces glide onto her body and stitch together along the seams. The silk then drapes and settles with true-to-life cloth physics: weight, gentle sway, soft specular highlights running along each fold.
+>
+> A faint wireframe mesh shows on the fabric at first and dissolves as the cloth settles into a perfectly fitted dress. The camera makes one slow, smooth 90-degree orbit at chest height, with shallow depth of field.
+>
+> Palette: deep charcoal, garnet silk, champagne-gold accents. High detail, cinematic, premium.
+>
+> No text, no logos, no watermark, no other people, no music or sound.
+
+### Menswear variant
+
+> Same scene and style, but a realistic 3D male avatar, and the pieces form a tailored ivory single-breasted jacket with a garnet satin lining. The lapels roll naturally and the shoulders settle cleanly as the jacket fits.
+
+### Extra lines that help
+
+- **If the motion is too fast:** "slow motion, unhurried, graceful".
+- **If the avatar looks uncanny:** "stylised photoreal avatar with a smooth, matte, mannequin-like finish".
+- **If the result is a loop clip:** ask for "starts and ends on the same frame (seamless loop)", or cut a loop in any editor.
 
 ## 7. How applications are delivered
 
@@ -396,7 +445,7 @@ These were written by the previous build and are no longer on the site:
 
 ### Phase 2: Needs the owner
 
-1. **The virtual fitting film** (see §6), from a CLO 3D export or a generated film.
+1. **The virtual fitting film** (see §6): a CLO 3D export, or a film generated with the prompt in §6. Then run `pnpm video`.
 2. The **careers inbox** (and optionally a corporate address).
 3. The **domain** (for `SITE_URL`) and where to host.
 4. Decisions on the "left out" and "worth confirming" lists in §8.
