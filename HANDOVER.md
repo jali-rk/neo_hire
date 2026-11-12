@@ -54,6 +54,15 @@ Current roles:
   - tracked uppercase labels, buttons and navigation
   - Source Sans 3 body text at 18px, AA contrast
   - the jacket drawing in cream lines on a dark pattern sheet
+- [x] **Hero wow moment** (`SilkCanvas.tsx`):
+  - full-screen live garnet satin drawn with a WebGL shader; it ripples softly around the cursor
+  - headline lines rise out of masks on load; the rest fades up
+  - a "Scroll to explore" cue
+  - the header is see-through over the hero and turns to smoked glass on scroll
+  - the hero text drifts away as you scroll (in browsers that support CSS scroll timelines)
+  - performance: rendered at reduced resolution, paused off-screen and in background tabs
+  - reduced motion: one still frame. No WebGL: a CSS gradient
+- [x] Hero content restored from the original preview: "Incorporated in Sri Lanka · House of Modern Attire", "The Architecture of *Modern Attire.*", its subline, and the "Explore founding careers" and "Corporate overview" buttons
 - [x] Role cards with a **"View role details"** button that opens a side panel (native `<dialog>`):
   - full role details, plus "Apply for this role" and "Apply by email"
   - each role has a shareable link (`…/#role-c`)
@@ -161,7 +170,8 @@ SITE_URL=https://careers.your-domain.lk pnpm build
         │   └── validate.ts    ← form values, validation rules, error messages
         └── components/
             ├── Header.tsx        sticky header and mobile menu (NAV_LINKS shared with footer)
-            ├── Hero.tsx          headline, intro, benefits, jacket drawing
+            ├── Hero.tsx          the preview's headline, subline and buttons over the silk
+            ├── SilkCanvas.tsx    the live satin animation (WebGL shader; colours and motion in FRAG)
             ├── House.tsx         "The company": text, confidentiality note, 4 key figures
             ├── Divisions.tsx     three division cards
             ├── Atelier.tsx       "3D studio": 4 stages and the film
@@ -348,7 +358,12 @@ These were written by the previous build and are no longer on the site:
   - small garnet "notch" triangle bullets (from pattern pieces)
   - the dot-and-cross pattern-paper background behind the jacket drawing
   - a dashed "cutting line" border on the open-application card
-- **Motion:** only the jacket drawing (it draws itself in) and the role panel (it slides in). Both are off under reduced motion.
+- **Motion:**
+  - the hero silk, the headline rise and the hero drifting away on scroll
+  - the jacket drawing draws itself in
+  - the role panel slides in
+  - all of it is off, or a still frame, under reduced motion
+  - The preview's "CLO 3D Mesh Simulation Active" label is deliberately left out: the silk is decorative, not a CLO 3D simulation.
 - **Mobile:** the header's "Apply now" is the always-visible call to action. Don't add a floating one.
 
 ---
@@ -406,4 +421,5 @@ These were written by the previous build and are no longer on the site:
 | 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
 | 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
 | 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Source Sans 3<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
+| 2026-11-12 | **Owner review round 3:** "more interactive, a wow animation in the first section, more luxury and modern" and "the preview's hero content is better" → live WebGL silk hero; the preview's hero wording restored; see-through header. Scroll animations and the video follow |
 | 2026-11-12 | **Owner review round 2:** "the plain text lost the luxury feeling; make it balanced" → Cormorant Garamond for large headings with italic accents; dark hero and header; champagne accent; tracked uppercase labels and buttons; body text kept in Source Sans 3 at 18px for readability; section titles use the original preview's phrasing |

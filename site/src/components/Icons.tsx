@@ -30,6 +30,14 @@ export function UploadIcon() {
   );
 }
 
+export function ArrowIcon() {
+  return (
+    <svg className="arrow" width="16" height="10" viewBox="0 0 16 10" aria-hidden="true">
+      <path d="M0 5h14M10 1l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  );
+}
+
 export function PlayIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">

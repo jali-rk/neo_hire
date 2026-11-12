@@ -39,21 +39,17 @@ export const COMPANY = 'Aphrodite (Pvt) Ltd';
 /* ------------------------------------------------------------------
    Hero
    ------------------------------------------------------------------ */
+/** Hero: the original preview's wording. */
 export const HERO = {
-  eyebrow: 'House of Modern Attire · Now hiring',
-  title: 'Build the foundation',
-  titleAccent: 'with us.',
+  eyebrow: 'Incorporated in Sri Lanka · House of Modern Attire',
+  /** Each entry is one line of the headline (each rises in on load). */
+  titleLines: ['The Architecture of'],
+  titleAccent: 'Modern Attire.',
   lede:
-    'Aphrodite (Pvt) Ltd is an emerging Sri Lankan fashion group, built on the European multi-house model. We unite 3D digital garment engineering, precision pattern-making and tightly controlled manufacturing across several apparel divisions, and we’re recruiting our founding team.',
+    'Uniting 3D digital garment engineering, precision pattern-making and tightly controlled manufacturing across multi-tiered apparel divisions.',
+  primaryCta: 'Explore founding careers',
+  secondaryCta: 'Corporate overview',
 };
-
-/** Shown in the hero and the careers section. */
-export const BENEFITS = [
-  `Direct employment with ${COMPANY}`,
-  'Full statutory EPF/ETF benefits',
-  'Structured remuneration',
-  '1-day paid studio trial for shortlisted technical candidates',
-];
 
 /* ------------------------------------------------------------------
    The company ("The House" in the original preview)
