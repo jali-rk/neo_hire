@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { ATELIER, CONFIG } from '../content';
 import JacketDrawing from './JacketDrawing';
 import { PauseIcon, PlayIcon } from './Icons';
@@ -12,7 +12,7 @@ const assetUrl = (path: string) => (/^https?:\/\//.test(path) ? path : `${import
  * Until a film is added in CONFIG.fitOnVideo, the jacket drawing is shown instead.
  */
 export default function FitOnVideo() {
-  const { src, webm, poster } = CONFIG.fitOnVideo;
+  const { src, webm, poster, width, height } = CONFIG.fitOnVideo;
   const video = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const pausedByUser = useRef(false);
@@ -56,7 +56,7 @@ export default function FitOnVideo() {
 
   return (
     <figure className="film">
-      <div className="film-frame">
+      <div className="film-frame" style={{ '--ar': `${width} / ${height}`, '--arw': width / height } as CSSProperties}>
         <video
           ref={video}
           muted
@@ -66,6 +66,8 @@ export default function FitOnVideo() {
           poster={poster ? assetUrl(poster) : undefined}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
+          width={width}
+          height={height}
           aria-label="Virtual fitting film"
         >
           {webm && <source src={assetUrl(webm)} type="video/webm" />}

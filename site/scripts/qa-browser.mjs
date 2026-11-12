@@ -246,7 +246,13 @@ results.headingOutline = await evaluate(`(() => {
 /* ---------- Reduced motion ---------- */
 await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
 await load(url);
-results.reducedMotion = await evaluate(`(() => { const cs = getComputedStyle(document.querySelector('.flat .draw')); return { animation: cs.animationName, dashoffset: cs.strokeDashoffset }; })()`);
+await evaluate(`document.querySelector('#studio').scrollIntoView({ behavior: 'instant' })`);
+await wait(1500);
+results.reducedMotion = await evaluate(`(() => {
+  const line = document.querySelector('.hero h1 .line > span');
+  const video = document.querySelector('.film video');
+  return { animation: getComputedStyle(line).animationName, filmAutoplays: video ? !video.paused : false };
+})()`);
 
 results.consoleAndErrors = logs;
 console.log(JSON.stringify(results, null, 2));

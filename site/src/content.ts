@@ -20,10 +20,11 @@ export interface SiteConfig {
   /** Largest CV accepted, in MB. FormSubmit allows about 10 MB in total. */
   maxUploadMB: number;
   /**
-   * Virtual fitting film for the 3D studio section. Put the files in site/public/video/
-   * and give their paths, e.g. 'video/fit-on.mp4'. Leave src empty to show the jacket drawing instead.
+   * Virtual fitting film for the 3D studio section. Make the files with `pnpm video` (it prints
+   * these values). Leave src empty to show the jacket drawing instead.
+   * width/height are the film's pixel size; the frame keeps that shape.
    */
-  fitOnVideo: { src: string; webm: string; poster: string };
+  fitOnVideo: { src: string; webm: string; poster: string; width: number; height: number };
 }
 
 export const CONFIG: SiteConfig = {
@@ -31,7 +32,9 @@ export const CONFIG: SiteConfig = {
   corporateEmail: '', // ← optional
   formsubmitId: '',
   maxUploadMB: 10,
-  fitOnVideo: { src: '', webm: '', poster: '' }, // ← add the virtual fitting film
+  // Boomerang loop made from video-source/fit-on-source.mp4 (AI-generated, illustrative).
+  // 360×640 is soft: replace with a 1080p take when available (see HANDOVER §6).
+  fitOnVideo: { src: 'video/fit-on.mp4', webm: 'video/fit-on.webm', poster: 'video/fit-on-poster.jpg', width: 360, height: 640 },
 };
 
 export const COMPANY = 'Aphrodite (Pvt) Ltd';
@@ -43,7 +46,7 @@ export const COMPANY = 'Aphrodite (Pvt) Ltd';
 export const HERO = {
   eyebrow: 'Incorporated in Sri Lanka · House of Modern Attire',
   /** Each entry is one line of the headline (each rises in on load). */
-  titleLines: ['The Architecture of'],
+  titleLines: ['The Architecture\u00a0of'], // \u00a0 keeps "of" with "Architecture" on phones
   titleAccent: 'Modern Attire.',
   lede:
     'Uniting 3D digital garment engineering, precision pattern-making and tightly controlled manufacturing across multi-tiered apparel divisions.',
