@@ -5,15 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@fontsource-variable/bodoni-moda':
-    specifier: ^5.3.0
-    version: 5.3.0
-  '@fontsource-variable/hanken-grotesk':
-    specifier: ^5.3.0
-    version: 5.3.0
-  '@fontsource/ibm-plex-mono':
-    specifier: ^5.3.0
-    version: 5.3.0
+  '@fontsource-variable/source-sans-3':
+    specifier: ^5.3.1
+    version: 5.3.1
+  '@fontsource-variable/source-serif-4':
+    specifier: ^5.3.1
+    version: 5.3.1
   react:
     specifier: ^19.3.1
     version: 19.3.1
@@ -68,16 +65,12 @@ packages:
     dev: true
     optional: true
 
-  /@fontsource-variable/bodoni-moda@5.3.0:
-    resolution: {integrity: sha512-yTDXk4+/J8I20KjtkHBbXDQNeE5PR3BZa0gv/YRza+kyxsz+mmg0la/n/hsr6+WvSfVP7Lc8lRTjHGIYwBW43A==}
+  /@fontsource-variable/source-sans-3@5.3.1:
+    resolution: {integrity: sha512-u0p5Z/PM2e1uxYOMiodLM6NVzxHwULcB6Oi7QSr2WU/sdoLBFP/BeOZ3YYHeJ6rHsjPZA1nZweZVaV7sf2MAyQ==}
     dev: false
 
-  /@fontsource-variable/hanken-grotesk@5.3.0:
-    resolution: {integrity: sha512-DOd0FqL+3cH2dfNy0JtSq9tUfxBz5mLmHMjTU0DOr3E9Zo6wxuatCl53DIPNrSPgCsnuKyM739BTIG5glCLirw==}
-    dev: false
-
-  /@fontsource/ibm-plex-mono@5.3.0:
-    resolution: {integrity: sha512-eTgnZjZEGk1QtD3ZstF+Vclo2HLAni8YMy34/DxllwZvyz1lR/1RF/xTiAquOBO7MvqBx8D2Ig2WCPMVfdZu7Q==}
+  /@fontsource-variable/source-serif-4@5.3.1:
+    resolution: {integrity: sha512-4Rtay22SC4lMvw11r/+9kxANB6P3M0X8s1NudBC2v0J1KU2y3DcMoNcT3lBoZ/CqLirzf+StlO6UlJilyrvaUg==}
     dev: false
 
   /@napi-rs/wasm-runtime@1.2.6(@emnapi/core@2.0.0-beta.2)(@emnapi/runtime@2.0.0-beta.2):

@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
-import { APPLY_TIPS, CONFIG, COMPANY, EXPERIENCE_OPTIONS, OPEN_APPLICATION, ROLE_OPTIONS } from '../content';
+import {
+  AFTER_YOU_APPLY,
+  COMPANY,
+  CONFIG,
+  EXPERIENCE_OPTIONS,
+  NDA_ACKNOWLEDGEMENT,
+  OPEN_APPLICATION,
+  ROLE_OPTIONS,
+} from '../content';
 import { emailIsPlaceholder, mailto } from '../lib/mailto';
 import {
   EMPTY_VALUES,
@@ -28,9 +36,9 @@ const FIELD_ID: Record<FieldKey, string> = {
   exp: 'f-exp',
   link: 'f-link',
   cv: 'f-cv',
-  consent: 'f-consent',
+  nda: 'f-nda',
 };
-const AUTO_REPLY = `Thank you for applying to ${COMPANY}. We've received your application and read every one. If you're shortlisted, we'll call you to arrange an interview.`;
+const AUTO_REPLY = `Thank you for applying to ${COMPANY}. We have received your application.`;
 
 export default function Apply({ request }: { request: ApplyRequest | null }) {
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
@@ -73,7 +81,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
     return () => window.removeEventListener('pageshow', onPageShow);
   }, []);
 
-  /* "Apply for this role" buttons elsewhere on the page. */
+  /* "Apply" buttons elsewhere on the page pre-select the role. */
   useEffect(() => {
     if (!request) return;
     setSent(null);
@@ -111,7 +119,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
   function onFile(e: ChangeEvent<HTMLInputElement>) {
     const picked = e.target.files?.[0] ?? null;
     setFile(picked);
-    setErrors((er) => ({ ...er, cv: validateField('cv', values, picked, CONFIG.maxUploadMB) }));
+    setErrors((er) => ({ ...er, cv: validateField('cv', valuesRef.current, picked, CONFIG.maxUploadMB) }));
   }
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -178,11 +186,12 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
           <div>
             <p className="eyebrow">Apply</p>
             <h2 className="title" id="apply-title">
-              Apply in <em>a few minutes.</em>
+              Apply to Aphrodite.
             </h2>
           </div>
           <p className="intro">
-            Choose a role, tell us about yourself and attach your CV. Your application goes straight to our hiring team.
+            Choose a role, add your details and attach your CV and portfolio. Your application goes directly to our hiring
+            team.
           </p>
         </div>
 
@@ -197,10 +206,10 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                 <p>
                   {firstName ? `Thank you, ${firstName}. ` : 'Thank you. '}
                   Your application{sent.role && sent.role !== OPEN_APPLICATION ? ` for ${sent.role}` : ''} has reached our
-                  hiring team. If you’re shortlisted, we’ll call you to arrange an interview.
+                  hiring team, who review technical submissions to arrange NDA briefings and studio trials.
                 </p>
                 <div className="actions">
-                  <a className="btn btn-light" href="#roles">
+                  <a className="btn btn-light" href="#careers">
                     Back to the roles
                   </a>
                   <button className="btn btn-outline-light" type="button" onClick={startAgain}>
@@ -221,17 +230,17 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                   <input type="text" id="f-honey" name="_honey" tabIndex={-1} autoComplete="off" />
                 </div>
 
-                <Field id="f-role" label="Role" error={err('role')} full>
+                <Field id="f-role" label="Position" error={err('role')} full>
                   <select
                     className="input"
                     id="f-role"
-                    name="Role"
+                    name="Position"
                     value={values.role}
                     onChange={(e) => update('role', e.target.value)}
                     aria-invalid={invalid('role')}
                     aria-describedby="f-role-err"
                   >
-                    <option value="">Choose a role</option>
+                    <option value="">Choose a position</option>
                     {ROLE_OPTIONS.map((r) => (
                       <option key={r}>{r}</option>
                     ))}
@@ -253,6 +262,23 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                   />
                 </Field>
 
+                <Field id="f-phone" label="Phone (WhatsApp)" error={err('phone')}>
+                  <input
+                    className="input"
+                    id="f-phone"
+                    name="Phone"
+                    type="tel"
+                    autoComplete="tel"
+                    inputMode="tel"
+                    placeholder="+94 77 123 4567"
+                    value={values.phone}
+                    onChange={(e) => update('phone', e.target.value)}
+                    onBlur={() => checkOnBlur('phone')}
+                    aria-invalid={invalid('phone')}
+                    aria-describedby="f-phone-err"
+                  />
+                </Field>
+
                 <Field id="f-email" label="Email" error={err('email')}>
                   <input
                     className="input"
@@ -270,24 +296,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                   />
                 </Field>
 
-                <Field id="f-phone" label="Phone or WhatsApp" error={err('phone')}>
-                  <input
-                    className="input"
-                    id="f-phone"
-                    name="Phone"
-                    type="tel"
-                    autoComplete="tel"
-                    inputMode="tel"
-                    placeholder="+94 77 123 4567"
-                    value={values.phone}
-                    onChange={(e) => update('phone', e.target.value)}
-                    onBlur={() => checkOnBlur('phone')}
-                    aria-invalid={invalid('phone')}
-                    aria-describedby="f-phone-err"
-                  />
-                </Field>
-
-                <Field id="f-exp" label="Years of experience" error={err('exp')}>
+                <Field id="f-exp" label="Industry experience" error={err('exp')}>
                   <select
                     className="input"
                     id="f-exp"
@@ -304,20 +313,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                   </select>
                 </Field>
 
-                <Field id="f-city" label="Where you’re based" optional>
-                  <input
-                    className="input"
-                    id="f-city"
-                    name="Based in"
-                    type="text"
-                    autoComplete="address-level2"
-                    placeholder="City or town"
-                    value={values.city}
-                    onChange={(e) => update('city', e.target.value)}
-                  />
-                </Field>
-
-                <Field id="f-link" label="Portfolio or LinkedIn" optional error={err('link')}>
+                <Field id="f-link" label="Portfolio, Behance or LinkedIn" optional error={err('link')} full>
                   <input
                     className="input"
                     id="f-link"
@@ -335,7 +331,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
 
                 <div className="field field-full">
                   <span className="label" id="cv-label">
-                    CV <span className="optional">(optional)</span>
+                    CV and portfolio <span className="optional">(optional)</span>
                   </span>
                   <div className="file">
                     <input
@@ -343,7 +339,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                       id="f-cv"
                       name="attachment"
                       type="file"
-                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      accept=".pdf,.doc,.docx,.zip,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/zip"
                       onChange={onFile}
                       aria-labelledby="cv-label cv-help"
                       aria-invalid={invalid('cv')}
@@ -358,7 +354,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                         <span className="file-help" id="cv-help">
                           {file
                             ? `${(file.size / (1024 * 1024)).toFixed(1)} MB · choose again to replace`
-                            : `PDF or Word, up to ${CONFIG.maxUploadMB} MB`}
+                            : `PDF, Word or ZIP, up to ${CONFIG.maxUploadMB} MB`}
                         </span>
                       </span>
                     </div>
@@ -368,12 +364,12 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                   </p>
                 </div>
 
-                <Field id="f-note" label="Message" optional full>
+                <Field id="f-note" label="Technical strengths and notice period" optional full>
                   <textarea
                     className="input"
                     id="f-note"
-                    name="Message"
-                    placeholder="Your experience, the software and machines you use, and your notice period."
+                    name="Technical strengths and notice period"
+                    placeholder="For example: the machines you use, your CAD or CLO 3D skills, and when you could start."
                     value={values.note}
                     onChange={(e) => update('note', e.target.value)}
                   />
@@ -383,18 +379,18 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
                   <label className="check">
                     <input
                       type="checkbox"
-                      id="f-consent"
-                      name="Consent"
+                      id="f-nda"
+                      name="NDA acknowledged"
                       value="Yes"
-                      checked={values.consent}
-                      onChange={(e) => update('consent', e.target.checked)}
-                      aria-invalid={invalid('consent')}
-                      aria-describedby="f-consent-err"
+                      checked={values.nda}
+                      onChange={(e) => update('nda', e.target.checked)}
+                      aria-invalid={invalid('nda')}
+                      aria-describedby="f-nda-err"
                     />
-                    <span>{COMPANY} may use these details to assess my application and contact me about it.</span>
+                    <span>{NDA_ACKNOWLEDGEMENT}</span>
                   </label>
-                  <p className="err" id="f-consent-err">
-                    {err('consent')}
+                  <p className="err" id="f-nda-err">
+                    {err('nda')}
                   </p>
                 </div>
 
@@ -411,15 +407,15 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
           </div>
 
           <aside>
-            <EmailCard />
             <div className="aside-card">
-              <h3>What helps us decide</h3>
-              <ul className="ticks">
-                {APPLY_TIPS.map((tip) => (
-                  <li key={tip}>{tip}</li>
+              <h3>After you apply</h3>
+              <ol className="next-steps">
+                {AFTER_YOU_APPLY.map((s) => (
+                  <li key={s}>{s}</li>
                 ))}
-              </ul>
+              </ol>
             </div>
+            <EmailCard />
           </aside>
         </div>
       </div>
@@ -470,7 +466,7 @@ function EmailCard() {
   return (
     <div className="aside-card">
       <h3>Prefer email?</h3>
-      <p>Send your CV with the role in the subject line.</p>
+      <p>Send your CV with the position in the subject line.</p>
       <span className="mail">{CONFIG.careersEmail}</span>
       <div className="aside-actions">
         <a className="btn btn-light btn-sm" href={mailto()}>

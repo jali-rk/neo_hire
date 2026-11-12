@@ -1,11 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
-import '@fontsource-variable/bodoni-moda/opsz.css';
-import '@fontsource-variable/bodoni-moda/opsz-italic.css';
-import '@fontsource-variable/hanken-grotesk/index.css';
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/500.css';
-import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource-variable/source-serif-4/opsz.css';
+import '@fontsource-variable/source-sans-3/index.css';
 import './styles.css';
 import App from './App';
 

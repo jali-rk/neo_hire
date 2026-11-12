@@ -64,49 +64,61 @@ const results = {};
 await viewport(1440, 1000);
 await load(url);
 results.title = await evaluate('document.title');
-results.heroLines = await evaluate(`Math.round(document.querySelector('.hero h1').getBoundingClientRect().height / parseFloat(getComputedStyle(document.querySelector('.hero h1')).lineHeight))`);
+results.hydrated = await evaluate(`Object.keys(document.querySelector('#root')).some(k => k.startsWith('__reactContainer'))`);
+results.sectionOrder = await evaluate(`[...document.querySelectorAll('main > section')].map(s => s.id)`);
+results.mentionsHeadcount = await evaluate(`/\\bfive\\b/i.test(document.body.innerText)`);
+results.fonts = await evaluate(`(async () => { await document.fonts.ready; return { heading: getComputedStyle(document.querySelector('h1')).fontFamily.split(',')[0], body: getComputedStyle(document.body).fontFamily.split(',')[0], bodySize: getComputedStyle(document.body).fontSize }; })()`);
 await shot('qa-hero-1440.png');
-await send('Runtime.evaluate', { expression: `document.querySelector('.sheet').scrollIntoView({ behavior: 'instant' }); window.scrollBy(0, -90)` });
-await wait(300);
-await shot('qa-sheet-1440.png');
-results.hydrated = await evaluate(`!!document.querySelector('#root')._reactRootContainer || Object.keys(document.querySelector('#root')).some(k => k.startsWith('__reactContainer'))`);
 
-// Spec row B opens role B
-results.specRowOpensRole = await evaluate(`(async () => {
-  document.querySelector('.pom-row[href="#role-b"]').click();
-  await new Promise(r => setTimeout(r, 400));
-  return { open: document.getElementById('role-b').open, hash: location.hash };
-})()`);
-
-// Hover sync: hovering row C highlights pin C
-results.hoverSync = await evaluate(`(async () => {
-  const row = document.querySelector('.pom-row[href="#role-c"]');
-  row.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
-  row.dispatchEvent(new MouseEvent('mouseenter', { bubbles: false }));
+// Role filter: "Atelier & QC" shows only the craft roles
+results.filter = await evaluate(`(async () => {
+  const btn = [...document.querySelectorAll('.filter')].find(b => b.textContent.includes('Atelier'));
+  btn.click();
   await new Promise(r => setTimeout(r, 200));
-  return { rowActive: row.classList.contains('is-active'), pinActive: document.querySelector('.pin[href="#role-c"]').classList.contains('is-active') };
+  const shown = [...document.querySelectorAll('.role-card h3')].map(h => h.textContent);
+  [...document.querySelectorAll('.filter')][0].click();
+  await new Promise(r => setTimeout(r, 200));
+  return { shown, pressed: btn.getAttribute('aria-pressed'), allAgain: document.querySelectorAll('.role-card').length };
 })()`);
 
-// Apply for role B preselects the role
-results.applyPreselect = await evaluate(`(async () => {
-  document.querySelector('#role-b .role-actions .btn').click();
-  await new Promise(r => setTimeout(r, 900));
-  return { role: document.getElementById('f-role').value, focused: document.activeElement && document.activeElement.id };
+// "View role details" opens the panel; Escape closes it
+results.roleDialog = await evaluate(`(async () => {
+  const card = document.querySelectorAll('.role-card')[1];
+  card.querySelector('.btn').click();
+  await new Promise(r => setTimeout(r, 400));
+  const d = document.getElementById('role-b');
+  return { open: d.open, modal: d.matches(':modal'), hash: location.hash, title: d.querySelector('h2').textContent };
 })()`);
+await shot('qa-role-dialog-1440.png');
+await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+await wait(300);
+results.roleDialog.closedByEscape = await evaluate(`!document.getElementById('role-b').open`);
+results.roleDialog.hashAfterClose = await evaluate('location.hash');
+
+// "Apply for this role" in the panel closes it, jumps to the form and pre-selects the role
+results.applyFromDialog = await evaluate(`(async () => {
+  document.querySelectorAll('.role-card')[3].querySelector('.btn').click();
+  await new Promise(r => setTimeout(r, 400));
+  document.querySelector('#role-d .dialog-actions .btn').click();
+  await new Promise(r => setTimeout(r, 1000));
+  const form = document.getElementById('apply').getBoundingClientRect();
+  return { dialogClosed: !document.getElementById('role-d').open, role: document.getElementById('f-role').value, formInView: form.top < innerHeight && form.bottom > 0, focused: document.activeElement && document.activeElement.id };
+})()`);
+
+// A shared role link opens that role
+await load(url.replace(/\/?$/, '/') + '#role-e');
+results.sharedRoleLink = await evaluate(`document.getElementById('role-e').open`);
+await load(url);
 
 // Empty submit shows errors
 results.emptySubmit = await evaluate(`(async () => {
-  const sel = document.getElementById('f-role');
-  Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(sel, '');
-  sel.dispatchEvent(new Event('change', { bubbles: true }));
-  await new Promise(r => setTimeout(r, 100));
   document.querySelector('#apply form').requestSubmit();
   await new Promise(r => setTimeout(r, 300));
   return {
     errors: [...document.querySelectorAll('#apply .err')].map(e => e.textContent).filter(Boolean),
     status: document.querySelector('.form-status').textContent,
     focused: document.activeElement && document.activeElement.id,
-    invalid: [...document.querySelectorAll('#apply [aria-invalid="true"]')].map(e => e.id),
   };
 })()`);
 await send('Runtime.evaluate', { expression: `document.getElementById('apply').scrollIntoView({ behavior: 'instant' })` });
@@ -121,15 +133,14 @@ results.validSubmit = await evaluate(`(async () => {
     Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, v);
     el.dispatchEvent(new Event(el.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
   };
-  set('f-role', 'QA & Sourcing Executive');
+  set('f-role', 'Quality Assurance & Sourcing Executive');
   set('f-name', 'Test Person');
-  set('f-email', 'test@example.org');
   set('f-phone', '+94 77 123 4567');
-  set('f-exp', '5–9 years');
+  set('f-email', 'test@example.org');
+  set('f-exp', document.querySelectorAll('#f-exp option')[2].value);
   set('f-link', 'behance.net/test');
   document.getElementById('f-link').dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
-  document.getElementById('f-link').blur();
-  if (!document.getElementById('f-consent').checked) document.getElementById('f-consent').click();
+  if (!document.getElementById('f-nda').checked) document.getElementById('f-nda').click();
   await new Promise(r => setTimeout(r, 200));
   const before = location.href;
   document.querySelector('#apply form').requestSubmit();
@@ -139,37 +150,29 @@ results.validSubmit = await evaluate(`(async () => {
     status: document.querySelector('.form-status').textContent,
     stayed: location.href === before,
     link: document.getElementById('f-link').value,
-    action: document.querySelector('#apply form').getAttribute('action'),
     subject: document.querySelector('#apply input[name="_subject"]').value,
-    next: document.querySelector('#apply input[name="_next"]').value,
   };
 })()`);
 
-// Mailto links
-results.mailto = await evaluate(`document.querySelector('#role-d .role-actions .text-link').getAttribute('href').slice(0, 90)`);
-
-// Success state after FormSubmit redirect
+// Success state after the FormSubmit redirect
 await evaluate(`sessionStorage.setItem('aph-applied', JSON.stringify({ name: 'Kavindi Perera', role: 'Senior Pattern Maker (Womenswear & Tailoring)' }))`);
 await load(url.replace(/\/?$/, '/') + '?applied=1#apply');
-results.success = await evaluate(`({ text: document.querySelector('.success') && document.querySelector('.success').innerText.slice(0, 200), url: location.href })`);
-await shot('qa-success-1440.png');
+results.success = await evaluate(`document.querySelector('.success') && document.querySelector('.success').innerText.slice(0, 220)`);
 
 /* ---------- Mobile ---------- */
 await viewport(390, 844, true);
 await load(url);
 await shot('qa-mobile-hero.png');
 results.mobileOverflow = await evaluate(`document.documentElement.scrollWidth > window.innerWidth ? document.documentElement.scrollWidth : false`);
-await send('Runtime.evaluate', { expression: `document.querySelector('.sheet').scrollIntoView({ behavior: 'instant' })` });
+await send('Runtime.evaluate', { expression: `document.getElementById('careers').scrollIntoView({ behavior: 'instant' })` });
 await wait(400);
-await shot('qa-mobile-sheet.png');
-await send('Runtime.evaluate', { expression: `document.getElementById('role-a').open = true; document.getElementById('role-a').scrollIntoView({ behavior: 'instant' })` });
-await wait(500);
-await shot('qa-mobile-role.png');
+await shot('qa-mobile-careers.png');
+await evaluate(`(async () => { document.querySelector('.role-card .btn').click(); await new Promise(r => setTimeout(r, 400)); })()`);
+await shot('qa-mobile-role-dialog.png');
+await evaluate(`document.querySelector('dialog[open]')?.close()`);
 await send('Runtime.evaluate', { expression: `document.getElementById('apply').scrollIntoView({ behavior: 'instant' })` });
-await wait(500);
+await wait(400);
 await shot('qa-mobile-apply.png');
-
-// Mobile menu
 results.mobileMenu = await evaluate(`(async () => {
   window.scrollTo(0, 0);
   await new Promise(r => setTimeout(r, 200));
@@ -186,9 +189,6 @@ await viewport(820, 1180, true);
 await load(url);
 await shot('qa-tablet-hero.png');
 results.tabletOverflow = await evaluate(`document.documentElement.scrollWidth > window.innerWidth ? document.documentElement.scrollWidth : false`);
-await send('Runtime.evaluate', { expression: `document.getElementById('roles').scrollIntoView({ behavior: 'instant' })` });
-await wait(400);
-await shot('qa-tablet-roles.png');
 
 /* ---------- Keyboard (real key events, so :focus-visible applies) ---------- */
 await viewport(1440, 1000);
@@ -197,7 +197,6 @@ const press = async (key, code, keyCode) => {
   const base = { key, code, windowsVirtualKeyCode: keyCode, nativeVirtualKeyCode: keyCode };
   await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', ...base });
   if (key === 'Enter') await send('Input.dispatchKeyEvent', { type: 'char', text: '\r', ...base });
-  if (key === ' ') await send('Input.dispatchKeyEvent', { type: 'char', text: ' ', ...base });
   await send('Input.dispatchKeyEvent', { type: 'keyUp', ...base });
   await wait(60);
 };
@@ -205,51 +204,50 @@ const describeFocus = `(() => {
   const el = document.activeElement;
   if (!el || el === document.body) return null;
   let ring = getComputedStyle(el).outlineStyle !== 'none' && parseFloat(getComputedStyle(el).outlineWidth) > 0;
-  if (el.closest('svg')) ring = parseFloat(getComputedStyle(el.querySelector('circle:not(.hit)')).strokeWidth) > 0;
   if (el.type === 'file') ring = getComputedStyle(el.nextElementSibling).outlineStyle !== 'none';
   if (el.classList.contains('input')) ring = getComputedStyle(el).boxShadow !== 'none';
   const r = el.getBoundingClientRect();
-  const label = (el.getAttribute('aria-label') || el.innerText || el.id || el.tagName).trim().replace(/\\s+/g, ' ').slice(0, 36);
+  const label = (el.getAttribute('aria-label') || el.innerText || el.id || el.tagName).trim().replace(/\\s+/g, ' ').slice(0, 40);
   return { tag: el.tagName.toLowerCase(), label, ring, onScreen: r.width > 0 && r.right > 0 && r.left < innerWidth };
 })()`;
 const stops = [];
-for (let i = 0; i < 70; i++) {
+for (let i = 0; i < 45; i++) {
   await press('Tab', 'Tab', 9);
   stops.push(await evaluate(describeFocus));
 }
 results.keyboard = {
   firstStopIsVisibleSkipLink: stops[0]?.label === 'Skip to content' && stops[0]?.onScreen,
   stopsWithoutFocusRing: stops.filter((s) => s && !s.ring).map((s) => `${s.tag}: ${s.label}`),
-  stopsOffScreen: stops.filter((s) => s && !s.onScreen).map((s) => `${s.tag}: ${s.label}`),
   order: stops.map((s) => (s ? `${s.tag}: ${s.label}` : '(body)')),
 };
-await evaluate(`document.querySelector('#role-c summary').focus()`);
+// Enter on "View role details" opens the panel and moves focus into it
+await evaluate(`document.querySelector('.role-card .btn').focus()`);
 await press('Enter', 'Enter', 13);
-const openedByEnter = await evaluate(`document.getElementById('role-c').open`);
-await press(' ', 'Space', 32);
-const closedBySpace = !(await evaluate(`document.getElementById('role-c').open`));
-results.keyboard.roleToggle = { openedByEnter, closedBySpace };
+await wait(300);
+results.keyboard.dialog = await evaluate(`({ open: !!document.querySelector('dialog[open]'), focusInside: !!document.activeElement.closest('dialog') })`);
+await press('Escape', 'Escape', 27);
+await wait(300);
+results.keyboard.dialog.focusReturned = await evaluate(`document.activeElement.classList.contains('btn') && !!document.activeElement.closest('.role-card')`);
 
 /* ---------- Accessibility tree and headings ---------- */
-await evaluate(`document.querySelectorAll('details').forEach(d => d.open = true)`);
-await wait(200);
 await send('Accessibility.enable');
 const ax = await send('Accessibility.getFullAXTree');
-const controls = ['link', 'button', 'textbox', 'combobox', 'checkbox', 'DisclosureTriangle'];
+const controls = ['link', 'button', 'textbox', 'combobox', 'checkbox'];
 results.unnamedControls = ax.nodes
   .filter((n) => !n.ignored && controls.includes(n.role?.value) && !(n.name?.value || '').trim())
   .map((n) => n.role.value);
 results.headingOutline = await evaluate(`(() => {
-  const hs = [...document.querySelectorAll('h1,h2,h3,h4,h5,h6')];
+  const hs = [...document.querySelectorAll('main h1, main h2, main h3, main h4')].filter(h => !h.closest('dialog'));
   const skips = [];
   hs.forEach((h, i) => { const lvl = +h.tagName[1], prev = i ? +hs[i - 1].tagName[1] : 0; if (lvl > prev + 1) skips.push(h.tagName + ' after H' + prev + ': ' + h.textContent.trim().slice(0, 40)); });
   return { count: hs.length, skips };
 })()`);
 
+/* ---------- Reduced motion ---------- */
 await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
-await viewport(1440, 1000);
 await load(url);
-results.reducedMotion = await evaluate(`(() => { const cs = getComputedStyle(document.querySelector('.flat .draw')); return { animation: cs.animationName, dashoffset: cs.strokeDashoffset, pinOpacity: getComputedStyle(document.querySelector('.flat .pin')).opacity }; })()`);
+results.reducedMotion = await evaluate(`(() => { const cs = getComputedStyle(document.querySelector('.flat .draw')); return { animation: cs.animationName, dashoffset: cs.strokeDashoffset }; })()`);
+
 results.consoleAndErrors = logs;
 console.log(JSON.stringify(results, null, 2));
 ws.close();

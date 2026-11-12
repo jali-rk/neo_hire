@@ -4,17 +4,16 @@ export interface FormValues {
   email: string;
   phone: string;
   exp: string;
-  city: string;
   link: string;
   note: string;
-  consent: boolean;
+  nda: boolean;
 }
 
-export type FieldKey = 'role' | 'name' | 'email' | 'phone' | 'exp' | 'link' | 'cv' | 'consent';
+export type FieldKey = 'role' | 'name' | 'email' | 'phone' | 'exp' | 'link' | 'cv' | 'nda';
 export type FormErrors = Partial<Record<FieldKey, string>>;
 
 /** Order matters: the first invalid field gets focus. */
-export const FIELD_ORDER: FieldKey[] = ['role', 'name', 'email', 'phone', 'exp', 'link', 'cv', 'consent'];
+export const FIELD_ORDER: FieldKey[] = ['role', 'name', 'phone', 'email', 'exp', 'link', 'cv', 'nda'];
 
 export const EMPTY_VALUES: FormValues = {
   role: '',
@@ -22,10 +21,9 @@ export const EMPTY_VALUES: FormValues = {
   email: '',
   phone: '',
   exp: '',
-  city: '',
   link: '',
   note: '',
-  consent: false,
+  nda: false,
 };
 
 /** Adds https:// to links typed without it, like "behance.net/name". */
@@ -48,7 +46,7 @@ export function validateField(key: FieldKey, v: FormValues, file: File | null, m
     case 'phone':
       return (v.phone.match(/\d/g) ?? []).length >= 9 ? '' : 'Enter a phone number we can call, like +94 77 123 4567.';
     case 'exp':
-      return v.exp ? '' : 'Choose your years of experience.';
+      return v.exp ? '' : 'Choose your industry experience.';
     case 'link': {
       const link = normaliseLink(v.link);
       if (!link) return '';
@@ -60,13 +58,13 @@ export function validateField(key: FieldKey, v: FormValues, file: File | null, m
     }
     case 'cv':
       if (!file) return '';
-      if (!/\.(pdf|docx?)$/i.test(file.name)) return 'Attach your CV as a PDF or Word file.';
+      if (!/\.(pdf|docx?|zip)$/i.test(file.name)) return 'Attach a PDF, Word or ZIP file.';
       if (file.size > maxMB * 1024 * 1024) {
         return `This file is larger than ${maxMB} MB. Attach a smaller file, or add a link to it in the portfolio field.`;
       }
       return '';
-    case 'consent':
-      return v.consent ? '' : 'Tick the box so we can use your details for this application.';
+    case 'nda':
+      return v.nda ? '' : 'Tick the box to confirm you understand the NDA.';
   }
 }
 

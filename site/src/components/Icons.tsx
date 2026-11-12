@@ -30,6 +30,22 @@ export function UploadIcon() {
   );
 }
 
+export function PlayIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+      <path d="M3 1.5v11l9.5-5.5z" fill="currentColor" />
+    </svg>
+  );
+}
+
+export function PauseIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+      <path d="M3 1.5h3v11H3zM8 1.5h3v11H8z" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function CheckIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

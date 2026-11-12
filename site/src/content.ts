@@ -1,11 +1,17 @@
 /* ==================================================================
    Site content and settings.
-   Everything on the page that you might want to change lives here.
+
+   Content rule: every statement about the company, roles and hiring
+   comes from the owner's original preview (reference/gemini-original.html),
+   lightly reworded for plain English. Nothing here is new information.
+   Placeholders that must be replaced are marked "← replace".
    ================================================================== */
 
 export interface SiteConfig {
   /** Inbox that receives applications. Also shown to people who prefer to email. */
   careersEmail: string;
+  /** Optional second contact shown in the footer (the original preview had one). Leave empty to hide. */
+  corporateEmail: string;
   /**
    * Optional. After you confirm FormSubmit's activation email, it gives you a
    * random ID. Put it here to keep the address out of the form's code.
@@ -13,260 +19,268 @@ export interface SiteConfig {
   formsubmitId: string;
   /** Largest CV accepted, in MB. FormSubmit allows about 10 MB in total. */
   maxUploadMB: number;
+  /**
+   * Virtual fitting film for the 3D studio section. Put the files in site/public/video/
+   * and give their paths, e.g. 'video/fit-on.mp4'. Leave src empty to show the jacket drawing instead.
+   */
+  fitOnVideo: { src: string; webm: string; poster: string };
 }
 
 export const CONFIG: SiteConfig = {
   careersEmail: 'careers@example.com', // ← replace before publishing
+  corporateEmail: '', // ← optional
   formsubmitId: '',
   maxUploadMB: 10,
+  fitOnVideo: { src: '', webm: '', poster: '' }, // ← add the virtual fitting film
 };
 
 export const COMPANY = 'Aphrodite (Pvt) Ltd';
 
 /* ------------------------------------------------------------------
-   Roles. The letter links each role to its point on the jacket drawing.
+   Hero
+   ------------------------------------------------------------------ */
+export const HERO = {
+  eyebrow: 'Now hiring · Founding team',
+  title: 'Build the foundation with us.',
+  lede:
+    'Aphrodite (Pvt) Ltd is an emerging Sri Lankan fashion group, built on the European multi-house model. We unite 3D digital garment engineering, precision pattern-making and tightly controlled manufacturing across several apparel divisions, and we’re recruiting our founding team.',
+};
+
+/** Shown in the hero and the careers section. */
+export const BENEFITS = [
+  `Direct employment with ${COMPANY}`,
+  'Full statutory EPF/ETF benefits',
+  'Structured remuneration',
+  '1-day paid studio trial for shortlisted technical candidates',
+];
+
+/* ------------------------------------------------------------------
+   The company ("The House" in the original preview)
+   ------------------------------------------------------------------ */
+export const HOUSE = {
+  title: 'Creative autonomy backed by commercial rigour.',
+  paragraphs: [
+    `${COMPANY} is an emerging Sri Lankan fashion group structured on the European multi-house model. Rather than operating as a single label, our central technical studio powers distinct apparel divisions, from high-rotation island-wide retail distribution to stealth-mode luxury craftsmanship.`,
+    'By building new creative labels on active wholesale revenue and tightly audited partner factories, we avoid the usual start-up volatility. That gives Sri Lanka’s leading designers, pattern engineers and master tailors long-term stability alongside real R&D freedom.',
+  ],
+  confidentiality: {
+    title: 'Brand names stay confidential',
+    text: 'Our consumer brand names stay private until each launch. Full studio portfolios are shared at interview, under a non-disclosure agreement (NDA).',
+  },
+  metrics: [
+    { value: '03', label: 'Apparel tiers', text: 'Commercial ready-to-wear, neo-luxury and haute flagship design.' },
+    { value: 'CLO 3D', label: 'Digital-first workflow', text: 'Virtual drape simulation and zero-waste fit checks before any physical sample is cut.' },
+    { value: '14-day', label: 'Release cadence', text: 'Capsule drops and monthly commercial deliveries, managed through strict QC checkpoints.' },
+    { value: '360°', label: 'Island-wide and flagship', text: 'Distribution through leading national retail networks and flagship stores.' },
+  ],
+};
+
+/* ------------------------------------------------------------------
+   Divisions
+   ------------------------------------------------------------------ */
+export type DivisionStage = 'live' | 'soon' | 'later';
+
+export const DIVISIONS: {
+  number: string;
+  stage: DivisionStage;
+  status: string;
+  name: string;
+  text: string;
+  facts: [string, string][];
+}[] = [
+  {
+    number: 'Division 01',
+    stage: 'live',
+    status: 'Active · 2026',
+    name: 'Commercial ready-to-wear',
+    text: 'Contemporary apparel made for consistent fit, commercial longevity and monthly silhouette rotation across around twenty leading island-wide retail chains.',
+    facts: [
+      ['Release cycle', '10 curated silhouettes a month'],
+      ['Channel', 'B2B multi-retailer network'],
+      ['Role in the group', 'Foundational revenue'],
+    ],
+  },
+  {
+    number: 'Division 02',
+    stage: 'soon',
+    status: 'Launching July 2027',
+    name: 'Neo-luxury atelier',
+    text: 'A menswear and womenswear house uniting romantic magnetism with composed modern power, with bespoke metal hardware, an architectural flagship store and 3D virtual try-on.',
+    facts: [
+      ['Price range', 'LKR 7,500 – 50,000'],
+      ['Drops', 'Limited, numbered capsule runs'],
+      ['Brand name', 'Shared under NDA'],
+    ],
+  },
+  {
+    number: 'Division 03',
+    stage: 'later',
+    status: 'Future phase',
+    name: 'Haute flagship label',
+    text: 'The group’s namesake house, for experimental textile artistry, sculptural tailoring and private commissions, launched after Divisions 01 and 02.',
+    facts: [
+      ['Craft focus', 'Artisanal couture and bespoke'],
+      ['R&D', 'Archival textile innovation'],
+      ['Launch', 'Phase III'],
+    ],
+  },
+];
+
+/* ------------------------------------------------------------------
+   3D studio ("3D Atelier" in the original preview)
+   ------------------------------------------------------------------ */
+export const ATELIER = {
+  title: 'From digital twin to final stitch.',
+  intro: 'Every style moves through four stages, from 3D simulation in our Central Studio to controlled production with our partners.',
+  videoCaption: 'Virtual fitting in CLO 3D: each style is draped and fitted on a 3D avatar before any cloth is cut.',
+  stages: [
+    {
+      title: 'CLO 3D digital twin and drape physics',
+      text: 'Every silhouette is shaped and stress-tested in 3D, calibrating fabric weight, bias drape and movement before a single metre of cloth is cut.',
+    },
+    {
+      title: 'Precision pattern engineering and grading',
+      text: 'Millimetre-accurate DXF block drafting, concealed seam allowances and proportion grading for modern silhouettes.',
+    },
+    {
+      title: 'Master sample prototyping',
+      text: 'Our master sample machinists build golden-seal prototypes, testing French seams, custom engraved hardware and silk linings.',
+    },
+    {
+      title: 'Controlled partner production and QC',
+      text: 'Vetted production partners manufacture strictly to our golden-sample tech packs, with on-site inline and final AQL audits.',
+    },
+  ],
+};
+
+/* ------------------------------------------------------------------
+   Roles
    ------------------------------------------------------------------ */
 export type RoleId = 'a' | 'b' | 'c' | 'd' | 'e';
+export type RoleCategory = 'design' | 'craft' | 'media';
 
 export interface Role {
   id: RoleId;
-  letter: string;
-  /** Full title, used in the role list and the application form. */
+  category: RoleCategory;
   title: string;
-  /** Short title for the spec sheet and the studio workflow. */
-  shortTitle: string;
-  /** What this person owns, shown on the spec sheet. */
-  responsibility: string;
-  /** One-line summary shown before the role is opened. */
-  summary: string;
   type: string;
-  place: string;
+  team: string;
   experience: string;
-  doing: string[];
-  bringing: string[];
-  note?: string;
+  summary: string;
+  requirements: string[];
 }
+
+export const ROLE_FILTERS: { id: RoleCategory | 'all'; label: string }[] = [
+  { id: 'all', label: 'All roles' },
+  { id: 'design', label: '3D & pattern' },
+  { id: 'craft', label: 'Atelier & QC' },
+  { id: 'media', label: 'Brand lab' },
+];
 
 export const ROLES: Role[] = [
   {
     id: 'a',
-    letter: 'A',
-    title: '3D Apparel Designer (CLO 3D)',
-    shortTitle: '3D Apparel Designer',
-    responsibility: 'Drape and fit, in CLO 3D',
-    summary: 'Build and fit every new style in CLO 3D before fabric is cut.',
-    type: 'Full-time',
-    place: 'Central Studio',
-    experience: '2+ years',
-    doing: [
-      'Turn design concepts into accurate 3D garments for both the ready-to-wear and neo-luxury divisions.',
-      'Calibrate fabric physics for silk, lace, linen and suiting, and check fit on graded avatars.',
-      'Work with the pattern maker to move approved 3D styles into production patterns.',
-      'Produce renders for design reviews and range meetings.',
-    ],
-    bringing: [
-      'Advanced CLO 3D or Marvelous Designer, including fabric calibration and avatar fitting.',
-      'A degree or diploma in fashion or textile design (UoM, AOD, LIFT or equivalent).',
-      'A portfolio that shows both everyday commercial pieces and tailored or evening wear.',
+    category: 'design',
+    title: '3D Apparel Designer (CLO 3D Specialist)',
+    type: 'Full-time · Central Studio',
+    team: 'Commercial ready-to-wear and neo-luxury atelier',
+    experience: '2+ years, strong portfolio',
+    summary:
+      'Translate creative concepts into accurate 3D digital garments, testing drape physics across silk, lace, structured linen and tailored suiting before physical sampling.',
+    requirements: [
+      'Advanced CLO 3D or Marvelous Designer, fabric physics calibration and avatar fit grading.',
+      'A degree or diploma in fashion or textile design (UoM Fashion & Textile, AOD, LIFT or equivalent).',
+      'An eye for both high-rotation contemporary silhouettes and neo-luxury evening and tailored wear.',
     ],
   },
   {
     id: 'b',
-    letter: 'B',
+    category: 'design',
     title: 'Senior Pattern Maker (Womenswear & Tailoring)',
-    shortTitle: 'Senior Pattern Maker',
-    responsibility: 'Blocks and grading',
-    summary: 'Draft, grade and own the master blocks for every division.',
-    type: 'Full-time',
-    place: 'Central Studio',
-    experience: '5+ years',
-    doing: [
-      'Draft and maintain the studio’s master blocks for womenswear and tailoring.',
-      'Engineer bias-cut drapes and structured jackets with consistent fit across sizes.',
-      'Grade patterns and export DXF files for partner factories.',
-      'Guide sample machinists on construction order and seam allowances.',
-    ],
-    bringing: [
-      'Manual drafting skills plus a CAD pattern system: Lectra, Gerber, Optitex or CLO.',
-      'A working knowledge of shrinkage, delicate fabrics like lace and silk, and size grading.',
-      'Comfort working closely with a 3D designer.',
+    type: 'Full-time · Central Studio',
+    team: 'Technical core, all divisions',
+    experience: '5+ years apparel pattern engineering',
+    summary:
+      'Draft master blocks, fluid bias drapes and structured menswear and womenswear tailoring, with uncompromising fit consistency.',
+    requirements: [
+      'A proven record in manual drafting and CAD pattern systems (Lectra, Gerber, Optitex or CLO DXF).',
+      'Deep understanding of shrinkage tolerances, delicate lace and silk handling, and size grading.',
+      'Able to work closely with 3D designers and guide sample machinists on construction sequences.',
     ],
   },
   {
     id: 'c',
-    letter: 'C',
+    category: 'craft',
     title: 'Master Sample Machinist / Atelier Tailor',
-    shortTitle: 'Master Sample Machinist',
-    responsibility: 'Seams and finish',
-    summary: 'Sew the golden sample: the prototype every unit is checked against.',
-    type: 'Full-time',
-    place: 'Central Studio',
-    experience: '5+ years',
-    doing: [
-      'Construct showroom-quality prototypes for both divisions.',
-      'Finish garments to a couture standard: French seams, rolled hems, invisible zips and full linings.',
-      'Attach custom metal hardware and test it under wear.',
-      'Feed back to the pattern maker on how each pattern sews.',
+    type: 'Full-time · Central Studio',
+    team: 'Prototype and golden-seal lab',
+    experience: '5+ years high-finish sample room',
+    summary:
+      'Construct showroom-grade golden-seal prototypes with couture-level internal finishes: French seams, rolled hems and custom metal hardware.',
+    requirements: [
+      'Mastery of single-needle lockstitch, delicate lightweight fabrics, invisible zips and structured lining.',
+      'Experience in export-grade sample rooms, or luxury bridal or tailoring ateliers in Sri Lanka.',
+      'Shortlisted candidates complete a 1-day paid studio practical trial, with full statutory benefits on appointment.',
     ],
-    bringing: [
-      'Mastery of the single-needle lockstitch machine and lightweight, delicate fabrics.',
-      'Experience in an export sample room, or a bridal or tailoring atelier in Sri Lanka.',
-      'Care with detail that shows on the inside of a garment as well as the outside.',
-    ],
-    note: 'Shortlisted candidates spend one paid day in the studio on a practical task. No CV? Apply anyway and tell us about your experience in the message.',
   },
   {
     id: 'd',
-    letter: 'D',
-    title: 'QA & Sourcing Executive',
-    shortTitle: 'QA & Sourcing Executive',
-    responsibility: 'Measurements and quality',
-    summary: 'Keep partner production true to the golden sample, and source the materials.',
-    type: 'Full-time',
-    place: 'Studio & factories',
-    experience: '3–6 years',
-    doing: [
-      'Run inline and final AQL inspections at our partner factories in Sri Lanka.',
-      'Audit garment measurements and construction against tech packs and the golden sample.',
-      'Source specialty fabrics, trims, custom hardware and packaging.',
-      'Negotiate small, limited production runs with suppliers.',
-    ],
-    bringing: [
-      'Experience in apparel QC or merchandising, including measurement audits and factory compliance.',
-      'A sharp eye for construction defects.',
-      'Confidence negotiating with fabric and trim suppliers, and willingness to travel between the studio and factories.',
+    category: 'craft',
+    title: 'Quality Assurance & Sourcing Executive',
+    type: 'Full-time · Partner network and HQ',
+    team: 'Outsourced manufacturing control',
+    experience: '3–6 years apparel QC and merchandising',
+    summary:
+      'Enforce strict inline and final AQL quality standards across vetted Sri Lankan partner factories, and source specialty textiles, custom trims and rigid packaging.',
+    requirements: [
+      'Strong command of garment construction defects, measurement audits and factory compliance.',
+      'Able to negotiate with vendors for luxury fabrics, custom engraved hardware and boutique batch runs.',
+      'Willing to travel between the Central Studio and partner production facilities.',
     ],
   },
   {
     id: 'e',
-    letter: 'E',
+    category: 'media',
     title: 'Cinematographer & Visual Content Creator',
-    shortTitle: 'Cinematographer',
-    responsibility: 'How it looks on film',
-    summary: 'Film the craft and the collections ahead of the 2027 launch.',
-    type: 'Next intake',
-    place: 'Brand team',
-    experience: '2–5 years',
-    doing: [
-      'Film the making of each collection: macro craft details, studio process, finished pieces.',
-      'Build a library of content ready for the July 2027 launch.',
-      'Shoot, edit and grade campaign films and short reels.',
+    type: 'Upcoming intake · Brand lab',
+    team: 'Pre-launch content',
+    experience: '2–5 years editorial or luxury film',
+    summary:
+      'Capture atmospheric behind-the-atelier craft films, faceless micro-cinema reels and high-contrast editorial campaigns ahead of our 2027 flagship launch.',
+    requirements: [
+      'Mastery of moody low-key lighting (2700K warm cinema), macro lens storytelling and colour grading.',
+      'Proficiency in Premiere Pro or DaVinci Resolve, with a feel for spatial sound design.',
+      'Strict care with pre-launch assets and embargoed content.',
     ],
-    bringing: [
-      'A reel showing low-key lighting, macro work and confident colour grading.',
-      'Premiere Pro or DaVinci Resolve, and an ear for sound design.',
-      'Discretion: everything you shoot stays private until launch.',
-    ],
-    note: 'This role joins with our next intake. Apply now to be considered first.',
   },
 ];
+
+export const ROLE_FOOTNOTE = `Statutory EPF/ETF · Appointment letter from ${COMPANY}`;
 
 export const OPEN_APPLICATION = 'Open application';
 export const ROLE_OPTIONS = [...ROLES.map((r) => r.title), OPEN_APPLICATION];
 
+export const OPEN_APPLICATION_CARD = {
+  title: 'Exceptional craftsperson outside these roles?',
+  text: 'Textile technologists, luxury retail hospitality hosts and boutique manufacturing partners can send a confidential application.',
+};
+
 /* ------------------------------------------------------------------
-   Other sections
+   Apply
    ------------------------------------------------------------------ */
-export const HIGHLIGHTS = [
-  'Full-time roles',
-  `Appointment letter from ${COMPANY}`,
-  'EPF & ETF',
-  'Paid one-day studio trial for technical roles',
+export const EXPERIENCE_OPTIONS = [
+  '1–2 years (associate or graduate)',
+  '3–5 years (mid-senior specialist)',
+  '6–10 years (lead or master craft)',
+  '10+ years (executive or head)',
 ];
 
-export const REASONS = [
-  {
-    title: 'Shape it from the start',
-    text: 'You’ll set the blocks, standards and ways of working the studio uses for years, rather than inheriting someone else’s.',
-  },
-  {
-    title: 'Backed by a working business',
-    text: 'Our ready-to-wear division already supplies around twenty retail chains across Sri Lanka, so the studio runs on real orders from day one.',
-  },
-  {
-    title: 'Digital first, craft led',
-    text: 'Styles are built and fitted in CLO 3D before cloth is cut, then finished to a high standard: French seams, silk linings, engraved hardware.',
-  },
-  {
-    title: 'Employed properly',
-    text: `A direct appointment letter from ${COMPANY}, structured pay, and EPF and ETF contributions.`,
-  },
+/** What happens next: from the original preview's careers and confirmation text. */
+export const AFTER_YOU_APPLY = [
+  'Our hiring team reviews your application.',
+  'Shortlisted candidates are invited to an interview and NDA briefing.',
+  'Technical candidates complete a 1-day paid studio practical trial.',
+  `Successful candidates receive an appointment letter from ${COMPANY}.`,
 ];
 
-export type DivisionStage = 'live' | 'soon' | 'later';
-
-export const DIVISIONS: { stage: DivisionStage; status: string; name: string; text: string }[] = [
-  {
-    stage: 'live',
-    status: 'In stores now',
-    name: 'Ready-to-wear',
-    text: 'Contemporary everyday clothing for around twenty retail chains across the island, with about ten new styles each month.',
-  },
-  {
-    stage: 'soon',
-    status: 'Launching July 2027',
-    name: 'Neo-luxury label',
-    text: 'Menswear and womenswear in limited, numbered runs, priced from LKR 7,500 to 50,000, with its own flagship store. You’ll learn the name at interview.',
-  },
-  {
-    stage: 'later',
-    status: 'Later phase',
-    name: 'Couture house',
-    text: 'Sculptural tailoring, experimental textiles and private commissions, built once the first two divisions are established.',
-  },
-];
-
-export const FLOW: { title: string; text: string; roleId: RoleId }[] = [
-  { title: 'Built in 3D', text: 'Every style is draped and fitted in CLO 3D before fabric is cut.', roleId: 'a' },
-  { title: 'Pattern engineered', text: 'Blocks are drafted, graded and exported as DXF for production.', roleId: 'b' },
-  { title: 'Golden sample made', text: 'The approved prototype is sewn in-house and becomes the reference for every unit.', roleId: 'c' },
-  { title: 'Production checked', text: 'Partner factories make against the golden sample, with inline and final AQL inspections.', roleId: 'd' },
-  { title: 'Story filmed', text: 'The making and the finished pieces are filmed for launch.', roleId: 'e' },
-];
-
-export const HIRING_STEPS: { title: string; text: string; tag?: string }[] = [
-  { title: 'Apply', text: 'Use the form on this page or email your CV. A portfolio link helps for design, pattern and film roles.' },
-  { title: 'We review', text: 'We read every application. If you’re shortlisted, we’ll call you to arrange an interview.' },
-  {
-    title: 'Interview',
-    text: 'Meet the team, see the studio and hear the plans for each division. You’ll sign an NDA before we share brand names and collections.',
-  },
-  {
-    title: 'Paid practical trial',
-    tag: 'Technical roles',
-    text: 'One paid day in the studio, working on a real task. You see how we work, and we see how you work.',
-  },
-  { title: 'Offer', text: `A written appointment letter from ${COMPANY}, setting out your pay, start date and benefits.` },
-];
-
-export const FAQS: { q: string; a: string }[] = [
-  {
-    q: 'Why don’t you name the brands?',
-    a: 'Our new labels stay private until they launch. At interview you’ll sign a non-disclosure agreement (NDA), and then we’ll show you the brand names, collections and plans.',
-  },
-  {
-    q: 'Can I apply for more than one role?',
-    a: 'Yes. Choose the role closest to your experience, and mention the other one in your message.',
-  },
-  {
-    q: 'What is the paid practical trial?',
-    a: 'For technical roles, shortlisted candidates spend one paid day in the studio on a real task, like drafting a block or sewing a sample. It’s the fairest way for both sides to judge the fit.',
-  },
-  {
-    q: 'I don’t have a CV. Can I still apply?',
-    a: 'Yes. The CV is optional. Tell us about your experience in the message box: where you’ve worked, what you’ve made and which machines you use.',
-  },
-  {
-    q: 'How will you use my details?',
-    a: 'Only to assess your application and contact you about it.',
-  },
-];
-
-export const EXPERIENCE_OPTIONS = ['Less than 2 years', '2–4 years', '5–9 years', '10 years or more'];
-
-export const APPLY_TIPS = [
-  'Your CV, or a short summary of your experience',
-  'A portfolio, Behance or reel link for design, pattern and film roles',
-  'Photos of garments you’ve made, for sample and tailoring roles',
-  'Your notice period',
-];
+export const NDA_ACKNOWLEDGEMENT = `I understand that pre-launch brand names, designs and division briefings shared by ${COMPANY} during the interview and paid practical trial are confidential under NDA.`;

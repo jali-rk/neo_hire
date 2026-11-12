@@ -29,7 +29,7 @@ if (siteUrl) {
     `<meta property="og:image" content="${siteUrl}/og-image.png" />`,
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
-    `<meta property="og:image:alt" content="We're hiring five people to build a fashion house from the first stitch. Aphrodite (Pvt) Ltd." />`,
+    `<meta property="og:image:alt" content="Build the foundation with us. Careers at Aphrodite (Pvt) Ltd." />`,
   ];
   html = html
     .replace(/<meta name="twitter:card" content="summary"\s*\/?>/, '<meta name="twitter:card" content="summary_large_image" />')

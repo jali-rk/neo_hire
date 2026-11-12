@@ -1,6 +1,6 @@
 # Aphrodite careers site
 
-A one-page recruitment website for Aphrodite (Pvt) Ltd: five founding roles at its Central Studio in Sri Lanka. Built with React, TypeScript and Vite, and pre-rendered to static HTML.
+A one-page recruitment website for Aphrodite (Pvt) Ltd, recruiting its founding team in Sri Lanka. Built with React, TypeScript and Vite, and pre-rendered to static HTML.
 
 ```bash
 cd site

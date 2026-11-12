@@ -1,26 +1,26 @@
 # Handover: Aphrodite careers site
 
-Last updated: 2026-11-12, end of session 1
+Last updated: 2026-11-12, session 1 (after owner review round 1)
 
 This document is for anyone taking over the project. It covers what the site is, what's been decided, what's done and checked, and the full plan for what's left. You shouldn't need any other context.
 
-**Quick status:** the site is built and was checked in Chrome on desktop and mobile. It is **not live yet**. Next steps: finish the last QA items (§9, Phase 1), get the owner's answers (Phase 2), then deploy (Phase 3).
+**Quick status:** the site is built and checked in Chrome on desktop, tablet and mobile. It is **not live yet**. Waiting on the owner for the virtual-fitting video, the careers email, the domain and a few fact confirmations (§9, Phase 2).
 
 ---
 
 ## 1. What this is
 
-A **one-page recruitment website** for **Aphrodite (Pvt) Ltd**, a Sri Lankan apparel group. The page has one job: make it clear the company is hiring **five founding roles** for its Central Studio, and get qualified people to apply.
+A **one-page recruitment website** for **Aphrodite (Pvt) Ltd**, a Sri Lankan fashion group. Its job: make it clear the company is recruiting its **founding team**, and get qualified people to apply.
 
-| Point | Role | Owns |
-|---|---|---|
-| A | 3D Apparel Designer (CLO 3D) | Drape and fit, in CLO 3D |
-| B | Senior Pattern Maker (Womenswear & Tailoring) | Blocks and grading |
-| C | Master Sample Machinist / Atelier Tailor | Seams and finish |
-| D | QA & Sourcing Executive | Measurements and quality |
-| E | Cinematographer & Visual Content Creator | How it looks on film |
+Current roles:
 
-**Where it came from:** the owner had a Gemini chat that produced a mock "luxury corporate" page (shared at `https://share.gemini.google/aNLIacbLeUuf`). Its HTML is kept for reference in [`reference/gemini-original.html`](reference/gemini-original.html). That mock had serious problems: the application form sent nothing anywhere, and it showed made-up facts (a company registration number, `@aphrodite.lk` emails, a "reply in 72 hours" promise, "encrypted transmission"). This site is a full rebuild. Only the business idea and role list were kept.
+- 3D Apparel Designer (CLO 3D Specialist)
+- Senior Pattern Maker (Womenswear & Tailoring)
+- Master Sample Machinist / Atelier Tailor
+- Quality Assurance & Sourcing Executive
+- Cinematographer & Visual Content Creator
+
+**The source of truth for content** is the owner's original preview, a page made in a Gemini chat (`https://share.gemini.google/aNLIacbLeUuf`). Its HTML is in [`reference/gemini-original.html`](reference/gemini-original.html). The site follows that preview's **section order** and **wording**, made plainer. Its non-working form was replaced with a real one, and a few details were left out (see §8).
 
 ---
 
@@ -28,13 +28,17 @@ A **one-page recruitment website** for **Aphrodite (Pvt) Ltd**, a Sri Lankan app
 
 | Decision | Choice |
 |---|---|
-| How applications arrive | Both: an **email** option (mailto) and an **on-page form** that emails each application, CV attached, to the owner |
-| Tone | **Hiring-first, premium.** Plain language about the roles, why join and the process. Sub-brand names stay private, with a light NDA mention |
-| Roles | Keep the **five roles** from the Gemini version |
-| Language | **English only** |
-| Stack | **React + TypeScript + pnpm** (Vite) |
-| Page structure | Must stay a **one-pager** |
-| Code location | `github.com/jali-rk/neo_hire`, branch `main` |
+| How applications arrive | Both an **email** option (mailto) and an **on-page form** that emails each application, CV attached, to the owner |
+| Tone | **Hiring-first, professional.** Brand names stay private (NDA) |
+| Headcount | **Never state how many people we're hiring.** The owner found "hiring five people" unprofessional |
+| Content | **Don't invent.** Use only the original preview's content. Anything new must be confirmed by the owner first |
+| Section order | **Follow the original preview:** hero → the company → divisions → 3D studio → careers → apply → footer |
+| Fonts | **Easy to read** (the first design's Bodoni display face was rejected as hard to read) |
+| Role details | **Not** a plain "+" expander. Each role has a card with a "View role details" button that opens a side panel |
+| 3D section | Must play a **video showing virtual 3D fitting** |
+| Language | English only |
+| Stack | React + TypeScript + pnpm (Vite), kept as a **one-pager** |
+| Code location | `github.com/jali-rk/neo_hire`, branch `main`. Update this document, commit and push after every step |
 
 ---
 
@@ -42,62 +46,53 @@ A **one-page recruitment website** for **Aphrodite (Pvt) Ltd**, a Sri Lankan app
 
 ### Done
 
-- [x] Content and copy for every section (hero, why join, studio, roles, hiring process, FAQ, apply, footer)
-- [x] Visual design and signature element (see §7)
-- [x] React + TypeScript project in [`site/`](site/), managed with pnpm
-- [x] All editable content in one file: [`site/src/content.ts`](site/src/content.ts)
-- [x] Application form: validation, CV upload (PDF/Word, size check), consent, honeypot, success state after submit
-- [x] Delivery through FormSubmit (form-to-email service). The form refuses to send while the email is still the placeholder
-- [x] Mailto links that open an email with subject and body already filled in, per role
-- [x] Build-time pre-rendering: the built `index.html` contains the full page content, and React hydrates it
-- [x] Link-preview image (`public/og-image.png`, 1200×630), plus `robots.txt`
-- [x] When `SITE_URL` is set at build time, the build adds canonical, `og:url` and `og:image` tags and a sitemap
-- [x] Self-hosted fonts (no Google Fonts requests)
-- [x] Accessibility basics: skip link, visible focus, labelled fields, native `<details>` for roles and FAQ, reduced-motion CSS
-- [x] First QA round, with fixes:
-  - headline now wraps to 3 lines
-  - spec-sheet table fills its panel
-  - italic phrases in titles no longer break mid-phrase
-  - removed a floating mobile "Apply now" bar that duplicated the header button
-  - bigger tap targets on the drawing's pins
-  - fixed a form-state bug that could drop the `https://` clean-up on links
-  - underlined the footer email link
+- [x] Page in the original preview's order: hero, the company (with 4 key figures), three divisions, 3D studio (4 stages and a video slot), careers (filters, role cards, role details panel, open application), apply form, footer
+- [x] All content from the original preview (see §8 for the audit)
+- [x] Readable type: Source Serif 4 for headings, Source Sans 3 for text, 18px body, AA-contrast colours
+- [x] Role cards with a **"View role details"** button that opens a side panel (native `<dialog>`):
+  - full role details, plus "Apply for this role" and "Apply by email"
+  - each role has a shareable link (`…/#role-c`)
+- [x] Role filters from the original preview: All roles · 3D & pattern · Atelier & QC · Brand lab
+- [x] **Video player** for the virtual fitting film: muted loop, pause button, no autoplay under reduced motion. Shows the jacket drawing until a film is added (§6)
+- [x] Application form using the original preview's fields:
+  - position, full name, phone (WhatsApp), email, industry experience
+  - portfolio link, CV and portfolio file, technical strengths and notice period
+  - NDA acknowledgement
+- [x] Delivery through FormSubmit (form-to-email). It refuses to send while the email is still the placeholder
+- [x] Build-time pre-rendering, `robots.txt`, link-preview image (`public/og-image.png`). `SITE_URL` adds canonical, `og:url`, `og:image` and a sitemap
+- [x] `pnpm qa`: automated browser checks and screenshots
 
-### Verified (Chrome, local production build)
+### Verified (`pnpm qa`, Chrome, local production build): all passing
 
-- `pnpm typecheck` passes. `pnpm build` succeeds and pre-renders; with `SITE_URL` set, it adds the tags, `sitemap.xml` and the robots `Sitemap:` line.
-- Screenshots at 1440px (all sections) and 390px (hero, spec sheet, an opened role, form) all match the design.
-- Scripted checks (`pnpm qa`, see §4), all passing:
-  - React hydrates with **no console errors or hydration warnings**. The only message is the intended "set `CONFIG.careersEmail`" warning.
-  - Clicking a spec-sheet row opens that role. Hovering a row highlights its pin on the drawing.
-  - "Apply for this role" pre-selects the role in the form and focuses the name field.
-  - An empty submit shows 6 clear errors, focuses the first, and says "Fix the 6 highlighted fields to continue."
-  - A valid submit is blocked by the placeholder-email guard (no navigation), with the correct form action, `_subject`, `_next` and tidied link.
-  - The return from FormSubmit (`?applied=1`) shows "Application sent. Thank you, <first name>…".
-  - No horizontal scrolling at 390px. The mobile menu opens and Escape closes it.
-- **Lighthouse** (local preview, mobile emulation), run before the last two fixes:
-
-  | Performance | Accessibility | Best Practices | SEO |
-  |---|---|---|---|
-  | 92 | 96 | 100 | 91 |
-
-  - The accessibility issue (footer link not underlined) is fixed.
-  - The SEO issue (missing `robots.txt`) is fixed.
-  - The remaining Performance cost is about 310 ms of total blocking time from loading React.
-
-- **QA round 2** (`pnpm qa`, all passing):
-  - **Keyboard:** real Tab presses through 59 stops in a logical order (skip link → header → hero → spec-sheet rows → workflow owners → roles → FAQ → form → email card → footer). Every stop shows a focus ring, the skip link is first and visible, and Enter and Space open and close roles.
-  - **Accessibility tree:** no unnamed links, buttons or fields. The 38 headings have no skipped levels.
-  - **Reduced motion:** no animation; the drawing and pins show complete.
-  - **Tablet (820px):** no horizontal scroll; layouts stack correctly.
+- **Structure:** sections in the original preview's order. The page never mentions a headcount.
+- **Fonts:** Source Serif 4 and Source Sans 3 load; body text is 18px.
+- **Hydration:** React hydrates with no errors. The only console message is the intended "set `CONFIG.careersEmail`" warning.
+- **Filters:** "Atelier & QC" shows only the two craft roles.
+- **Role panel:**
+  - opens as a modal, URL becomes `#role-b`
+  - Escape closes it and the URL returns to `#careers`
+  - "Apply for this role" closes it, scrolls to the form, pre-selects the role and focuses the name field
+  - a shared `#role-e` link opens that role
+- **Form:**
+  - an empty submit shows 6 clear errors and focuses the first
+  - a valid submit is blocked by the placeholder-email guard, with the link tidied to `https://`
+  - the return from FormSubmit shows "Application sent. Thank you, Kavindi…"
+- **Responsive:** no horizontal scroll at 390px (mobile) or 820px (tablet). The mobile menu opens and Escape closes it.
+- **Keyboard:**
+  - the skip link comes first
+  - every stop shows a focus ring
+  - Enter on "View role details" opens the panel with focus inside
+  - closing it returns focus to the card
+- **Accessibility tree:** no unnamed controls. The 26 headings have no skipped levels.
+- **Reduced motion:** no animation.
 
 ### Not verified yet
 
-- **Screen reader by ear** (VoiceOver). The accessibility tree was checked by script only.
-- **Other browsers:** Safari (especially iPhone) and Firefox.
-- **Lighthouse after round 2.** The re-run failed to write its report; re-run it on the deployed site.
-- **A real form submission end to end.** That needs a real inbox and a hosted site.
-- **Lighthouse on the deployed site.**
+- **Screen reader by ear** (VoiceOver)
+- **Safari** (desktop and iPhone) and **Firefox**
+- **Lighthouse** on the reworked site. Earlier scores (before the rework): Performance 92, Accessibility 96, Best Practices 100, SEO 91; the issues it raised were fixed
+- **A real form submission end to end.** That needs the real inbox and hosting
+- **The video player with a real film.** The code path exists, but no film has been supplied
 
 ---
 
@@ -112,7 +107,7 @@ pnpm dev          # development server with hot reload (no pre-render)
 pnpm build        # type-check, build, pre-render → site/dist/
 pnpm preview      # serve site/dist at http://localhost:4173
 pnpm typecheck    # TypeScript only
-pnpm qa           # browser checks + screenshots → site/qa-output/ (needs `pnpm preview` running and Chrome installed)
+pnpm qa           # browser checks + screenshots → site/qa-output/ (needs `pnpm preview` running and Chrome)
 ```
 
 Production build with the real domain (adds canonical, `og:url`, `og:image` and the sitemap):
@@ -124,13 +119,13 @@ SITE_URL=https://careers.your-domain.lk pnpm build
 `pnpm build` runs four steps:
 
 1. `tsc --noEmit` type-checks the code.
-2. `vite build` builds the client bundle into `dist/`.
+2. `vite build` builds the client bundle.
 3. `vite build --ssr src/entry-server.tsx --outDir dist-ssr` builds a server-render bundle.
-4. `node scripts/prerender.mjs` renders `<App/>` into the `<!--app-html-->` placeholder in `dist/index.html`, adds the `SITE_URL` tags if set, then deletes `dist-ssr/`.
+4. `node scripts/prerender.mjs` renders the page into `dist/index.html` and adds the `SITE_URL` tags.
 
-`site/dist/` is a plain static site with relative paths (`base: './'`), so it can be hosted anywhere.
+`site/dist/` is a plain static site with relative paths, so it can be hosted anywhere.
 
-**`pnpm qa`** (`scripts/qa-browser.mjs`) uses only Node 22+ and a local Chrome; there are no test dependencies. Set `CHROME=/path/to/chrome` if Chrome isn't at the default macOS location. To run it against another URL: `node scripts/qa-browser.mjs <url> <output-folder>`.
+**`pnpm qa`** (`scripts/qa-browser.mjs`) uses only Node 22+ and a local Chrome; there are no test dependencies. Set `CHROME=/path/to/chrome` if Chrome isn't at the default macOS location.
 
 ---
 
@@ -141,23 +136,18 @@ SITE_URL=https://careers.your-domain.lk pnpm build
 ├── HANDOVER.md                ← this document
 ├── README.md
 ├── reference/
-│   └── gemini-original.html   ← the Gemini mock, for reference only (not deployed)
-└── site/                      ← the website
-    ├── index.html             ← HTML shell: <title>, meta description, Open Graph text
-    ├── package.json           ← scripts and dependencies
-    ├── vite.config.ts
-    ├── tsconfig.json
+│   └── gemini-original.html   ← the owner's original preview: the content source (not deployed)
+└── site/
+    ├── index.html             ← <title>, meta description, link-preview text
+    ├── package.json
     ├── og/og-image.html       ← source for the link-preview image (regenerate command inside)
-    ├── public/
-    │   ├── favicon.svg
-    │   ├── og-image.png       ← 1200×630 link-preview image
-    │   └── robots.txt
+    ├── public/                ← favicon.svg, og-image.png, robots.txt (+ video/ once supplied)
     ├── scripts/
     │   ├── prerender.mjs      ← build-time pre-render and SITE_URL tags
-    │   └── qa-browser.mjs     ← `pnpm qa` browser checks
+    │   └── qa-browser.mjs     ← `pnpm qa`
     └── src/
-        ├── content.ts         ← ★ settings and all list content (edit here first)
-        ├── App.tsx            ← page composition and shared state (open roles, apply requests)
+        ├── content.ts         ← ★ settings and ALL page text (edit here first)
+        ├── App.tsx            ← section order; which role panel is open; apply requests
         ├── main.tsx           ← client entry: fonts, CSS, hydrate or render
         ├── entry-server.tsx   ← render-to-string for the pre-render
         ├── styles.css         ← all styles, design tokens at the top
@@ -165,16 +155,17 @@ SITE_URL=https://careers.your-domain.lk pnpm build
         │   ├── mailto.ts      ← mailto links; placeholder-email check
         │   └── validate.ts    ← form values, validation rules, error messages
         └── components/
-            ├── Header.tsx     sticky header, nav, mobile menu (NAV_LINKS shared with footer)
-            ├── Hero.tsx       headline, intro, highlights, spec sheet
-            ├── JacketFlat.tsx the SVG jacket drawing with pins A–E
-            ├── WhyJoin.tsx    four reasons
-            ├── Studio.tsx     three divisions and the 5-stage workflow
-            ├── Roles.tsx      expandable role details and open application
-            ├── Process.tsx    five hiring steps
-            ├── Faq.tsx
-            ├── Apply.tsx      form, email card, success state
+            ├── Header.tsx        sticky header and mobile menu (NAV_LINKS shared with footer)
+            ├── Hero.tsx          headline, intro, benefits, jacket drawing
+            ├── House.tsx         "The company": text, confidentiality note, 4 key figures
+            ├── Divisions.tsx     three division cards
+            ├── Atelier.tsx       "3D studio": 4 stages and the film
+            ├── FitOnVideo.tsx    the video player (or the drawing until a film is added)
+            ├── Careers.tsx       filters, role cards, open application
+            ├── RoleDialog.tsx    the role details side panel
+            ├── Apply.tsx         form, "after you apply", email card, success state
             ├── Footer.tsx
+            ├── JacketDrawing.tsx decorative SVG of a jacket, drawn as a technical flat
             └── Icons.tsx
 ```
 
@@ -182,172 +173,227 @@ SITE_URL=https://careers.your-domain.lk pnpm build
 
 | To change… | Edit |
 |---|---|
-| Careers email, FormSubmit ID, max CV size | `CONFIG` in `src/content.ts` |
-| A role's title, summary, duties, requirements, experience | `ROLES` in `src/content.ts` |
-| Hero highlights, reasons, divisions, workflow, hiring steps, FAQ, experience options, "what helps us decide" | The matching export in `src/content.ts` |
-| Hero headline and intro, section headings and intros | The section's component in `src/components/` |
+| Careers email, corporate email, FormSubmit ID, max file size, **video files** | `CONFIG` in `src/content.ts` |
+| Any page text: hero, company, figures, divisions, studio stages, roles, filters, form options, NDA wording, "after you apply" | `src/content.ts` |
+| Section headings and short intros not in `content.ts` (e.g. "Three strategic divisions.") | The section's component |
 | Page title, meta description, link-preview text | `site/index.html` |
-| Link-preview image | `site/og/og-image.html`, then regenerate (command at the top of that file) |
+| Link-preview image | `site/og/og-image.html`, then regenerate |
 | Colours, fonts, spacing | Tokens at the top of `src/styles.css` |
 
-### Adding or removing a role (several places are coupled)
+### Adding or removing a role
 
-1. Add or remove the entry in `ROLES` (`src/content.ts`) and extend the `RoleId` type (`'a' | … | 'e'`).
-2. Add or remove its point in `POINTS` in `src/components/JacketFlat.tsx` (pin position, the point on the garment, and the leader line). Mirror the change in `og/og-image.html`.
-3. Update `ROLE_HASH` in `src/App.tsx` (currently `/^#role-([a-e])$/`).
-4. Update `FLOW` in `content.ts` if the workflow changes.
-5. Update copy that says "five": hero headline (`Hero.tsx`), roles heading (`Roles.tsx`), process intro (`Process.tsx`), meta tags (`index.html`), the preview image.
+1. Add or remove it in `ROLES` (`src/content.ts`) and extend the `RoleId` type (`'a' | … | 'e'`).
+2. Update `ROLE_HASH` in `src/App.tsx` (currently `/^#role-([a-e])$/`).
+3. Give it a `category` that matches a filter in `ROLE_FILTERS`.
 
 ---
 
-## 6. How applications are delivered
+## 6. The virtual fitting video
+
+The 3D studio section has a video player. Until a film is supplied, it shows the jacket drawing instead.
+
+**To add the film:**
+
+1. Put the files in `site/public/video/`, for example `fit-on.mp4`, an optional `fit-on.webm`, and `fit-on-poster.jpg`.
+2. In `src/content.ts`, set:
+
+   ```ts
+   fitOnVideo: { src: 'video/fit-on.mp4', webm: 'video/fit-on.webm', poster: 'video/fit-on-poster.jpg' }
+   ```
+
+3. Run `pnpm build`.
+
+**Recommended spec:**
+
+| Setting | Value |
+|---|---|
+| Aspect ratio | 4:5 portrait, e.g. 1080×1350 (the frame is 4:5; other ratios are cropped to fill) |
+| Length | 10–20 seconds, designed to loop smoothly |
+| Audio | None (it plays muted) |
+| Format | MP4 (H.264), under ~8 MB; a WebM copy is optional and smaller |
+| Poster | The first frame, as a JPG |
+
+**Where the film can come from (the owner decides):**
+
+- **Best: a CLO 3D export of a real Aphrodite garment.** CLO 3D can record a turntable or a fitting animation of the garment on an avatar. This is genuine, and it matches what the page says the studio does.
+- **An AI video generator** (for example Google Veo, OpenAI Sora or Runway), if no CLO 3D export is available yet. It must not be presented as a real product, and the caption may need adjusting. Starting prompt:
+
+  > Photorealistic studio film, 4:5 vertical, 12-second seamless loop. A grey 3D avatar stands on a slowly rotating turntable in a dark, softly lit studio. A tailored ivory jacket with a garnet-red lining drapes onto the avatar as a 3D garment simulation: visible fine mesh lines fade as the fabric settles, the cloth falls naturally and tension is shown subtly. Clean, minimal, luxury fashion-tech feel. No text, no logos, no people.
+
+- **Not stock footage of someone else's product.** It would misrepresent the company.
+
+---
+
+## 7. How applications are delivered
 
 ### Form → email (FormSubmit)
 
-- The form posts **natively** (`multipart/form-data`, not fetch) to `https://formsubmit.co/<careersEmail or formsubmitId>`, so the CV is sent as an email attachment.
-- After sending, FormSubmit redirects back to `<page>?applied=1#apply`. The page then shows "Application sent", personalised from `sessionStorage`, and tidies the URL.
-- Hidden settings fields: `_subject` (role and name), `_template=table`, `_captcha=false`, `_next` (redirect), `_autoresponse` (confirmation email to the applicant), `_honey` (spam honeypot).
-- The applicant's fields arrive as: Role, Name, email (also used as reply-to), Phone, Experience, Based in, Portfolio, attachment (CV), Message, Consent.
-- **Guards:**
-  - While `careersEmail` ends in `@example.com`, the form shows "Online applications aren't switched on yet" and doesn't send.
-  - When the page is opened from a file (`file://`), the form shows a preview notice and doesn't send.
+- The form posts **natively** (`multipart/form-data`) to `https://formsubmit.co/<careersEmail or formsubmitId>`, so the CV or portfolio is sent as an email attachment.
+- After sending, FormSubmit redirects back to `<page>?applied=1#apply`, which shows "Application sent".
+- Hidden settings fields: `_subject`, `_template=table`, `_captcha=false`, `_next`, `_autoresponse`, `_honey` (spam honeypot).
+- The applicant's fields arrive as: Position, Name, Phone, email (also used as reply-to), Experience, Portfolio, attachment, Technical strengths and notice period, NDA acknowledged.
+- **Guards:** while `careersEmail` ends in `@example.com`, or the page is opened as a file, the form doesn't send and shows a notice.
 
 ### Email (mailto)
 
-- "Or apply by email" on each role, "Write an email", and the FAQ and footer links all open the visitor's email app. The subject (`Application: <role>`) and a short template body are filled in.
+- "Apply by email" in each role panel, "Write an email", and the footer link open the visitor's email app with the subject filled in.
 
-### Go-live setup (in order)
+### Go-live setup
 
-1. Set `CONFIG.careersEmail` in `src/content.ts` to the real careers inbox.
-2. Build with `SITE_URL` and deploy (see §9, Phase 3).
-3. Submit one test application on the live site. FormSubmit emails that inbox an **activation link**. Click it. Applications are not delivered until this is done.
-4. Optional: FormSubmit then provides a random ID. Put it in `CONFIG.formsubmitId` so the address isn't in the form's code. The address is still shown on the page for people who prefer email.
-5. Run the end-to-end tests in §9, Phase 3.
+1. Set `CONFIG.careersEmail` (and optionally `corporateEmail`).
+2. Build with `SITE_URL` and deploy (§10, Phase 3).
+3. Submit one test application on the live site. FormSubmit emails that inbox an **activation link**. Click it.
+4. Optional: put FormSubmit's random ID in `CONFIG.formsubmitId`.
 
-### Known caveats (check before launch)
+### Caveats
 
-- **Attachment size:** third-party write-ups say FormSubmit accepts roughly **10 MB in total**. This hasn't been checked against FormSubmit's own documentation. The form limits CVs to `CONFIG.maxUploadMB` (10).
-- **`_autoresponse`** (the confirmation email to the applicant) hasn't been tested. It may not be available on the free tier.
-- **Spam:** the captcha is off for a smoother experience, so the honeypot is the only protection. If spam arrives, set `_captcha` to `true` in `Apply.tsx`.
-- **Privacy:** CVs pass through FormSubmit, a third party. The owner should be comfortable with that, or see Phase 4 for an alternative.
+- **Attachment size:** reportedly about 10 MB total (not checked against FormSubmit's docs). The original preview said 25 MB, but the form allows 10.
+- **`_autoresponse`** (confirmation email to the applicant) hasn't been tested.
+- **Spam:** the captcha is off. If spam arrives, set `_captcha` to `true` in `Apply.tsx`.
+- **Privacy:** CVs pass through FormSubmit, a third party.
 
 ---
 
-## 7. Design system
+## 8. Content sources
 
-**Direction:** a premium fashion house with a tailor's workroom vocabulary. The page reads like a garment **spec sheet**: each open role is a **point of measure** (A–E) on a tailored jacket.
+**Rule:** all facts on the page come from the original preview (`reference/gemini-original.html`). The wording has been made plainer, but no new facts were added.
 
-**Signature element (keep it):** the hero spec sheet. A technical drawing of a jacket (`JacketFlat.tsx`) sits on dot-and-cross pattern paper, with pins A–E. Next to it is a table of the five roles. Hovering or focusing a row highlights its pin, and the reverse. The letters A–E identify the roles everywhere: spec sheet, studio workflow owners, role list, preview image.
+**Interface text** (button labels, form hints, error messages, "Application sent") is new, but it states no facts about the company.
+
+### Invented in the first build and removed in round 1 (2026-11-12)
+
+These were written by the previous build and are no longer on the site:
+
+- **The headline** "We're hiring five people to build a fashion house from the first stitch", and every mention of "five".
+- **The "Why join" section:**
+  - "Shape it from the start"
+  - "Backed by a working business… runs on real orders from day one"
+  - "Digital first, craft led"
+  - "Employed properly"
+  - "A founding role, without the gamble"
+- **Role duties not in the preview:**
+  - "Produce renders for design reviews and range meetings"
+  - "Feed back to the pattern maker on how each pattern sews"
+  - "Attach custom metal hardware and test it under wear"
+  - "Care with detail that shows on the inside of a garment"
+  - "A reel showing low-key lighting…"
+  - the expanded "What you'll do" lists in general
+- **The "How we hire" timeline:**
+  - "We read every application"
+  - "we'll call you"
+  - "Meet the team, see the studio"
+  - "setting out your pay, start date and benefits"
+  - "Five steps, with no surprises"
+- **The whole FAQ, including these policies:**
+  - "Can I apply for more than one role? Yes"
+  - "The CV is optional / no CV needed"
+  - "How will you use my details? Only to assess your application"
+  - trial examples such as "drafting a block or sewing a sample"
+- **Other:**
+  - the fifth workflow stage "Story filmed"
+  - the "What helps us decide" tips
+  - the "Where you're based" form field
+  - the data-use consent checkbox (replaced by the preview's NDA acknowledgement)
+  - the applicant auto-reply "we read every one"
+
+### In the original preview but left out: confirm with the owner before adding
+
+- [ ] Company registration number "PV 00318492"
+- [ ] Emails `careers@aphrodite.lk` and `corporate@aphrodite.lk` (placeholders are used instead)
+- [ ] "Reviews technical submissions **within 72 hours**"
+- [ ] "Encrypted transmission directly to Central Studio HR" (not true of FormSubmit)
+- [ ] The decorative technical spec codes in the 3D section, e.g. "SPEC // CLO-MESH-V4.2", "± 0.5 mm Digital"
+
+### From the preview, but worth the owner confirming
+
+- [ ] Around twenty retail chains; 10 silhouettes a month; 14-day release cadence
+- [ ] Neo-luxury launch **July 2027**, **LKR 7,500–50,000**
+- [ ] 1-day paid studio practical trial; EPF/ETF; appointment letter
+- [ ] Experience requirements per role; education examples (UoM, AOD, LIFT)
+- [ ] Studio city (the page only says Sri Lanka)
+
+---
+
+## 9. Design system
+
+- **Direction:** clear and professional first, with a quiet fashion-house feel. Pale shell-pink ground, garnet accent, dark sections for the 3D studio and the form.
+- **Type:**
+  - **Source Serif 4** (600) for headings
+  - **Source Sans 3** for everything else, 18px body text
+  - Labels are bold sans in uppercase with light letter-spacing
+  - Both fonts are self-hosted through `@fontsource`
+  - Don't go back to high-contrast display faces: the owner found them hard to read
 
 | Token | Value | Use |
 |---|---|---|
-| `--shell` | `#F6ECE9` | Page background (pale shell pink) |
-| `--paper` | `#FCF8F6` | Cards, spec sheet, alternate sections |
-| `--ink` | `#1C1517` | Text; dark Apply section and footer |
-| `--ink-2` | `#3A2E31` | Body copy |
-| `--muted` | `#6E5B5E` | Secondary text |
-| `--line` | `#E3D3CF` | Hairlines |
-| `--garnet` | `#7A1F33` | The single brand accent |
-| `--rose` | `#E9A9B5` | Accent on dark backgrounds |
+| `--shell` | `#F6ECE9` | Page background |
+| `--paper` | `#FCF8F6` | Cards, alternate sections |
+| `--ink` | `#1C1517` | Headings; dark sections |
+| `--ink-2` | `#2E2427` | Body text |
+| `--muted` | `#5B4A4D` | Secondary text |
+| `--line` | `#E0CFCB` | Hairlines |
+| `--garnet` | `#7A1F33` | The single accent |
+| `--rose` | `#F0B8C3` | Accent on dark |
 
-- **Type:**
-  - Bodoni Moda (display; italic for emphasis, never broken across lines)
-  - Hanken Grotesk (body)
-  - IBM Plex Mono (labels and spec details)
-  - All three are self-hosted through `@fontsource` packages.
-- **Small rules:**
-  - Bullets are small garnet "notch" triangles, like the notches on pattern pieces.
-  - Numbers are used only for real sequences: the studio workflow and the hiring steps.
-  - The dashed border on the open-application card is a cutting line.
-  - Only one accent colour.
-  - No Tailwind; plain CSS in one file.
-- **Mobile:** the sticky header's "Apply now" button is the always-visible call to action. Don't add a second floating one; it was tried and removed.
-- **Motion:** only the jacket drawing animates (it draws itself on load, then the pins appear). It's turned off under `prefers-reduced-motion`.
+- **Details:**
+  - small garnet "notch" triangle bullets (from pattern pieces)
+  - the dot-and-cross pattern-paper background behind the jacket drawing
+  - a dashed "cutting line" border on the open-application card
+- **Motion:** only the jacket drawing (it draws itself in) and the role panel (it slides in). Both are off under reduced motion.
+- **Mobile:** the header's "Apply now" is the always-visible call to action. Don't add a floating one.
 
 ---
 
-## 8. Content to confirm with the owner
+## 10. The plan
 
-These facts came from the Gemini version, which was built from the owner's earlier brief. Some may have been invented by Gemini. **Check each before launch.**
+### Phase 1: QA (no owner input needed)
 
-- [ ] Ready-to-wear supplies "around twenty retail chains" with "about ten new styles each month"
-- [ ] Neo-luxury label launches **July 2027**, priced **LKR 7,500–50,000**, limited numbered runs, its own flagship store
-- [ ] A third "couture house" division is planned for later
-- [ ] **Paid one-day practical trial** for technical roles
-- [ ] **EPF & ETF**, appointment letter, structured pay
-- [ ] Experience ranges per role (2+, 5+, 5+, 3–6, 2–5 years)
-- [ ] Education examples for the 3D designer role (UoM, AOD, LIFT)
-- [ ] Cinematographer is a "next intake" role, not immediate
-- [ ] The CV is optional (a deliberate choice, so sample machinists and tailors without CVs can apply)
-- [ ] Studio location: the site only says "Sri Lanka". **Add the city** if the owner agrees
-
-Deliberately **removed** from the Gemini version: the registration number "PV 00318492", `careers@aphrodite.lk` and `corporate@aphrodite.lk`, the "reviewed within 72 hours" promise, and the "encrypted transmission" claim. Re-add any of them only if the owner confirms they're real.
-
----
-
-## 9. The plan
-
-### Phase 1: QA and polish (no owner input needed)
-
-- [x] Visual review at 1440px and 390px (an 820px tablet check is still worth doing)
-- [x] Console check for hydration warnings and errors
-- [x] Scripted interaction checks (`pnpm qa`)
-- [x] Lighthouse run, issues fixed
-- [x] Link-preview image and `SITE_URL` tags
-- [x] Reduced motion (scripted)
-- [x] Keyboard pass (scripted, real key events). The drawing's pins were taken out of the tab order: they duplicated the table rows. They still work with mouse and touch
-- [x] Accessibility tree and heading outline. "What you'll do" and "What you'll bring" are now `h3` (were `h4`), with the role name in screen-reader-only text
-- [x] Tablet (820px)
-- [ ] **Owner review of the page in a browser.** In progress; changes may follow
-- [ ] **Screen reader by ear:** a quick pass with VoiceOver over the hero, one role and the form errors
-- [ ] **Safari:** desktop Safari and iPhone, especially the SVG drawing, `<details>` and the form's file picker
-- [ ] Optional: reduce total blocking time (310 ms). React plus hydration is most of the 80 kB gzipped JS. `StrictMode` has no production cost, so removing it won't help. Real options: switch to Preact (`@preact/preset-vite`, much smaller runtime), or render the static sections as plain HTML and hydrate only the spec sheet, roles and form
-- [ ] Optional: ESLint and Prettier
+- [x] Desktop, tablet and mobile review; console; interactions; keyboard; accessibility tree; reduced motion (all in `pnpm qa`)
+- [ ] Lighthouse on the reworked site
+- [ ] Screen reader by ear (VoiceOver): hero, a role panel, form errors
+- [ ] Safari (desktop and iPhone) and Firefox, especially the `<dialog>` panel, the video and the file picker
+- [ ] Optional: reduce JavaScript (React plus hydration is about 80 kB gzipped). Options: Preact (`@preact/preset-vite`), or hydrate only the interactive parts
 
 ### Phase 2: Needs the owner
 
-1. The real **careers inbox** address.
-2. The **domain** (for `SITE_URL`) and where to host.
-3. Confirm the facts in §8, and the studio city.
-4. Optional: **salary ranges** per role. Publishing them usually raises response rates.
-5. Agreement that CVs may pass through FormSubmit (see §6).
+1. **The virtual fitting film** (see §6), from a CLO 3D export or a generated film.
+2. The **careers inbox** (and optionally a corporate address).
+3. The **domain** (for `SITE_URL`) and where to host.
+4. Decisions on the "left out" and "worth confirming" lists in §8.
+5. Agreement that CVs may pass through FormSubmit.
 
 ### Phase 3: Go live
 
-1. Set `CONFIG.careersEmail`. Re-run `pnpm qa` and expect the placeholder warning to be gone.
-2. **Deploy.** Any static host works. Set the environment variable `SITE_URL=https://<domain>` in the host's settings.
-   - Netlify: base directory `site`, build command `pnpm build`, publish directory `site/dist`
-   - Vercel: root directory `site`, framework preset "Vite", build command `pnpm build`, output `dist`
+1. Set `CONFIG`, add the film, run `pnpm build && pnpm preview && pnpm qa`, and check the screenshots.
+2. **Deploy.** Set the environment variable `SITE_URL=https://<domain>` on the host.
+   - Netlify: base `site`, build `pnpm build`, publish `site/dist`
+   - Vercel: root `site`, preset Vite, build `pnpm build`, output `dist`
    - Cloudflare Pages: root `site`, build `pnpm build`, output `dist`
-3. Activate FormSubmit (see §6, steps 3–4).
+3. Activate FormSubmit (§7).
 4. **End-to-end tests on the live URL:**
-   - Application with a ~2 MB PDF CV: email arrives with all fields and the attachment, and the applicant sees "Application sent"
-   - Application without a CV: arrives
-   - Invalid inputs: the right inline errors show, and focus moves to the first one
-   - An 11 MB file: rejected with a clear message
-   - Mailto links: open an email addressed correctly, with the role in the subject
-   - The applicant confirmation email (`_autoresponse`): note whether it arrives
-5. Run Lighthouse on the live URL.
-6. Paste the link into LinkedIn's Post Inspector and check that the preview card shows the image.
+   - application with a ~2 MB PDF: email arrives with all fields and the attachment
+   - application without a file: arrives
+   - invalid inputs: the right inline errors show
+   - an 11 MB file: rejected with a clear message
+   - mailto links: open an email with the role in the subject
+   - `_autoresponse`: note whether it arrives
+5. Lighthouse on the live URL. Check the LinkedIn preview with Post Inspector.
 
 ### Phase 4: After launch (optional)
 
-- **Privacy-friendly analytics** (for example Plausible or Umami) to see visits, "Apply" clicks and submissions.
-- **Own form endpoint** (a serverless function plus an email service) if FormSubmit's limits, spam or privacy become a problem.
-- **Google for Jobs:** Google's JobPosting structured data belongs on individual job pages, not list pages. That conflicts with the one-pager decision, so revisit only if that changes.
-- **Housekeeping:** upgrade pnpm (the local version 8.8 is old) and add a `packageManager` field to `package.json`. TypeScript 7 is used. If any tool has trouble with it, pinning `typescript@5.9` is safe.
+- Privacy-friendly analytics (Plausible or Umami).
+- Your own form endpoint, if FormSubmit's limits, spam or privacy become a problem.
+- Upgrade pnpm and add `packageManager` to `package.json`. TypeScript 7 is used; pin `typescript@5.9` if any tool struggles.
 
 ---
 
-## 10. Decision log
+## 11. Decision log
 
 | Date | Decision |
 |---|---|
-| 2026-11-12 | Extracted the Gemini mock; found the non-working form and invented facts |
-| 2026-11-12 | Owner chose: email and on-page form, hiring-first premium tone, keep five roles, English only |
-| 2026-11-12 | Built a single-file HTML prototype to settle the design (spec-sheet signature, garnet/shell palette, Bodoni Moda) |
-| 2026-11-12 | Owner asked for React + TypeScript + pnpm, kept as a one-pager. Rebuilt in Vite with build-time pre-rendering; content moved into `content.ts` |
-| 2026-11-12 | FormSubmit chosen for form-to-email: no server, free, supports CV attachments via a normal form post. Web3Forms was ruled out because attachments need a paid plan |
-| 2026-11-12 | First version committed and pushed to `github.com/jali-rk/neo_hire` (`243e0cf`) |
-| 2026-11-12 | QA round 2: keyboard, accessibility tree, reduced motion, tablet. Pins out of tab order; role subheadings to `h3` |
-| 2026-11-12 | QA round 1: layout fixes, floating mobile Apply bar removed (duplicated the header button), form-state fix, footer link underlined, `robots.txt`, link-preview image, `SITE_URL` tags and sitemap, `pnpm qa` script |
+| 2026-11-12 | Extracted the Gemini mock; found the non-working form |
+| 2026-11-12 | Owner chose: email and on-page form, hiring-first tone, keep the five roles, English only |
+| 2026-11-12 | First design (Bodoni Moda, spec-sheet hero with the roles as points A–E) built as a prototype, then in React + TypeScript + pnpm with pre-rendering |
+| 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
+| 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
+| 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Source Sans 3<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |

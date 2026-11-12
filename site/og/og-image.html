@@ -12,30 +12,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="../node_modules/@fontsource-variable/bodoni-moda/opsz.css">
-  <link rel="stylesheet" href="../node_modules/@fontsource-variable/bodoni-moda/opsz-italic.css">
-  <link rel="stylesheet" href="../node_modules/@fontsource-variable/hanken-grotesk/index.css">
-  <link rel="stylesheet" href="../node_modules/@fontsource/ibm-plex-mono/500.css">
+  <link rel="stylesheet" href="../node_modules/@fontsource-variable/source-serif-4/opsz.css">
+  <link rel="stylesheet" href="../node_modules/@fontsource-variable/source-sans-3/index.css">
   <style>
     * { box-sizing: border-box; margin: 0; }
     html, body { width: 1200px; height: 630px; overflow: hidden; }
     body {
       background: #F6ECE9; color: #1C1517;
-      font-family: "Hanken Grotesk Variable", sans-serif;
+      font-family: "Source Sans 3 Variable", sans-serif;
       display: grid; grid-template-columns: 1fr 470px;
     }
     .copy { padding: 64px 40px 56px 72px; display: flex; flex-direction: column; }
-    .eyebrow { font: 500 15px/1 "IBM Plex Mono", monospace; letter-spacing: .12em; text-transform: uppercase; color: #7A1F33; }
+    .eyebrow { font: 700 18px/1 "Source Sans 3 Variable", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #7A1F33; }
     h1 {
       margin-top: 30px;
-      font-family: "Bodoni Moda Variable", serif; font-weight: 500;
-      font-size: 64px; line-height: 1.04; letter-spacing: -.015em;
+      font-family: "Source Serif 4 Variable", serif; font-weight: 600;
+      font-size: 72px; line-height: 1.08; letter-spacing: -.015em;
     }
     h1 em { display: block; font-style: italic; color: #7A1F33; }
     .foot { margin-top: auto; display: flex; align-items: baseline; justify-content: space-between; }
-    .brand { font-family: "Bodoni Moda Variable", serif; font-size: 26px; letter-spacing: .3em; }
-    .brand small { font: 500 13px "IBM Plex Mono", monospace; letter-spacing: .08em; color: #6E5B5E; margin-left: 8px; }
-    .roles { font: 500 15px "IBM Plex Mono", monospace; letter-spacing: .1em; text-transform: uppercase; color: #7A1F33; }
+    .brand { font-family: "Source Serif 4 Variable", serif; font-weight: 600; font-size: 26px; letter-spacing: .22em; }
+    .brand small { font: 600 14px "Source Sans 3 Variable", sans-serif; letter-spacing: .08em; color: #6E5B5E; margin-left: 8px; }
+    .roles { font: 700 17px "Source Sans 3 Variable", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #7A1F33; }
 
     .sheet {
       margin: 40px 40px 40px 0; border: 1px solid #E3D3CF; border-radius: 12px;
@@ -52,22 +50,21 @@
     .vf path { fill: none; stroke: #6E5B5E; stroke-width: 1.3; }
     .leader { fill: none; stroke: #7A1F33; stroke-width: .9; }
     .pt, .pin circle { fill: #7A1F33; }
-    .pin text { fill: #fff; font: 600 11px "IBM Plex Mono", monospace; text-anchor: middle; dominant-baseline: central; }
   </style>
 </head>
 <body>
   <div class="copy">
-    <p class="eyebrow">Now hiring · Central Studio, Sri Lanka</p>
-    <h1>We’re hiring five people to build a fashion house <em>from the first stitch.</em></h1>
+    <p class="eyebrow">Now hiring · Founding team</p>
+    <h1>Build the foundation <em>with us.</em></h1>
     <div class="foot">
       <span class="brand">APHRODITE<small>(PVT) LTD</small></span>
-      <span class="roles">5 founding roles</span>
+      <span class="roles">Careers · Sri Lanka</span>
     </div>
   </div>
 
   <div class="sheet">
     <!-- Same drawing as src/components/JacketFlat.tsx, without the animation -->
-    <svg viewBox="0 0 420 470" aria-hidden="true">
+    <svg viewBox="40 20 340 400" aria-hidden="true">
       <defs>
         <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M1,1 L9,5 L1,9" fill="none" stroke="#7A1F33" stroke-width="1.4"/>
@@ -87,7 +84,6 @@
           <path d="M88,312 L121,318"/>
         </g>
       </defs>
-      <g class="vf"><path d="M62,46 V26 H82"/><path d="M338,26 H358 V46"/><path d="M62,426 V446 H82"/><path d="M338,446 H358 V426"/></g>
       <use href="#half-fill"/><use href="#half-fill" transform="translate(420 0) scale(-1 1)"/>
       <path class="shirt" d="M194,58 C196,120 204,190 210,236 C216,190 224,120 226,58 Q210,64 194,58 Z"/>
       <use href="#half-lines"/><use href="#half-lines" transform="translate(420 0) scale(-1 1)"/>
@@ -95,16 +91,10 @@
       <circle class="bt" cx="210" cy="262" r="4.5"/><circle class="bt" cx="210" cy="302" r="4.5"/>
       <path class="stitch" d="M157,114 C170,160 195,204 212,230"/><path class="stitch" d="M263,114 C250,160 225,204 208,230"/>
       <path class="measure" d="M142,206 H278" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-      <path class="leader" d="M93,200 L51,188"/><circle class="pt" cx="93" cy="200" r="2.6"/>
-      <path class="leader" d="M146,262 H51"/><circle class="pt" cx="146" cy="262" r="2.6"/>
-      <path class="leader" d="M243,167 L371,142"/><circle class="pt" cx="243" cy="167" r="2.6"/>
-      <path class="leader" d="M278,206 H371"/><circle class="pt" cx="278" cy="206" r="2.6"/>
-      <path class="leader" d="M358,446 H371"/><circle class="pt" cx="358" cy="446" r="2.6"/>
-      <g class="pin"><circle cx="40" cy="186" r="11"/><text x="40" y="186">A</text></g>
-      <g class="pin"><circle cx="40" cy="262" r="11"/><text x="40" y="262">B</text></g>
-      <g class="pin"><circle cx="382" cy="140" r="11"/><text x="382" y="140">C</text></g>
-      <g class="pin"><circle cx="382" cy="206" r="11"/><text x="382" y="206">D</text></g>
-      <g class="pin"><circle cx="382" cy="446" r="11"/><text x="382" y="446">E</text></g>
+
+
+
+
     </svg>
   </div>
 </body>

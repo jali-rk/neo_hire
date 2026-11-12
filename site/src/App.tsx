@@ -1,54 +1,44 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { RoleId } from './content';
 import Apply, { type ApplyRequest } from './components/Apply';
-import Faq from './components/Faq';
+import Atelier from './components/Atelier';
+import Careers from './components/Careers';
+import Divisions from './components/Divisions';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import Process from './components/Process';
-import Roles from './components/Roles';
-import Studio from './components/Studio';
-import WhyJoin from './components/WhyJoin';
+import House from './components/House';
 
 const ROLE_HASH = /^#role-([a-e])$/;
 
 export default function App() {
-  const [openRoles, setOpenRoles] = useState<ReadonlySet<RoleId>>(() => new Set());
+  const [openRole, setOpenRole] = useState<RoleId | null>(null);
   const [applyRequest, setApplyRequest] = useState<ApplyRequest | null>(null);
 
-  const setRoleOpen = useCallback((id: RoleId, open: boolean) => {
-    setOpenRoles((prev) => {
-      if (prev.has(id) === open) return prev;
-      const next = new Set(prev);
-      if (open) next.add(id);
-      else next.delete(id);
-      return next;
-    });
+  /** Opens or closes a role's details. The URL follows (#role-a), so a role can be shared as a link. */
+  const showRole = useCallback((id: RoleId | null) => {
+    setOpenRole(id);
+    if (id) window.history.replaceState(null, '', `#role-${id}`);
+    else if (ROLE_HASH.test(window.location.hash)) window.history.replaceState(null, '', '#careers');
   }, []);
 
   const requestApply = useCallback((role: string) => {
     setApplyRequest((prev) => ({ role, n: (prev?.n ?? 0) + 1 }));
   }, []);
 
-  // Any link to a role (spec sheet, drawing pins, studio workflow) opens that role.
+  // A shared link to a role (…/#role-c) opens that role's details.
   useEffect(() => {
     const fromHash = () => {
       const m = ROLE_HASH.exec(window.location.hash);
-      if (m) setRoleOpen(m[1] as RoleId, true);
-    };
-    const onClick = (e: MouseEvent) => {
-      const link = (e.target as Element | null)?.closest?.('a[href^="#role-"]');
-      const m = link && ROLE_HASH.exec(link.getAttribute('href') ?? '');
-      if (m) setRoleOpen(m[1] as RoleId, true);
+      if (m) {
+        setOpenRole(m[1] as RoleId);
+        document.getElementById('careers')?.scrollIntoView();
+      }
     };
     fromHash();
     window.addEventListener('hashchange', fromHash);
-    document.addEventListener('click', onClick);
-    return () => {
-      window.removeEventListener('hashchange', fromHash);
-      document.removeEventListener('click', onClick);
-    };
-  }, [setRoleOpen]);
+    return () => window.removeEventListener('hashchange', fromHash);
+  }, []);
 
   return (
     <>
@@ -57,12 +47,11 @@ export default function App() {
       </a>
       <Header />
       <main id="main">
-        <Hero onApply={requestApply} />
-        <WhyJoin />
-        <Studio />
-        <Roles open={openRoles} onToggle={setRoleOpen} onApply={requestApply} />
-        <Process />
-        <Faq />
+        <Hero />
+        <House />
+        <Divisions />
+        <Atelier />
+        <Careers openRole={openRole} onOpenRole={showRole} onApply={requestApply} />
         <Apply request={applyRequest} />
       </main>
       <Footer />

@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { CloseIcon, MenuIcon } from './Icons';
 
 export const NAV_LINKS = [
-  { href: '#why', label: 'Why join' },
-  { href: '#studio', label: 'The studio' },
-  { href: '#roles', label: 'Open roles' },
-  { href: '#process', label: 'How we hire' },
-  { href: '#faq', label: 'FAQ' },
+  { href: '#company', label: 'The company' },
+  { href: '#divisions', label: 'Divisions' },
+  { href: '#studio', label: '3D studio' },
+  { href: '#careers', label: 'Careers' },
 ];
 
 export default function Header() {
@@ -38,7 +37,7 @@ export default function Header() {
       <div className="wrap header-row">
         <a className="brand" href="#top" aria-label="Aphrodite (Pvt) Ltd, back to top">
           <span className="brand-name">APHRODITE</span>
-          <span className="brand-sub">(PVT) LTD · CAREERS</span>
+          <span className="brand-sub">(PVT) LTD</span>
         </a>
 
         <nav className="nav" aria-label="Main">
