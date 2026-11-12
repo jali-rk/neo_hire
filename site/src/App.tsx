@@ -5,7 +5,6 @@ import Faq from './components/Faq';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Hero from './components/Hero';
-import MobileApplyBar from './components/MobileApplyBar';
 import Process from './components/Process';
 import Roles from './components/Roles';
 import Studio from './components/Studio';
@@ -67,7 +66,6 @@ export default function App() {
         <Apply request={applyRequest} />
       </main>
       <Footer />
-      <MobileApplyBar />
     </>
   );
 }

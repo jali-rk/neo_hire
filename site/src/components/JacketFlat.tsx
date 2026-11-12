@@ -125,6 +125,8 @@ export default function JacketFlat({ active, onActive }: Props) {
             onBlur={() => onActive(null)}
           >
             <g>
+              {/* Larger invisible tap target for phones */}
+              <circle className="hit" cx={x} cy={y} r="22" />
               <circle cx={x} cy={y} r="11" />
               <text x={x} y={y}>
                 {role.letter}

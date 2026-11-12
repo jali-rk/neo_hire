@@ -34,6 +34,12 @@ const AUTO_REPLY = `Thank you for applying to ${COMPANY}. We've received your ap
 
 export default function Apply({ request }: { request: ApplyRequest | null }) {
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
+  // Latest values, so handlers that run back to back never work from a stale copy.
+  const valuesRef = useRef<FormValues>(EMPTY_VALUES);
+  const setForm = (next: FormValues) => {
+    valuesRef.current = next;
+    setValues(next);
+  };
   const [file, setFile] = useState<File | null>(null);
   const [fileKey, setFileKey] = useState(0);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -71,28 +77,29 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
   useEffect(() => {
     if (!request) return;
     setSent(null);
-    setValues((v) => ({ ...v, role: request.role }));
+    setForm({ ...valuesRef.current, role: request.role });
     setErrors((e) => ({ ...e, role: '' }));
     const t = window.setTimeout(() => document.getElementById(FIELD_ID.name)?.focus({ preventScroll: true }), 600);
     return () => window.clearTimeout(t);
   }, [request]);
 
   function update<K extends keyof FormValues>(key: K, value: FormValues[K]) {
-    const next = { ...values, [key]: value };
-    setValues(next);
-    // Clear an error as soon as the person fixes it.
-    if (key in FIELD_ID && errors[key as FieldKey]) {
-      setErrors((e) => ({ ...e, [key]: validateField(key as FieldKey, next, file, CONFIG.maxUploadMB) }));
+    const next = { ...valuesRef.current, [key]: value };
+    setForm(next);
+    // Re-check a field that's showing an error, so it clears as soon as it's fixed.
+    if (key in FIELD_ID) {
+      const field = key as FieldKey;
+      setErrors((e) => (e[field] ? { ...e, [field]: validateField(field, next, file, CONFIG.maxUploadMB) } : e));
     }
   }
 
   function checkOnBlur(key: FieldKey) {
-    let v = values;
+    let v = valuesRef.current;
     if (key === 'link') {
-      const link = normaliseLink(values.link);
-      if (link !== values.link) {
-        v = { ...values, link };
-        setValues(v);
+      const link = normaliseLink(v.link);
+      if (link !== v.link) {
+        v = { ...v, link };
+        setForm(v);
       }
     }
     const raw = v[key as keyof FormValues];
@@ -109,7 +116,8 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     setStatus('');
-    const found = validateAll({ ...values, link: normaliseLink(values.link) }, file, CONFIG.maxUploadMB);
+    const current = { ...valuesRef.current, link: normaliseLink(valuesRef.current.link) };
+    const found = validateAll(current, file, CONFIG.maxUploadMB);
     const failed = FIELD_ORDER.filter((k) => found[k]);
     setErrors(found);
 
@@ -131,8 +139,15 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
       return;
     }
 
+    // Send the tidied link (e.g. "behance.net/x" → "https://behance.net/x"), even if the
+    // person pressed Enter without leaving the field.
+    if (current.link !== valuesRef.current.link) {
+      setForm(current);
+      const linkInput = e.currentTarget.elements.namedItem('Portfolio');
+      if (linkInput instanceof HTMLInputElement) linkInput.value = current.link;
+    }
     try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ name: values.name.trim(), role: values.role }));
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ name: current.name.trim(), role: current.role }));
     } catch {
       /* storage unavailable */
     }
@@ -142,7 +157,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
   }
 
   function startAgain() {
-    setValues(EMPTY_VALUES);
+    setForm(EMPTY_VALUES);
     setFile(null);
     setFileKey((k) => k + 1);
     setErrors({});

@@ -1,16 +1,16 @@
 # Handover: Aphrodite careers site
 
-Last updated: 2026-11-12
+Last updated: 2026-11-12, end of session 1
 
-This document is for anyone taking over the project. It covers what the site is, what's been decided, what's done, and the full plan for what's left. You shouldn't need any other context.
+This document is for anyone taking over the project. It covers what the site is, what's been decided, what's done and checked, and the full plan for what's left. You shouldn't need any other context.
+
+**Quick status:** the site is built and was checked in Chrome on desktop and mobile. It is **not live yet**. Next steps: finish the last QA items (§9, Phase 1), get the owner's answers (Phase 2), then deploy (Phase 3).
 
 ---
 
 ## 1. What this is
 
 A **one-page recruitment website** for **Aphrodite (Pvt) Ltd**, a Sri Lankan apparel group. The page has one job: make it clear the company is hiring **five founding roles** for its Central Studio, and get qualified people to apply.
-
-The five roles:
 
 | Point | Role | Owns |
 |---|---|---|
@@ -34,6 +34,7 @@ The five roles:
 | Language | **English only** |
 | Stack | **React + TypeScript + pnpm** (Vite) |
 | Page structure | Must stay a **one-pager** |
+| Code location | `github.com/jali-rk/neo_hire`, branch `main` |
 
 ---
 
@@ -48,21 +49,49 @@ The five roles:
 - [x] Application form: validation, CV upload (PDF/Word, size check), consent, honeypot, success state after submit
 - [x] Delivery through FormSubmit (form-to-email service). The form refuses to send while the email is still the placeholder
 - [x] Mailto links that open an email with subject and body already filled in, per role
-- [x] Build-time pre-rendering: the built `index.html` contains the full page content (for SEO and link previews), and React hydrates it
+- [x] Build-time pre-rendering: the built `index.html` contains the full page content, and React hydrates it
+- [x] Link-preview image (`public/og-image.png`, 1200×630), plus `robots.txt`
+- [x] When `SITE_URL` is set at build time, the build adds canonical, `og:url` and `og:image` tags and a sitemap
 - [x] Self-hosted fonts (no Google Fonts requests)
-- [x] Accessibility basics: skip link, visible focus, labelled fields, native `<details>` for roles and FAQ, reduced-motion support
+- [x] Accessibility basics: skip link, visible focus, labelled fields, native `<details>` for roles and FAQ, reduced-motion CSS
+- [x] First QA round, with fixes:
+  - headline now wraps to 3 lines
+  - spec-sheet table fills its panel
+  - italic phrases in titles no longer break mid-phrase
+  - removed a floating mobile "Apply now" bar that duplicated the header button
+  - bigger tap targets on the drawing's pins
+  - fixed a form-state bug that could drop the `https://` clean-up on links
+  - underlined the footer email link
 
-### Verified
+### Verified (Chrome, local production build)
 
-- `pnpm typecheck` passes with no errors
-- `pnpm build` succeeds and the pre-render step writes the full page into `site/dist/index.html`
+- `pnpm typecheck` passes. `pnpm build` succeeds and pre-renders; with `SITE_URL` set, it adds the tags, `sitemap.xml` and the robots `Sitemap:` line.
+- Screenshots at 1440px (all sections) and 390px (hero, spec sheet, an opened role, form) all match the design.
+- Scripted checks (`pnpm qa`, see §4), all passing:
+  - React hydrates with **no console errors or hydration warnings**. The only message is the intended "set `CONFIG.careersEmail`" warning.
+  - Clicking a spec-sheet row opens that role. Hovering a row highlights its pin on the drawing.
+  - "Apply for this role" pre-selects the role in the form and focuses the name field.
+  - An empty submit shows 6 clear errors, focuses the first, and says "Fix the 6 highlighted fields to continue."
+  - A valid submit is blocked by the placeholder-email guard (no navigation), with the correct form action, `_subject`, `_next` and tidied link.
+  - The return from FormSubmit (`?applied=1`) shows "Application sent. Thank you, <first name>…".
+  - No horizontal scrolling at 390px. The mobile menu opens and Escape closes it.
+- **Lighthouse** (local preview, mobile emulation), run before the last two fixes:
+
+  | Performance | Accessibility | Best Practices | SEO |
+  |---|---|---|---|
+  | 92 | 96 | 100 | 91 |
+
+  - The accessibility issue (footer link not underlined) is fixed.
+  - The SEO issue (missing `robots.txt`) is fixed.
+  - The remaining Performance cost is about 310 ms of total blocking time from loading React.
 
 ### Not verified yet
 
-- How the **React build** looks in a browser. The design was checked against a single-file prototype, but the React version hasn't been screenshotted
-- Hydration warnings in the browser console
-- Mobile layout, keyboard-only use, reduced-motion behaviour
-- A real form submission end to end. That needs a real inbox and a hosted site
+- **Reduced motion:** the CSS is in place and `pnpm qa` now includes a check, but it hasn't been run.
+- **Manual keyboard and screen-reader pass.** Focus behaviour was only checked by script.
+- **Other browsers:** Safari (especially iPhone) and Firefox.
+- **A real form submission end to end.** That needs a real inbox and a hosted site.
+- **Lighthouse on the deployed site.**
 
 ---
 
@@ -77,6 +106,13 @@ pnpm dev          # development server with hot reload (no pre-render)
 pnpm build        # type-check, build, pre-render → site/dist/
 pnpm preview      # serve site/dist at http://localhost:4173
 pnpm typecheck    # TypeScript only
+pnpm qa           # browser checks + screenshots → site/qa-output/ (needs `pnpm preview` running and Chrome installed)
+```
+
+Production build with the real domain (adds canonical, `og:url`, `og:image` and the sitemap):
+
+```bash
+SITE_URL=https://careers.your-domain.lk pnpm build
 ```
 
 `pnpm build` runs four steps:
@@ -84,9 +120,11 @@ pnpm typecheck    # TypeScript only
 1. `tsc --noEmit` type-checks the code.
 2. `vite build` builds the client bundle into `dist/`.
 3. `vite build --ssr src/entry-server.tsx --outDir dist-ssr` builds a server-render bundle.
-4. `node scripts/prerender.mjs` renders `<App/>` into the `<!--app-html-->` placeholder in `dist/index.html`, then deletes `dist-ssr/`.
+4. `node scripts/prerender.mjs` renders `<App/>` into the `<!--app-html-->` placeholder in `dist/index.html`, adds the `SITE_URL` tags if set, then deletes `dist-ssr/`.
 
-`site/dist/` is a plain static site with relative paths (`base: './'`), so it can be hosted anywhere, including a sub-folder.
+`site/dist/` is a plain static site with relative paths (`base: './'`), so it can be hosted anywhere.
+
+**`pnpm qa`** (`scripts/qa-browser.mjs`) uses only Node 22+ and a local Chrome; there are no test dependencies. Set `CHROME=/path/to/chrome` if Chrome isn't at the default macOS location. To run it against another URL: `node scripts/qa-browser.mjs <url> <output-folder>`.
 
 ---
 
@@ -99,15 +137,21 @@ pnpm typecheck    # TypeScript only
 ├── reference/
 │   └── gemini-original.html   ← the Gemini mock, for reference only (not deployed)
 └── site/                      ← the website
-    ├── index.html             ← HTML shell: <title>, meta description, Open Graph tags
+    ├── index.html             ← HTML shell: <title>, meta description, Open Graph text
     ├── package.json           ← scripts and dependencies
     ├── vite.config.ts
     ├── tsconfig.json
-    ├── public/favicon.svg
-    ├── scripts/prerender.mjs  ← build-time pre-render
+    ├── og/og-image.html       ← source for the link-preview image (regenerate command inside)
+    ├── public/
+    │   ├── favicon.svg
+    │   ├── og-image.png       ← 1200×630 link-preview image
+    │   └── robots.txt
+    ├── scripts/
+    │   ├── prerender.mjs      ← build-time pre-render and SITE_URL tags
+    │   └── qa-browser.mjs     ← `pnpm qa` browser checks
     └── src/
         ├── content.ts         ← ★ settings and all list content (edit here first)
-        ├── App.tsx            ← page composition and shared state
+        ├── App.tsx            ← page composition and shared state (open roles, apply requests)
         ├── main.tsx           ← client entry: fonts, CSS, hydrate or render
         ├── entry-server.tsx   ← render-to-string for the pre-render
         ├── styles.css         ← all styles, design tokens at the top
@@ -115,17 +159,16 @@ pnpm typecheck    # TypeScript only
         │   ├── mailto.ts      ← mailto links; placeholder-email check
         │   └── validate.ts    ← form values, validation rules, error messages
         └── components/
-            ├── Header.tsx         sticky header, nav, mobile menu (NAV_LINKS shared with footer)
-            ├── Hero.tsx           headline, intro, highlights, spec sheet
-            ├── JacketFlat.tsx     the SVG jacket drawing with pins A–E
-            ├── WhyJoin.tsx        four reasons
-            ├── Studio.tsx         three divisions and the 5-stage workflow
-            ├── Roles.tsx          expandable role details and open application
-            ├── Process.tsx        five hiring steps
+            ├── Header.tsx     sticky header, nav, mobile menu (NAV_LINKS shared with footer)
+            ├── Hero.tsx       headline, intro, highlights, spec sheet
+            ├── JacketFlat.tsx the SVG jacket drawing with pins A–E
+            ├── WhyJoin.tsx    four reasons
+            ├── Studio.tsx     three divisions and the 5-stage workflow
+            ├── Roles.tsx      expandable role details and open application
+            ├── Process.tsx    five hiring steps
             ├── Faq.tsx
-            ├── Apply.tsx          form, email card, success state
+            ├── Apply.tsx      form, email card, success state
             ├── Footer.tsx
-            ├── MobileApplyBar.tsx floating "Apply now" on phones
             └── Icons.tsx
 ```
 
@@ -138,15 +181,16 @@ pnpm typecheck    # TypeScript only
 | Hero highlights, reasons, divisions, workflow, hiring steps, FAQ, experience options, "what helps us decide" | The matching export in `src/content.ts` |
 | Hero headline and intro, section headings and intros | The section's component in `src/components/` |
 | Page title, meta description, link-preview text | `site/index.html` |
+| Link-preview image | `site/og/og-image.html`, then regenerate (command at the top of that file) |
 | Colours, fonts, spacing | Tokens at the top of `src/styles.css` |
 
 ### Adding or removing a role (several places are coupled)
 
 1. Add or remove the entry in `ROLES` (`src/content.ts`) and extend the `RoleId` type (`'a' | … | 'e'`).
-2. Add or remove its point in `POINTS` in `src/components/JacketFlat.tsx` (pin position, the point on the garment, and the leader line).
+2. Add or remove its point in `POINTS` in `src/components/JacketFlat.tsx` (pin position, the point on the garment, and the leader line). Mirror the change in `og/og-image.html`.
 3. Update `ROLE_HASH` in `src/App.tsx` (currently `/^#role-([a-e])$/`).
 4. Update `FLOW` in `content.ts` if the workflow changes.
-5. Update copy that says "five": hero headline (`Hero.tsx`), roles heading (`Roles.tsx`), process intro (`Process.tsx`), meta tags (`index.html`).
+5. Update copy that says "five": hero headline (`Hero.tsx`), roles heading (`Roles.tsx`), process intro (`Process.tsx`), meta tags (`index.html`), the preview image.
 
 ---
 
@@ -169,10 +213,10 @@ pnpm typecheck    # TypeScript only
 ### Go-live setup (in order)
 
 1. Set `CONFIG.careersEmail` in `src/content.ts` to the real careers inbox.
-2. Build and deploy (see §9).
+2. Build with `SITE_URL` and deploy (see §9, Phase 3).
 3. Submit one test application on the live site. FormSubmit emails that inbox an **activation link**. Click it. Applications are not delivered until this is done.
 4. Optional: FormSubmit then provides a random ID. Put it in `CONFIG.formsubmitId` so the address isn't in the form's code. The address is still shown on the page for people who prefer email.
-5. Test again, with and without a CV (see Phase 3 in §9).
+5. Run the end-to-end tests in §9, Phase 3.
 
 ### Known caveats (check before launch)
 
@@ -187,7 +231,7 @@ pnpm typecheck    # TypeScript only
 
 **Direction:** a premium fashion house with a tailor's workroom vocabulary. The page reads like a garment **spec sheet**: each open role is a **point of measure** (A–E) on a tailored jacket.
 
-**Signature element (keep it):** the hero spec sheet. A technical drawing of a jacket (`JacketFlat.tsx`) sits on dot-and-cross pattern paper, with pins A–E. Next to it is a table of the five roles. Hovering or focusing a row highlights its pin, and the reverse. The letters A–E identify the roles everywhere: spec sheet, studio workflow owners, role list.
+**Signature element (keep it):** the hero spec sheet. A technical drawing of a jacket (`JacketFlat.tsx`) sits on dot-and-cross pattern paper, with pins A–E. Next to it is a table of the five roles. Hovering or focusing a row highlights its pin, and the reverse. The letters A–E identify the roles everywhere: spec sheet, studio workflow owners, role list, preview image.
 
 | Token | Value | Use |
 |---|---|---|
@@ -201,7 +245,7 @@ pnpm typecheck    # TypeScript only
 | `--rose` | `#E9A9B5` | Accent on dark backgrounds |
 
 - **Type:**
-  - Bodoni Moda (display; italic for emphasis)
+  - Bodoni Moda (display; italic for emphasis, never broken across lines)
   - Hanken Grotesk (body)
   - IBM Plex Mono (labels and spec details)
   - All three are self-hosted through `@fontsource` packages.
@@ -211,6 +255,7 @@ pnpm typecheck    # TypeScript only
   - The dashed border on the open-application card is a cutting line.
   - Only one accent colour.
   - No Tailwind; plain CSS in one file.
+- **Mobile:** the sticky header's "Apply now" button is the always-visible call to action. Don't add a second floating one; it was tried and removed.
 - **Motion:** only the jacket drawing animates (it draws itself on load, then the pins appear). It's turned off under `prefers-reduced-motion`.
 
 ---
@@ -238,37 +283,35 @@ Deliberately **removed** from the Gemini version: the registration number "PV 00
 
 ### Phase 1: QA and polish (no owner input needed)
 
-1. **Visual review** of `pnpm build && pnpm preview` at 1440px, 820px and 390px wide. Check:
-   - the jacket drawing, pin positions and leader lines
-   - spec-sheet table alignment
-   - role details layout
-   - the form on dark
-   - the mobile "Apply now" bar (hidden over the hero and the form)
-2. **Console check:** no hydration warnings or errors when loading the built site.
-3. **Keyboard pass:**
-   - the skip link works
-   - Tab reaches the nav, spec rows, pins, role summaries, form fields and buttons, with a visible focus ring
-   - Escape closes the mobile menu
-   - clicking a spec row, pin or workflow owner opens that role
-4. **Reduced motion:** with `prefers-reduced-motion: reduce`, the drawing shows fully with no animation.
-5. **Lighthouse:** aim for 95+ on Performance, Accessibility, Best Practices and SEO.
-6. **Link-preview image:** create a 1200×630 `og:image` (for example, the headline and the jacket drawing), add it to `site/public/`, and reference it in `index.html`. Add `og:url` and a `canonical` link once the domain is known.
-7. Optional: add ESLint and Prettier.
+- [x] Visual review at 1440px and 390px (an 820px tablet check is still worth doing)
+- [x] Console check for hydration warnings and errors
+- [x] Scripted interaction checks (`pnpm qa`)
+- [x] Lighthouse run, issues fixed
+- [x] Link-preview image and `SITE_URL` tags
+- [ ] **Reduced motion:** run `pnpm qa` and check `reducedMotion` in the output. Expect `animation: "none"`, `dashoffset: "0px"` and `pinOpacity: "1"`
+- [ ] **Manual keyboard pass:**
+  - the skip link works
+  - Tab reaches the nav, spec rows, pins, role summaries, form fields and buttons, with a visible focus ring
+  - Enter and Space open roles and FAQ items
+- [ ] **Screen reader:** a quick pass with VoiceOver over the hero, one role and the form errors
+- [ ] **Safari:** desktop Safari and iPhone, especially the SVG drawing, `<details>` and the form's file picker
+- [ ] Optional: reduce total blocking time (310 ms). React plus hydration is most of the 80 kB gzipped JS. Options: drop `StrictMode` in production (small), or move the static sections to plain HTML and hydrate only the form and spec sheet (bigger)
+- [ ] Optional: ESLint and Prettier
 
 ### Phase 2: Needs the owner
 
 1. The real **careers inbox** address.
-2. The **domain** and where to host.
+2. The **domain** (for `SITE_URL`) and where to host.
 3. Confirm the facts in §8, and the studio city.
 4. Optional: **salary ranges** per role. Publishing them usually raises response rates.
 5. Agreement that CVs may pass through FormSubmit (see §6).
 
 ### Phase 3: Go live
 
-1. Set `CONFIG.careersEmail`, then build.
-2. **Deploy.** Any static host works. With the repo connected:
+1. Set `CONFIG.careersEmail`. Re-run `pnpm qa` and expect the placeholder warning to be gone.
+2. **Deploy.** Any static host works. Set the environment variable `SITE_URL=https://<domain>` in the host's settings.
    - Netlify: base directory `site`, build command `pnpm build`, publish directory `site/dist`
-   - Vercel: root directory `site`, framework preset "Vite", output `dist`
+   - Vercel: root directory `site`, framework preset "Vite", build command `pnpm build`, output `dist`
    - Cloudflare Pages: root `site`, build `pnpm build`, output `dist`
 3. Activate FormSubmit (see §6, steps 3–4).
 4. **End-to-end tests on the live URL:**
@@ -278,7 +321,8 @@ Deliberately **removed** from the Gemini version: the registration number "PV 00
    - An 11 MB file: rejected with a clear message
    - Mailto links: open an email addressed correctly, with the role in the subject
    - The applicant confirmation email (`_autoresponse`): note whether it arrives
-5. Share the link on LinkedIn and check the preview card.
+5. Run Lighthouse on the live URL.
+6. Paste the link into LinkedIn's Post Inspector and check that the preview card shows the image.
 
 ### Phase 4: After launch (optional)
 
@@ -298,4 +342,5 @@ Deliberately **removed** from the Gemini version: the registration number "PV 00
 | 2026-11-12 | Built a single-file HTML prototype to settle the design (spec-sheet signature, garnet/shell palette, Bodoni Moda) |
 | 2026-11-12 | Owner asked for React + TypeScript + pnpm, kept as a one-pager. Rebuilt in Vite with build-time pre-rendering; content moved into `content.ts` |
 | 2026-11-12 | FormSubmit chosen for form-to-email: no server, free, supports CV attachments via a normal form post. Web3Forms was ruled out because attachments need a paid plan |
-| 2026-11-12 | First version committed and pushed to `github.com/jali-rk/neo_hire` |
+| 2026-11-12 | First version committed and pushed to `github.com/jali-rk/neo_hire` (`243e0cf`) |
+| 2026-11-12 | QA round 1: layout fixes, floating mobile Apply bar removed (duplicated the header button), form-state fix, footer link underlined, `robots.txt`, link-preview image, `SITE_URL` tags and sitemap, `pnpm qa` script |
