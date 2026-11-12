@@ -70,6 +70,20 @@ Current roles:
   - role cards have a soft light that follows the cursor; cards lift on hover
   - the neo-luxury division is a dark featured card
   - nothing is hidden without JavaScript or under reduced motion
+- [x] **Scroll choreography, round 2** (`styles.css`, "Luxury scroll choreography"):
+  - section heads (`data-reveal="head"`): the label's rule draws in, the title sweeps up from behind a mask, the intro comes into focus from a soft blur
+  - blocks and cards (`data-reveal` / `"stagger"`) rise 48px and un-blur
+  - the film opens like a curtain from the centre (`data-reveal="curtain"`)
+  - hairlines draw across under the key figures
+  - numbers drift gently with scroll (`.drift`)
+  - an oversized outlined APHRODITE wordmark in the footer tightens its letter-spacing as it comes into view
+  - scroll-linked effects use CSS scroll timelines where supported (Chrome, Edge); other browsers get the reveals without the drift
+- [x] **Film autoplay:**
+  - muted is set on the element, so autoplay is allowed; it plays whenever it's on screen
+  - if the browser blocks autoplay (Safari or iPhone in Low Power Mode), a large "Play film" button shows, and the first click, tap or key press anywhere starts it (tested by simulating a blocking browser)
+  - it doesn't autoplay under reduced motion
+  - asset paths are relative, so the site works from a sub-folder
+- **Note for testing:** macOS **Low Power Mode** blocks autoplay in Safari and slows animations. The owner saw a "static" site with it on; with it off, everything animates. Test with it off, and remember some visitors will have it on.
 - [x] Hero content restored from the original preview: "Incorporated in Sri Lanka · House of Modern Attire", "The Architecture of *Modern Attire.*", its subline, and the "Explore founding careers" and "Corporate overview" buttons
 - [x] Role cards with a **"View role details"** button that opens a side panel (native `<dialog>`):
   - full role details, plus "Apply for this role" and "Apply by email"
@@ -526,6 +540,7 @@ These were written by the previous build and are no longer on the site:
 | 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
 | 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
 | 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Source Sans 3<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
+| 2026-11-12 | **Owner review round 4:** "film must start automatically" → muted forced, autoplay fallback on first interaction with a large play button. "More scroll animation, luxury feel" → masked title sweeps, focus-pull reveals, film curtain, drawing hairlines, scroll-linked drift, footer wordmark. The "static" look and click-to-play were caused by macOS Low Power Mode |
 | 2026-11-12 | **Fit-on film added:** an AI-generated 8 s clip (360p, 9:16) whose first and last frames differ, so it's made into a boomerang loop. The player keeps the film's own shape. Next: a 1080p regeneration with the fit-on loop prompt in §6 (the dress-always-on loop prompt was rejected: no fit-on effect) |
 | 2026-11-12 | **Owner review round 3:** "more interactive, a wow animation in the first section, more luxury and modern" and "the preview's hero content is better" → live WebGL silk hero; the preview's hero wording restored; see-through header; scroll reveals, craft band, counting figures, studio stage highlight, card spotlight; web-optimised video player (lazy, plays only on screen) and the video brief in §6 |
 | 2026-11-12 | **Owner review round 2:** "the plain text lost the luxury feeling; make it balanced" → Cormorant Garamond for large headings with italic accents; dark hero and header; champagne accent; tracked uppercase labels and buttons; body text kept in Source Sans 3 at 18px for readability; section titles use the original preview's phrasing |

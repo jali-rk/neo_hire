@@ -7,7 +7,7 @@ export default function House() {
     <section className="section section-paper" id="company" aria-labelledby="company-title">
       <div className="wrap">
         <div className="house-grid">
-          <div data-reveal>
+          <div data-reveal="head">
             <p className="eyebrow">The company</p>
             <h2 className="title" id="company-title">
               {HOUSE.title} <em>{HOUSE.titleAccent}</em>
@@ -27,7 +27,7 @@ export default function House() {
         <ul className="metrics" data-reveal="stagger">
           {HOUSE.metrics.map((m) => (
             <li key={m.label}>
-              <CountUp className="metric-value" value={m.value} />
+              <CountUp className="metric-value drift" value={m.value} />
               <h3>{m.label}</h3>
               <p>{m.text}</p>
             </li>

@@ -27,7 +27,7 @@ export default function Atelier() {
   return (
     <section className="section atelier dark" id="studio" aria-labelledby="studio-title">
       <div className="wrap">
-        <div className="section-head" data-reveal>
+        <div className="section-head" data-reveal="head">
           <div>
             <p className="eyebrow">3D studio</p>
             <h2 className="title" id="studio-title">
@@ -41,7 +41,7 @@ export default function Atelier() {
           <ol className={`stages${tracking ? ' is-tracking' : ''}`} ref={list}>
             {ATELIER.stages.map((s, i) => (
               <li key={s.title} className={i === active ? 'is-active' : undefined}>
-                <span className="stage-n" aria-hidden="true">
+                <span className="stage-n drift" aria-hidden="true">
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <div>
@@ -54,7 +54,7 @@ export default function Atelier() {
               </li>
             ))}
           </ol>
-          <div data-reveal>
+          <div className="film-col" data-reveal="curtain">
             <FitOnVideo />
           </div>
         </div>

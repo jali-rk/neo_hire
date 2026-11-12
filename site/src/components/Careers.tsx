@@ -25,7 +25,7 @@ export default function Careers({ openRole, onOpenRole, onApply }: Props) {
   return (
     <section className="section" id="careers" aria-labelledby="careers-title">
       <div className="wrap">
-        <div className="section-head" data-reveal>
+        <div className="section-head" data-reveal="head">
           <div>
             <p className="eyebrow">Careers</p>
             <h2 className="title" id="careers-title">

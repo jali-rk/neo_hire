@@ -39,6 +39,9 @@ export default function Footer() {
             ))}
           </nav>
         </div>
+        <p className="footer-mark" aria-hidden="true">
+          APHRODITE
+        </p>
         <div className="fine">
           <span>
             © {new Date().getFullYear()} {COMPANY}. All rights reserved.

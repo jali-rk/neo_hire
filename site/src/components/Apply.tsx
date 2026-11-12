@@ -182,7 +182,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
   return (
     <section className="section apply dark" id="apply" aria-labelledby="apply-title">
       <div className="wrap">
-        <div className="section-head" data-reveal>
+        <div className="section-head" data-reveal="head">
           <div>
             <p className="eyebrow">Apply</p>
             <h2 className="title" id="apply-title">
