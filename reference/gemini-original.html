@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APHRODITE (PVT) LTD — The Architecture of Modern Attire</title>
+
+    <!-- Google Fonts: Cormorant Garamond & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configure Quiet Corporate Luxury Design Tokens -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#0D0D0D',
+                        charcoal: '#151413',
+                        alabaster: '#F7F5F0',
+                        stonewarm: '#8C857B',
+                        bronze: '#B89F7A',
+                        bronzeLight: '#D3BE9E'
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        sans: ['"Inter"', 'system-ui', 'sans-serif']
+                    },
+                    letterSpacing: {
+                        widestPlus: '0.28em',
+                        editorial: '0.18em'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        /* Custom base refinements and staggered reveal transitions */
+        body {
+            background-color: #0D0D0D;
+            color: #F7F5F0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Subtle custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D0D0D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2C2926;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #B89F7A;
+        }
+
+        /* Responsive canvas container rules */
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="selection:bg-bronze/30 selection:text-alabaster">
+
+    <!-- Subtle Toast Notification Box (No native alerts) -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 pointer-events-none opacity-0 translate-y-3 transition-all duration-300 bg-charcoal border border-bronze/40 text-alabaster px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3">
+        <span class="w-2 h-2 rounded-full bg-bronze animate-pulse"></span>
+        <span id="toastMessage" class="text-xs tracking-wider uppercase font-medium">Copied to clipboard</span>
+    </div>
+
+    <!-- ==========================================
+         STICKY MINIMALIST EXECUTIVE HEADER
+         ========================================== -->
+    <header id="mainHeader" class="fixed top-0 inset-x-0 z-40 transition-all duration-500 bg-obsidian/80 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 h-20 flex items-center justify-between">
+            <!-- Brand Wordmark -->
+            <a href="#hero" class="group flex items-baseline gap-2.5 focus:outline-none">
+                <span class="font-serif text-xl sm:text-2xl tracking-widestPlus text-alabaster font-normal group-hover:text-bronze transition-colors">
+                    APHRODITE
+                </span>
+                <span class="text-[10px] tracking-editorial uppercase text-stonewarm border border-white/15 px-2 py-0.5 rounded-md">
+                    PVT LTD
+                </span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-xs tracking-editorial uppercase text-stonewarm">
+                <a href="#the-house" class="hover:text-alabaster transition-colors py-2">The House</a>
+                <a href="#divisions" class="hover:text-alabaster transition-colors py-2">Divisions</a>
+                <a href="#atelier-tech" class="hover:text-alabaster transition-colors py-2">3D Atelier</a>
+                <a href="#careers" class="hover:text-alabaster transition-colors py-2">Founding Careers</a>
+            </nav>
+
+            <!-- Right CTA & Mobile Menu Button -->
+            <div class="flex items-center gap-3">
+                <button onclick="openApplicationModal('General Corporate / Executive Inquiry')" class="hidden sm:inline-flex items-center gap-2 text-xs tracking-editorial uppercase px-5 py-2.5 rounded-lg border border-bronze/50 text-alabaster hover:bg-bronze hover:text-obsidian transition-all duration-300">
+                    <span>Apply / Inquire</span>
+                </button>
+
+                <!-- Mobile Hamburger Toggle -->
+                <button id="mobileMenuBtn" aria-label="Toggle Navigation" class="md:hidden p-3 rounded-lg border border-white/10 text-alabaster hover:border-bronze/50 transition-colors">
+                    <svg id="menuIconOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7h16M4 12h16M4 17h10"/>
+                    </svg>
+                    <svg id="menuIconClose" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Slide-Down Menu -->
+        <div id="mobileNavPanel" class="hidden md:hidden bg-charcoal border-b border-white/10 px-6 py-6 space-y-4">
+            <a href="#the-house" class="mobile-nav-link block text-sm tracking-editorial uppercase text-alabaster/90 py-2 border-b border-white/5">01. The House</a>
+            <a href="#divisions" class="mobile-nav-link block text-sm tracking-editorial uppercase text-alabaster/90 py-2 border-b border-white/5">02. Strategic Divisions</a>
+            <a href="#atelier-tech" class="mobile-nav-link block text-sm tracking-editorial uppercase text-alabaster/90 py-2 border-b border-white/5">03. 3D Atelier & Craft</a>
+            <a href="#careers" class="mobile-nav-link block text-sm tracking-editorial uppercase text-alabaster/90 py-2 border-b border-white/5">04. Founding Careers</a>
+            <button onclick="openApplicationModal('General Corporate / Executive Inquiry')" class="w-full mt-2 py-3 rounded-lg bg-bronze text-obsidian font-medium text-xs tracking-editorial uppercase">
+                Submit Dossier / Inquire
+            </button>
+        </div>
+    </header>
+
+    <!-- ==========================================
+         SECTION 01 — ATMOSPHERIC HERO SCREEN
+         ========================================== -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-obsidian">
+        <!-- Interactive 3D Digital Silk Drape Canvas -->
+        <div class="absolute inset-0 z-0 opacity-75">
+            <canvas id="silkDrapeCanvas"></canvas>
+        </div>
+
+        <!-- Subtle Radial Vignette Overlay -->
+        <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-obsidian/70 via-transparent to-obsidian"></div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 text-center py-20">
+            <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.04] border border-bronze/30 mb-8 reveal-item">
+                <span class="w-1.5 h-1.5 rounded-full bg-bronze"></span>
+                <span class="text-[10px] sm:text-xs tracking-editorial uppercase text-bronzeLight">
+                    Incorporated in Sri Lanka &bull; House of Modern Attire
+                </span>
+            </div>
+
+            <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light tracking-wide text-alabaster leading-[1.08] mb-7 reveal-item">
+                The Architecture of <br class="hidden sm:inline" />
+                <span class="italic text-bronzeLight">Modern Attire.</span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-sm sm:text-base md:text-lg text-stonewarm font-light leading-relaxed mb-11 reveal-item">
+                Uniting 3D digital garment engineering, precision pattern-making, and tightly controlled manufacturing across multi-tiered apparel divisions.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal-item">
+                <a href="#careers" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-alabaster text-obsidian text-xs tracking-editorial uppercase font-medium hover:bg-bronze transition-all duration-300 shadow-lg">
+                    Explore Founding Careers
+                </a>
+                <a href="#the-house" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-charcoal/80 border border-white/15 text-alabaster text-xs tracking-editorial uppercase hover:border-bronze/60 transition-all duration-300">
+                    Corporate Overview
+                </a>
+            </div>
+
+            <!-- Interactive Canvas Hint -->
+            <div class="mt-16 sm:mt-20 flex items-center justify-center gap-3 text-[11px] tracking-editorial uppercase text-stonewarm/70">
+                <span>CLO 3D Mesh Simulation Active</span>
+                <span class="w-8 h-px bg-bronze/40"></span>
+                <span>Scroll to Explore</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 02 — THE HOUSE (ALABASTER EDITORIAL)
+         ========================================== -->
+    <section id="the-house" class="bg-alabaster text-obsidian py-24 sm:py-32 border-t border-stonewarm/20">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+            <!-- Split Editorial Narrative -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+                <div class="lg:col-span-5 reveal-item">
+                    <p class="text-xs tracking-editorial uppercase text-stonewarm font-medium mb-4">
+                        01 / Executive Mandate
+                    </p>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-normal leading-[1.15] text-obsidian mb-6">
+                        Creative Autonomy Backed by Commercial Rigour.
+                    </h2>
+                    <div class="w-16 h-px bg-bronze mb-6"></div>
+                    <p class="text-xs uppercase tracking-wider text-stonewarm leading-relaxed">
+                        Central Design &amp; Technical Studio &bull; Statutory Corporate Governance
+                    </p>
+                </div>
+
+                <div class="lg:col-span-7 space-y-6 text-obsidian/85 text-base sm:text-lg font-light leading-relaxed reveal-item">
+                    <p>
+                        <strong class="font-medium text-obsidian">Aphrodite (Pvt) Ltd</strong> is an emerging Sri Lankan fashion conglomerate structured on the European multi-house model. Rather than operating as a single standalone label, our central technical studio powers distinct apparel divisions spanning high-rotation island-wide retail distribution to stealth-mode luxury craftsmanship.
+                    </p>
+                    <p>
+                        By anchoring new creative labels upon active wholesale revenue channels and tightly audited partner factories, we eliminate traditional startup volatility—offering Sri Lanka’s premier designers, pattern engineers, and master tailors long-term corporate stability alongside world-class R&amp;D freedom.
+                    </p>
+
+                    <!-- Corporate Assurance Pill Box -->
+                    <div class="p-5 sm:p-6 rounded-2xl bg-obsidian/[0.03] border border-obsidian/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-4">
+                        <div>
+                            <h3 class="text-xs tracking-editorial uppercase font-semibold text-obsidian mb-1">
+                                Stealth-Mode Intellectual Property Protocol
+                            </h3>
+                            <p class="text-xs sm:text-sm text-obsidian/70">
+                                Consumer brand identities remain strictly confidential prior to scheduled market unveilings. Full studio portfolios are shared during NDA-verified interviews.
+                            </p>
+                        </div>
+                        <span class="shrink-0 text-[11px] tracking-wider uppercase px-3.5 py-1.5 rounded-lg bg-obsidian text-alabaster">
+                            NDA Governed
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4-Column Architectural Metrics Strip -->
+            <div class="mt-20 pt-12 border-t border-obsidian/15 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal-item">
+                <div class="p-6 rounded-2xl bg-white/70 border border-obsidian/10">
+                    <span class="font-serif text-4xl sm:text-5xl text-obsidian block mb-2">03</span>
+                    <h3 class="text-xs tracking-editorial uppercase font-semibold text-obsidian mb-1.5">Apparel Tiers</h3>
+                    <p class="text-xs text-obsidian/70 leading-relaxed">Segmented portfolio spanning commercial ready-to-wear, neo-luxury, and haute flagship design.</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-white/70 border border-obsidian/10">
+                    <span class="font-serif text-4xl sm:text-5xl text-obsidian block mb-2">CLO 3D</span>
+                    <h3 class="text-xs tracking-editorial uppercase font-semibold text-obsidian mb-1.5">Digital-First Workflow</h3>
+                    <p class="text-xs text-obsidian/70 leading-relaxed">Virtual drape simulation and zero-waste fit validation prior to physical sample cutting.</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-white/70 border border-obsidian/10">
+                    <span class="font-serif text-4xl sm:text-5xl text-obsidian block mb-2">14-Day</span>
+                    <h3 class="text-xs tracking-editorial uppercase font-semibold text-obsidian mb-1.5">Bi-Weekly Cadence</h3>
+                    <p class="text-xs text-obsidian/70 leading-relaxed">Agile capsule drops and monthly commercial deliveries managed via strict QC checkpoints.</p>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-white/70 border border-obsidian/10">
+                    <span class="font-serif text-4xl sm:text-5xl text-obsidian block mb-2">360&deg;</span>
+                    <h3 class="text-xs tracking-editorial uppercase font-semibold text-obsidian mb-1.5">Island-Wide &amp; Flagship</h3>
+                    <p class="text-xs text-obsidian/70 leading-relaxed">Dual distribution across leading national retail networks and sensory flagship sanctuaries.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 03 — THREE STRATEGIC DIVISIONS
+         ========================================== -->
+    <section id="divisions" class="bg-obsidian py-24 sm:py-32 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 reveal-item">
+                <div>
+                    <p class="text-xs tracking-editorial uppercase text-bronze mb-3">
+                        02 / House Portfolio
+                    </p>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-light text-alabaster">
+                        Three Strategic Divisions.
+                    </h2>
+                </div>
+                <p class="max-w-md text-xs sm:text-sm text-stonewarm leading-relaxed">
+                    Each division maintains an independent creative direction, pricing architecture, and market channel while drawing technical excellence from our Central Studio.
+                </p>
+            </div>
+
+            <!-- Interactive Stealth Division Cards -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-7">
+
+                <!-- Division 01 -->
+                <article class="group relative bg-charcoal border border-white/10 hover:border-bronze/50 rounded-2xl p-7 sm:p-9 flex flex-col justify-between transition-all duration-500 reveal-item">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-8">
+                            <span class="text-xs font-mono text-stonewarm">DIVISION 01</span>
+                            <span class="inline-flex items-center gap-1.5 text-[10px] tracking-wider uppercase px-3 py-1 rounded-full bg-emerald-950/70 text-emerald-300 border border-emerald-500/30">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                Active Operations &bull; 2026
+                            </span>
+                        </div>
+
+                        <h3 class="font-serif text-2xl sm:text-3xl text-alabaster mb-4 group-hover:text-bronzeLight transition-colors">
+                            Commercial Ready-to-Wear Division
+                        </h3>
+
+                        <p class="text-sm text-stonewarm font-light leading-relaxed mb-6">
+                            High-velocity contemporary apparel engineered for consistent fit, commercial longevity, and monthly silhouette rotation across approximately twenty premier island-wide retail chains.
+                        </p>
+
+                        <ul class="space-y-2.5 text-xs text-alabaster/80 border-t border-white/10 pt-5 mb-8">
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">Release Cycle</span>
+                                <span>10 Curated Silhouettes / Month</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">Channel Model</span>
+                                <span>B2B Multi-Retailer Network</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">Role for Group</span>
+                                <span>Foundational Cashflow Engine</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button onclick="openApplicationModal('Division 01 — Commercial RTW Technical Team')" class="w-full py-3 rounded-xl border border-white/15 text-xs tracking-editorial uppercase text-alabaster group-hover:bg-white/[0.06] transition-colors">
+                        Inquire Division Roles &rarr;
+                    </button>
+                </article>
+
+                <!-- Division 02 -->
+                <article class="group relative bg-gradient-to-b from-[#1C1817] to-charcoal border border-bronze/40 rounded-2xl p-7 sm:p-9 flex flex-col justify-between shadow-2xl transition-all duration-500 reveal-item">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-8">
+                            <span class="text-xs font-mono text-bronzeLight">DIVISION 02</span>
+                            <span class="inline-flex items-center gap-1.5 text-[10px] tracking-wider uppercase px-3 py-1 rounded-full bg-bronze/15 text-bronzeLight border border-bronze/40">
+                                <span class="w-1.5 h-1.5 rounded-full bg-bronze animate-pulse"></span>
+                                Stealth &bull; July 2027 Launch
+                            </span>
+                        </div>
+
+                        <h3 class="font-serif text-2xl sm:text-3xl text-alabaster mb-4 group-hover:text-bronzeLight transition-colors">
+                            Neo-Luxury Atelier
+                        </h3>
+
+                        <p class="text-sm text-stonewarm font-light leading-relaxed mb-6">
+                            A multi-sensory menswear and womenswear house uniting romantic magnetism with composed modern power. Features bespoke metal hardware, architectural flagship retail, and 3D virtual try-on technology.
+                        </p>
+
+                        <ul class="space-y-2.5 text-xs text-alabaster/80 border-t border-white/10 pt-5 mb-8">
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">Price Positioning</span>
+                                <span>Neo-Luxury (LKR 7,500 – 50,000)</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">Drop Strategy</span>
+                                <span>Limited Numbered Capsule Runs</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">Disclosure Status</span>
+                                <span class="text-bronzeLight">Protected Under NDA</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button onclick="openApplicationModal('Division 02 — Neo-Luxury Atelier Founding Team')" class="w-full py-3 rounded-xl bg-bronze text-obsidian font-medium text-xs tracking-editorial uppercase hover:bg-bronzeLight transition-colors">
+                        Join Founding Atelier &rarr;
+                    </button>
+                </article>
+
+                <!-- Division 03 -->
+                <article class="group relative bg-charcoal border border-white/10 hover:border-bronze/50 rounded-2xl p-7 sm:p-9 flex flex-col justify-between transition-all duration-500 reveal-item">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-8">
+                            <span class="text-xs font-mono text-stonewarm">DIVISION 03</span>
+                            <span class="inline-flex items-center gap-1.5 text-[10px] tracking-wider uppercase px-3 py-1 rounded-full bg-white/[0.05] text-stonewarm border border-white/15">
+                                Future Horizon
+                            </span>
+                        </div>
+
+                        <h3 class="font-serif text-2xl sm:text-3xl text-alabaster mb-4 group-hover:text-bronzeLight transition-colors">
+                            Haute Flagship Label
+                        </h3>
+
+                        <p class="text-sm text-stonewarm font-light leading-relaxed mb-6">
+                            Reserved as the group’s namesake pinnacle house. Dedicated to experimental textile artistry, sculptural tailoring, and private-clientele commissions following the establishment of Divisions 01 and 02.
+                        </p>
+
+                        <ul class="space-y-2.5 text-xs text-alabaster/80 border-t border-white/10 pt-5 mb-8">
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">Craft Focus</span>
+                                <span>Artisanal Couture &amp; Bespoke</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">R&amp;D Pipeline</span>
+                                <span>Archival Textile Innovation</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="text-stonewarm">Activation Phase</span>
+                                <span>Phase III Strategic Rollout</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button onclick="openApplicationModal('Division 03 — Future Couture R&D Fellowship')" class="w-full py-3 rounded-xl border border-white/15 text-xs tracking-editorial uppercase text-alabaster group-hover:bg-white/[0.06] transition-colors">
+                        Register Future Interest &rarr;
+                    </button>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 04 — TECHNOLOGY & CRAFT EXPLORER
+         ========================================== -->
+    <section id="atelier-tech" class="bg-charcoal py-24 sm:py-32 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+            <div class="max-w-3xl mb-14 reveal-item">
+                <p class="text-xs tracking-editorial uppercase text-bronze mb-3">
+                    03 / Central Design &amp; Engineering Lab
+                </p>
+                <h2 class="font-serif text-3xl sm:text-5xl font-light text-alabaster mb-4">
+                    Precision From Digital Twin to Final Stitch.
+                </h2>
+                <p class="text-sm sm:text-base text-stonewarm font-light leading-relaxed">
+                    Select any stage of our Central Studio workflow below to inspect how digital garment physics and tightly controlled partner manufacturing converge.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch reveal-item">
+                <!-- Left Column: Interactive 4-Stage Selector -->
+                <div class="lg:col-span-6 space-y-3" id="stageSelectorList">
+                    <button onclick="selectPipelineStage(0)" data-stage="0" class="stage-btn w-full text-left p-5 sm:p-6 rounded-2xl border transition-all duration-300 bg-obsidian border-bronze/60">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-bronze">STAGE 01</span>
+                            <span class="text-[10px] tracking-editorial uppercase text-stonewarm">Digital Atelier</span>
+                        </div>
+                        <h3 class="font-serif text-xl sm:text-2xl text-alabaster mb-1.5">CLO 3D Digital Twin &amp; Drape Physics</h3>
+                        <p class="text-xs sm:text-sm text-stonewarm font-light leading-relaxed">
+                            Every silhouette is sculpted and stress-tested in 3D space—calibrating fabric gsm, bias drape, and movement tension before a single metre of cloth is cut.
+                        </p>
+                    </button>
+
+                    <button onclick="selectPipelineStage(1)" data-stage="1" class="stage-btn w-full text-left p-5 sm:p-6 rounded-2xl border transition-all duration-300 bg-obsidian/40 border-white/10 hover:border-white/25">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-stonewarm">STAGE 02</span>
+                            <span class="text-[10px] tracking-editorial uppercase text-stonewarm">CAD Architecture</span>
+                        </div>
+                        <h3 class="font-serif text-xl sm:text-2xl text-alabaster mb-1.5">Precision Pattern Engineering &amp; Grading</h3>
+                        <p class="text-xs sm:text-sm text-stonewarm font-light leading-relaxed">
+                             millimeter-accurate DXF block drafting, concealed seam allowances, and proprietary proportion grading engineered specifically for modern silhouettes.
+                        </p>
+                    </button>
+
+                    <button onclick="selectPipelineStage(2)" data-stage="2" class="stage-btn w-full text-left p-5 sm:p-6 rounded-2xl border transition-all duration-300 bg-obsidian/40 border-white/10 hover:border-white/25">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-stonewarm">STAGE 03</span>
+                            <span class="text-[10px] tracking-editorial uppercase text-stonewarm">In-House Toile</span>
+                        </div>
+                        <h3 class="font-serif text-xl sm:text-2xl text-alabaster mb-1.5">Master Sample Prototyping</h3>
+                        <p class="text-xs sm:text-sm text-stonewarm font-light leading-relaxed">
+                            Our internal master sample machinists construct golden-seal prototypes, testing French seams, custom engraved hardware, and internal silk linings.
+                        </p>
+                    </button>
+
+                    <button onclick="selectPipelineStage(3)" data-stage="3" class="stage-btn w-full text-left p-5 sm:p-6 rounded-2xl border transition-all duration-300 bg-obsidian/40 border-white/10 hover:border-white/25">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-mono text-stonewarm">STAGE 04</span>
+                            <span class="text-[10px] tracking-editorial uppercase text-stonewarm">Zero-Defect Execution</span>
+                        </div>
+                        <h3 class="font-serif text-xl sm:text-2xl text-alabaster mb-1.5">Tightly Controlled Partner Production &amp; QC</h3>
+                        <p class="text-xs sm:text-sm text-stonewarm font-light leading-relaxed">
+                            Vetted specialist production partners manufacture strictly against our Golden Sample tech-packs under on-site inline and final AQL quality audits.
+                        </p>
+                    </button>
+                </div>
+
+                <!-- Right Column: Live Interactive Schematic Visualizer -->
+                <div class="lg:col-span-6 bg-obsidian border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden min-h-[420px]">
+                    <!-- Top Telemetry Header -->
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4 z-10">
+                        <div>
+                            <span id="schematicCode" class="text-[11px] font-mono text-bronze block">SPEC // CLO-MESH-V4.2</span>
+                            <h4 id="schematicTitle" class="font-serif text-xl text-alabaster">3D Cloth Tension &amp; Vertex Simulation</h4>
+                        </div>
+                        <span class="px-3 py-1 rounded-md bg-white/[0.04] border border-white/10 text-[10px] font-mono text-stonewarm">
+                            LIVE CAD VIEW
+                        </span>
+                    </div>
+
+                    <!-- Interactive Technical Canvas -->
+                    <div class="relative flex-1 my-4 min-h-[250px] rounded-xl bg-charcoal/50 border border-white/5 overflow-hidden">
+                        <canvas id="schematicCanvas"></canvas>
+                    </div>
+
+                    <!-- Bottom Technical Spec Readout -->
+                    <div class="grid grid-cols-3 gap-4 pt-4 border-t border-white/10 z-10 text-xs">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-stonewarm block">Tolerance</span>
+                            <span id="specMetric1" class="font-mono text-alabaster">&plusmn; 0.5 mm Digital</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-stonewarm block">Deliverable</span>
+                            <span id="specMetric2" class="font-mono text-alabaster">3D ZPRJ + Render</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-stonewarm block">Sign-Off</span>
+                            <span id="specMetric3" class="font-mono text-bronzeLight">Design Director</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         SECTION 05 — FOUNDING CAREERS PORTAL
+         ========================================== -->
+    <section id="careers" class="bg-obsidian py-24 sm:py-32 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+            <!-- Section Header -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-14 items-end reveal-item">
+                <div class="lg:col-span-7">
+                    <p class="text-xs tracking-editorial uppercase text-bronze mb-3">
+                        04 / Founding Talent Acquisition
+                    </p>
+                    <h2 class="font-serif text-3xl sm:text-5xl font-light text-alabaster mb-4">
+                        Build the Foundation With Us.
+                    </h2>
+                    <p class="text-sm sm:text-base text-stonewarm font-light leading-relaxed">
+                        We recruit directly into <strong class="text-alabaster font-normal">Aphrodite (Pvt) Ltd</strong> with full statutory EPF/ETF benefits, structured remuneration, and a transparent 1-day paid studio practical trial for shortlisted technical candidates.
+                    </p>
+                </div>
+
+                <!-- Department Filter Pills -->
+                <div class="lg:col-span-5 flex flex-wrap lg:justify-end gap-2">
+                    <button onclick="filterRoles('all')" data-filter="all" class="role-filter-btn px-4 py-2 rounded-lg text-xs tracking-wider uppercase bg-bronze text-obsidian font-medium transition-all">
+                        All Roles (5)
+                    </button>
+                    <button onclick="filterRoles('design')" data-filter="design" class="role-filter-btn px-4 py-2 rounded-lg text-xs tracking-wider uppercase bg-charcoal text-stonewarm border border-white/10 hover:text-alabaster transition-all">
+                        3D &amp; Pattern
+                    </button>
+                    <button onclick="filterRoles('craft')" data-filter="craft" class="role-filter-btn px-4 py-2 rounded-lg text-xs tracking-wider uppercase bg-charcoal text-stonewarm border border-white/10 hover:text-alabaster transition-all">
+                        Atelier &amp; QC
+                    </button>
+                    <button onclick="filterRoles('media')" data-filter="media" class="role-filter-btn px-4 py-2 rounded-lg text-xs tracking-wider uppercase bg-charcoal text-stonewarm border border-white/10 hover:text-alabaster transition-all">
+                        Brand Lab
+                    </button>
+                </div>
+            </div>
+
+            <!-- Interactive Accordion Role List -->
+            <div id="rolesContainer" class="space-y-4 reveal-item">
+                <!-- Populated dynamically via JS for clean interaction -->
+            </div>
+
+            <!-- Spontaneous Application Banner -->
+            <div class="mt-12 p-7 sm:p-9 rounded-2xl bg-charcoal border border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 reveal-item">
+                <div>
+                    <h3 class="font-serif text-2xl text-alabaster mb-1">
+                        Exceptional Craftsperson Outside Listed Roles?
+                    </h3>
+                    <p class="text-xs sm:text-sm text-stonewarm font-light">
+                        Textile technologists, luxury retail hospitality hosts, and boutique manufacturing partners may submit a confidential dossier to our executive desk.
+                    </p>
+                </div>
+                <button onclick="openApplicationModal('Spontaneous Executive / Partner Dossier')" class="shrink-0 px-6 py-3.5 rounded-xl border border-bronze/60 text-xs tracking-editorial uppercase text-alabaster hover:bg-bronze hover:text-obsidian transition-all duration-300">
+                    Submit Open Dossier
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         EXECUTIVE LEGAL FOOTER
+         ========================================== -->
+    <footer class="bg-[#080808] border-t border-white/10 py-16 sm:py-20 text-stonewarm">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
+                <!-- Brand Identity -->
+                <div class="md:col-span-5">
+                    <div class="flex items-baseline gap-2.5 mb-4">
+                        <span class="font-serif text-2xl tracking-widestPlus text-alabaster">APHRODITE</span>
+                        <span class="text-[10px] tracking-editorial uppercase text-bronze">(PVT) LTD</span>
+                    </div>
+                    <p class="text-xs sm:text-sm font-light leading-relaxed max-w-sm mb-4">
+                        Incorporated as a Private Limited Liability Company in the Democratic Socialist Republic of Sri Lanka.
+                    </p>
+                    <p class="text-[11px] font-mono text-stonewarm/80">
+                        Corporate Registry: PV 00318492 &bull; Central Studio, Sri Lanka
+                    </p>
+                </div>
+
+                <!-- Direct Executive Desks -->
+                <div class="md:col-span-4 space-y-3">
+                    <h4 class="text-xs tracking-editorial uppercase text-alabaster font-medium mb-3">
+                        Direct Communications
+                    </h4>
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider block text-stonewarm/70">Talent &amp; Founding Careers</span>
+                        <button onclick="copyTextToClipboard('careers@aphrodite.lk')" class="text-sm text-alabaster hover:text-bronze transition-colors inline-flex items-center gap-2 mt-0.5">
+                            <span>careers@aphrodite.lk</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-stonewarm">Copy</span>
+                        </button>
+                    </div>
+                    <div class="pt-2">
+                        <span class="text-[11px] uppercase tracking-wider block text-stonewarm/70">Corporate &amp; Manufacturing</span>
+                        <button onclick="copyTextToClipboard('corporate@aphrodite.lk')" class="text-sm text-alabaster hover:text-bronze transition-colors inline-flex items-center gap-2 mt-0.5">
+                            <span>corporate@aphrodite.lk</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-stonewarm">Copy</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Navigation -->
+                <div class="md:col-span-3 space-y-2.5 text-xs tracking-editorial uppercase">
+                    <h4 class="text-alabaster font-medium mb-3">Directory</h4>
+                    <a href="#the-house" class="block hover:text-alabaster transition-colors">The House</a>
+                    <a href="#divisions" class="block hover:text-alabaster transition-colors">Strategic Divisions</a>
+                    <a href="#atelier-tech" class="block hover:text-alabaster transition-colors">3D Atelier Lab</a>
+                    <a href="#careers" class="block hover:text-alabaster transition-colors">Founding Careers</a>
+                </div>
+            </div>
+
+            <!-- Confidentiality & Copyright -->
+            <div class="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] text-stonewarm/75">
+                <p>&copy; 2026 Aphrodite (Pvt) Ltd. All Rights Reserved.</p>
+                <p class="max-w-xl sm:text-right">
+                    All pre-launch creative assets and division specifications are strictly governed by Non-Disclosure Agreements (NDA).
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==========================================
+         SLIDE-OVER APPLICATION DRAWER / MODAL
+         ========================================== -->
+    <div id="applicationModal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+        <!-- Backdrop -->
+        <div onclick="closeApplicationModal()" class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Slide-over Panel -->
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
+            <div class="w-screen max-w-xl bg-charcoal border-l border-white/15 shadow-2xl flex flex-col justify-between overflow-y-auto">
+                <!-- Modal Header -->
+                <div class="p-6 sm:p-8 border-b border-white/10 flex items-start justify-between sticky top-0 bg-charcoal/95 backdrop-blur-md z-10">
+                    <div>
+                        <span class="text-[10px] tracking-editorial uppercase text-bronze block mb-1">
+                            Aphrodite (Pvt) Ltd &bull; Confidential Dossier
+                        </span>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-alabaster">
+                            Founding Application
+                        </h3>
+                    </div>
+                    <button onclick="closeApplicationModal()" aria-label="Close panel" class="p-2.5 rounded-lg border border-white/10 text-stonewarm hover:text-alabaster hover:border-bronze/50 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Application Form Body -->
+                <form id="careerForm" onsubmit="handleApplicationSubmit(event)" class="p-6 sm:p-8 space-y-5 flex-1">
+                    <!-- Selected Role -->
+                    <div>
+                        <label for="roleSelect" class="block text-[11px] tracking-editorial uppercase text-stonewarm mb-2">
+                            Selected Position / Inquiry Stream *
+                        </label>
+                        <select id="roleSelect" required class="w-full bg-obsidian border border-white/15 focus:border-bronze rounded-xl px-4 py-3 text-sm text-alabaster focus:outline-none">
+                            <option value="3D Apparel Designer (CLO 3D Specialist)">3D Apparel Designer (CLO 3D Specialist)</option>
+                            <option value="Senior Pattern Maker (Womenswear & Tailoring)">Senior Pattern Maker (Womenswear & Tailoring)</option>
+                            <option value="Master Sample Machinist / Atelier Tailor">Master Sample Machinist / Atelier Tailor</option>
+                            <option value="Quality Assurance & Sourcing Executive">Quality Assurance & Sourcing Executive</option>
+                            <option value="Cinematographer & Visual Content Creator">Cinematographer & Visual Content Creator</option>
+                            <option value="Division 01 — Commercial RTW Technical Team">Division 01 — Commercial RTW Technical Team</option>
+                            <option value="Division 02 — Neo-Luxury Atelier Founding Team">Division 02 — Neo-Luxury Atelier Founding Team</option>
+                            <option value="Division 03 — Future Couture R&D Fellowship">Division 03 — Future Couture R&D Fellowship</option>
+                            <option value="Spontaneous Executive / Partner Dossier">Spontaneous Executive / Partner Dossier</option>
+                            <option value="General Corporate / Executive Inquiry">General Corporate / Executive Inquiry</option>
+                        </select>
+                    </div>
+
+                    <!-- Candidate Name & Phone -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="applicantName" class="block text-[11px] tracking-editorial uppercase text-stonewarm mb-2">
+                                Full Name *
+                            </label>
+                            <input id="applicantName" type="text" required placeholder="e.g. Kavindi Perera" class="w-full bg-obsidian border border-white/15 focus:border-bronze rounded-xl px-4 py-3 text-sm text-alabaster placeholder-stonewarm/40 focus:outline-none" />
+                        </div>
+                        <div>
+                            <label for="applicantPhone" class="block text-[11px] tracking-editorial uppercase text-stonewarm mb-2">
+                                Direct Phone (WhatsApp) *
+                            </label>
+                            <input id="applicantPhone" type="tel" required placeholder="+94 77 XXX XXXX" class="w-full bg-obsidian border border-white/15 focus:border-bronze rounded-xl px-4 py-3 text-sm text-alabaster placeholder-stonewarm/40 focus:outline-none" />
+                        </div>
+                    </div>
+
+                    <!-- Email & Experience -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="applicantEmail" class="block text-[11px] tracking-editorial uppercase text-stonewarm mb-2">
+                                Email Address *
+                            </label>
+                            <input id="applicantEmail" type="email" required placeholder="name@domain.com" class="w-full bg-obsidian border border-white/15 focus:border-bronze rounded-xl px-4 py-3 text-sm text-alabaster placeholder-stonewarm/40 focus:outline-none" />
+                        </div>
+                        <div>
+                            <label for="applicantExp" class="block text-[11px] tracking-editorial uppercase text-stonewarm mb-2">
+                                Industry Experience *
+                            </label>
+                            <select id="applicantExp" required class="w-full bg-obsidian border border-white/15 focus:border-bronze rounded-xl px-4 py-3 text-sm text-alabaster focus:outline-none">
+                                <option value="1–2 Years (Associate / Graduate)">1–2 Years (Associate / Graduate)</option>
+                                <option value="3–5 Years (Mid-Senior Specialist)" selected>3–5 Years (Mid-Senior Specialist)</option>
+                                <option value="6–10 Years (Lead / Master Craft)">6–10 Years (Lead / Master Craft)</option>
+                                <option value="10+ Years (Executive / Head)">10+ Years (Executive / Head)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Portfolio / LinkedIn URL -->
+                    <div>
+                        <label for="applicantPortfolio" class="block text-[11px] tracking-editorial uppercase text-stonewarm mb-2">
+                            Portfolio / Behance / LinkedIn URL
+                        </label>
+                        <input id="applicantPortfolio" type="url" placeholder="https://linkedin.com/in/..." class="w-full bg-obsidian border border-white/15 focus:border-bronze rounded-xl px-4 py-3 text-sm text-alabaster placeholder-stonewarm/40 focus:outline-none" />
+                    </div>
+
+                    <!-- Simulated CV / Lookbook Upload Dropzone -->
+                    <div>
+                        <span class="block text-[11px] tracking-editorial uppercase text-stonewarm mb-2">
+                            CV &amp; Technical Portfolio (PDF / ZIP, Max 25MB)
+                        </span>
+                        <label for="cvFileInput" class="cursor-pointer group flex flex-col items-center justify-center p-5 rounded-xl border border-dashed border-white/20 hover:border-bronze bg-obsidian/60 transition-colors text-center">
+                            <svg class="w-6 h-6 text-bronze mb-2 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            <span id="uploadedFileName" class="text-xs text-alabaster font-medium">
+                                Click to attach CV or Portfolio Archive
+                            </span>
+                            <span class="text-[11px] text-stonewarm mt-1">
+                                Encrypted transmission directly to Central Studio HR
+                            </span>
+                            <input id="cvFileInput" type="file" accept=".pdf,.doc,.docx,.zip,.png,.jpg" class="hidden" onchange="handleFileSelect(event)" />
+                        </label>
+                    </div>
+
+                    <!-- Brief Note -->
+                    <div>
+                        <label for="applicantNote" class="block text-[11px] tracking-editorial uppercase text-stonewarm mb-2">
+                            Technical Strengths / Notice Period
+                        </label>
+                        <textarea id="applicantNote" rows="3" placeholder="Briefly state your core apparel machinery, CAD/CLO 3D proficiency, or availability..." class="w-full bg-obsidian border border-white/15 focus:border-bronze rounded-xl px-4 py-3 text-sm text-alabaster placeholder-stonewarm/40 focus:outline-none"></textarea>
+                    </div>
+
+                    <!-- Mandatory NDA Checkbox -->
+                    <div class="p-4 rounded-xl bg-obsidian/80 border border-white/10">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input id="ndaCheckbox" type="checkbox" required class="mt-1 w-4 h-4 accent-[#B89F7A] rounded" />
+                            <span class="text-xs text-stonewarm leading-relaxed">
+                                I acknowledge that pre-launch sub-brand names, silhouettes, and division briefings shared by <strong class="text-alabaster font-normal">Aphrodite (Pvt) Ltd</strong> during the interview and paid practical trial are strictly confidential under NDA.
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Validation Message Box -->
+                    <div id="formErrorBox" class="hidden p-3.5 rounded-xl bg-red-950/60 border border-red-500/40 text-xs text-red-200"></div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full py-4 rounded-xl bg-bronze text-obsidian font-medium text-xs tracking-editorial uppercase hover:bg-bronzeLight transition-all shadow-lg">
+                        Transmit Confidential Dossier
+                    </button>
+                </form>
+
+                <!-- Executive Confirmation Screen (Hidden initially) -->
+                <div id="confirmationState" class="hidden p-8 sm:p-10 flex-1 flex flex-col items-center justify-center text-center">
+                    <div class="w-14 h-14 rounded-full bg-bronze/15 border border-bronze flex items-center justify-center text-bronze mb-6">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <p class="text-[11px] tracking-editorial uppercase text-bronze mb-2">
+                        Dossier Logged &bull; <span id="dossierRefId">APH-2026-884</span>
+                    </p>
+                    <h4 class="font-serif text-3xl text-alabaster mb-3">
+                        Transmission Received.
+                    </h4>
+                    <p class="text-sm text-stonewarm font-light leading-relaxed max-w-md mb-8">
+                        Thank you, <span id="confirmedApplicantName" class="text-alabaster font-normal">Candidate</span>. Our Talent Acquisition Desk at <strong class="text-alabaster font-normal">Aphrodite (Pvt) Ltd</strong> reviews technical submissions within 72 hours to schedule NDA briefings and studio trials.
+                    </p>
+                    <button onclick="resetAndCloseModal()" class="px-8 py-3.5 rounded-xl border border-white/20 text-xs tracking-editorial uppercase text-alabaster hover:border-bronze transition-colors">
+                        Return to Corporate Portal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT: SIMULATIONS & INTERACTIVITY
+         ========================================== -->
+    <script>
+        /* -----------------------------------------------------------
+         * 1. FOUNDING ROLES DATA & ACCORDION RENDERER
+         * ----------------------------------------------------------- */
+        const foundingRoles = [
+            {
+                id: 'role-1',
+                title: '3D Apparel Designer (CLO 3D Specialist)',
+                category: 'design',
+                type: 'Full-Time | Central Studio',
+                division: 'Commercial RTW & Stealth Neo-Luxury Atelier',
+                experience: '2+ Years / Strong Portfolio',
+                summary: 'Translate creative concepts into hyper-accurate 3D digital garments, testing drape physics across silk, lace, structured linen, and tailored suiting prior to physical sampling.',
+                requirements: [
+                    'Advanced fluency in CLO 3D / Marvelous Designer, fabric physics calibration, and avatar fit grading.',
+                    'Degree or Diploma in Fashion / Textile Design (UoM Fashion & Textile, AOD, LIFT, or equivalent).',
+                    'Eye for both high-rotation contemporary silhouettes and magnetic neo-luxury evening/tailored wear.'
+                ]
+            },
+            {
+                id: 'role-2',
+                title: 'Senior Pattern Maker (Womenswear & Tailoring)',
+                category: 'design',
+                type: 'Full-Time | Central Studio',
+                division: 'Multi-Division Technical Core',
+                experience: '5+ Years Apparel Pattern Engineering',
+                summary: 'Architect master blocks, complex fluid bias drapes, and structured menswear/womenswear tailoring with zero-compromise fit consistency.',
+                requirements: [
+                    'Proven track record in manual drafting and CAD pattern systems (Lectra / Gerber / Optitex / CLO DXF).',
+                    'Deep understanding of shrinkage tolerances, delicate lace/silk handling, and Roman/numeric size grading.',
+                    'Ability to collaborate closely with 3D designers and guide sample machinists on construction sequences.'
+                ]
+            },
+            {
+                id: 'role-3',
+                title: 'Master Sample Machinist / Atelier Tailor',
+                category: 'craft',
+                type: 'Full-Time | Central Studio',
+                division: 'Prototype & Golden-Seal Lab',
+                experience: '5+ Years High-Finish Sample Room',
+                summary: 'Construct showroom-grade Golden Seal prototypes featuring couture-level internal finishes, French seams, rolled hems, and custom metal hardware attachment.',
+                requirements: [
+                    'Mastery of single-needle lockstitch, delicate lightweight fabrics, invisible zippers, and structured lining.',
+                    'Prior experience in export-grade sample rooms or luxury bridal/tailoring ateliers in Sri Lanka.',
+                    'Shortlisted artisans complete a 1-day paid studio practical trial with full statutory benefits upon appointment.'
+                ]
+            },
+            {
+                id: 'role-4',
+                title: 'Quality Assurance & Sourcing Executive',
+                category: 'craft',
+                type: 'Full-Time | Partner Network & HQ',
+                division: 'Outsourced Manufacturing Control',
+                experience: '3–6 Years Apparel QC & Merchandising',
+                summary: 'Enforce strict inline and final AQL quality standards across vetted Sri Lankan partner factories while sourcing specialty textiles, custom trims, and rigid packaging.',
+                requirements: [
+                    'Strong command of garment construction defects, measurement audits, and factory compliance.',
+                    'Vendor negotiation capability for luxury fabrics, custom engraved hardware, and boutique batch runs.',
+                    'Willingness to travel between Central Studio and partner production facilities.'
+                ]
+            },
+            {
+                id: 'role-5',
+                title: 'Cinematographer & Visual Content Creator',
+                category: 'media',
+                type: 'Upcoming Intake | Brand Lab',
+                division: 'Stealth Pre-Launch Content Bank',
+                experience: '2–5 Years Editorial / Luxury Film',
+                summary: 'Capture atmospheric behind-the-atelier macro craft films, faceless micro-cinema reels, and high-contrast editorial campaigns ahead of our 2027 flagship unveiling.',
+                requirements: [
+                    'Mastery of moody low-key lighting (2700K warm cinema), macro lens storytelling, and color grading.',
+                    'Proficiency in Premiere Pro / DaVinci Resolve and spatial sound design sensibilities.',
+                    'Strict adherence to pre-launch asset security and embargoed content banking.'
+                ]
+            }
+        ];
+
+        let expandedRoleId = 'role-1';
+        let currentCategoryFilter = 'all';
+
+        function renderRoles() {
+            const container = document.getElementById('rolesContainer');
+            if (!container) return;
+
+            const filtered = foundingRoles.filter(r =>
+                currentCategoryFilter === 'all' ? true : r.category === currentCategoryFilter
+            );
+
+            container.innerHTML = filtered.map(role => {
+                const isOpen = expandedRoleId === role.id;
+                return `
+                <div class="rounded-2xl border transition-all duration-300 ${isOpen ? 'bg-charcoal border-bronze/60 shadow-xl' : 'bg-charcoal/50 border-white/10 hover:border-white/25'}">
+                    <button type="button" onclick="toggleRoleAccordion('${role.id}')" class="w-full text-left p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2.5 mb-2">
+                                <span class="text-[10px] tracking-editorial uppercase px-2.5 py-1 rounded-md bg-white/[0.05] text-bronzeLight border border-white/10">
+                                    ${role.type}
+                                </span>
+                                <span class="text-xs text-stonewarm">${role.division}</span>
+                            </div>
+                            <h3 class="font-serif text-2xl sm:text-3xl text-alabaster">${role.title}</h3>
+                        </div>
+                        <div class="flex items-center gap-4 self-end sm:self-center">
+                            <span class="text-xs text-stonewarm hidden md:inline">${role.experience}</span>
+                            <span class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center text-alabaster transition-transform duration-300 ${isOpen ? 'rotate-180 border-bronze text-bronze' : ''}">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </button>
+
+                    <div class="${isOpen ? 'block' : 'hidden'} px-6 sm:px-7 pb-7 pt-2 border-t border-white/10">
+                        <p class="text-sm text-alabaster/85 font-light leading-relaxed mb-5 mt-3">
+                            ${role.summary}
+                        </p>
+                        <h4 class="text-[11px] tracking-editorial uppercase text-bronze mb-3">Key Competencies &amp; Studio Standards</h4>
+                        <ul class="space-y-2 mb-6">
+                            ${role.requirements.map(req => `
+                                <li class="text-xs sm:text-sm text-stonewarm font-light flex items-start gap-2.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-bronze mt-2 shrink-0"></span>
+                                    <span>${req}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-white/10">
+                            <span class="text-[11px] text-stonewarm">
+                                Statutory EPF/ETF &bull; Aphrodite (Pvt) Ltd Appointment Letter
+                            </span>
+                            <button type="button" onclick="openApplicationModal('${role.title}')" class="px-6 py-3 rounded-xl bg-alabaster text-obsidian font-medium text-xs tracking-editorial uppercase hover:bg-bronze transition-colors">
+                                Apply for Role &rarr;
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function toggleRoleAccordion(roleId) {
+            expandedRoleId = (expandedRoleId === roleId) ? null : roleId;
+            renderRoles();
+        }
+
+        function filterRoles(category) {
+            currentCategoryFilter = category;
+            const firstMatch = foundingRoles.find(r => category === 'all' || r.category === category);
+            expandedRoleId = firstMatch ? firstMatch.id : null;
+
+            document.querySelectorAll('.role-filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.className = 'role-filter-btn px-4 py-2 rounded-lg text-xs tracking-wider uppercase bg-bronze text-obsidian font-medium transition-all';
+                } else {
+                    btn.className = 'role-filter-btn px-4 py-2 rounded-lg text-xs tracking-wider uppercase bg-charcoal text-stonewarm border border-white/10 hover:text-alabaster transition-all';
+                }
+            });
+
+            renderRoles();
+        }
+
+        /* -----------------------------------------------------------
+         * 2. INTERACTIVE APPLICATION DRAWER & CLIPBOARD TOAST
+         * ----------------------------------------------------------- */
+        function openApplicationModal(preselectedRole) {
+            const modal = document.getElementById('applicationModal');
+            const select = document.getElementById('roleSelect');
+            const mobilePanel = document.getElementById('mobileNavPanel');
+
+            if (mobilePanel && !mobilePanel.classList.contains('hidden')) {
+                toggleMobileMenu();
+            }
+
+            if (select && preselectedRole) {
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value === preselectedRole) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeApplicationModal() {
+            const modal = document.getElementById('applicationModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const label = document.getElementById('uploadedFileName');
+            if (file && label) {
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                label.textContent = `Attached: ${file.name} (${sizeMB} MB)`;
+                label.classList.add('text-bronzeLight');
+            }
+        }
+
+        function handleApplicationSubmit(event) {
+            event.preventDefault();
+            const errorBox = document.getElementById('formErrorBox');
+            const nameInput = document.getElementById('applicantName');
+            const ndaCheck = document.getElementById('ndaCheckbox');
+
+            if (!ndaCheck.checked) {
+                errorBox.textContent = 'Please acknowledge the Non-Disclosure Agreement (NDA) protocol before transmitting.';
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            errorBox.classList.add('hidden');
+
+            // Generate executive reference number
+            const randomCode = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('dossierRefId').textContent = `APH-2026-${randomCode}`;
+            document.getElementById('confirmedApplicantName').textContent = nameInput.value.trim() || 'Candidate';
+
+            document.getElementById('careerForm').classList.add('hidden');
+            document.getElementById('confirmationState').classList.remove('hidden');
+        }
+
+        function resetAndCloseModal() {
+            document.getElementById('careerForm').reset();
+            document.getElementById('uploadedFileName').textContent = 'Click to attach CV or Portfolio Archive';
+            document.getElementById('careerForm').classList.remove('hidden');
+            document.getElementById('confirmationState').classList.add('hidden');
+            closeApplicationModal();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const msgEl = document.getElementById('toastMessage');
+            if (!toast || !msgEl) return;
+
+            msgEl.textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-3');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-3');
+            }, 2800);
+        }
+
+        function copyTextToClipboard(text) {
+            try {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = text;
+                tempInput.style.position = 'fixed';
+                tempInput.style.opacity = '0';
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast(`Copied: ${text}`);
+            } catch (err) {
+                showToast('Unable to copy automatically');
+            }
+        }
+
+        /* -----------------------------------------------------------
+         * 3. MOBILE NAVIGATION TOGGLE
+         * ----------------------------------------------------------- */
+        function toggleMobileMenu() {
+            const panel = document.getElementById('mobileNavPanel');
+            const openIcon = document.getElementById('menuIconOpen');
+            const closeIcon = document.getElementById('menuIconClose');
+
+            panel.classList.toggle('hidden');
+            openIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        }
+
+        document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobileNavPanel').classList.add('hidden');
+                document.getElementById('menuIconOpen').classList.remove('hidden');
+                document.getElementById('menuIconClose').classList.add('hidden');
+            });
+        });
+
+        /* -----------------------------------------------------------
+         * 4. HERO CANVAS: GOSSAMER 3D SILK WIREFRAME SIMULATION
+         * ----------------------------------------------------------- */
+        const heroCanvas = document.getElementById('silkDrapeCanvas');
+        const heroCtx = heroCanvas.getContext('2d');
+        let heroWidth = 0;
+        let heroHeight = 0;
+        let pointerX = 0.5;
+        let pointerY = 0.5;
+        let smoothPointerX = 0.5;
+        let smoothPointerY = 0.5;
+        let heroTime = 0;
+
+        function resizeHeroCanvas() {
+            const rect = heroCanvas.parentElement.getBoundingClientRect();
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            heroWidth = rect.width;
+            heroHeight = rect.height;
+            heroCanvas.width = heroWidth * dpr;
+            heroCanvas.height = heroHeight * dpr;
+            heroCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            pointerX = e.clientX / Math.max(window.innerWidth, 1);
+            pointerY = e.clientY / Math.max(window.innerHeight, 1);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches.length > 0) {
+                pointerX = e.touches[0].clientX / Math.max(window.innerWidth, 1);
+                pointerY = e.touches[0].clientY / Math.max(window.innerHeight, 1);
+            }
+        }, { passive: true });
+
+        function renderHeroSilk() {
+            heroCtx.clearRect(0, 0, heroWidth, heroHeight);
+
+            smoothPointerX += (pointerX - smoothPointerX) * 0.04;
+            smoothPointerY += (pointerY - smoothPointerY) * 0.04;
+            heroTime += 0.008;
+
+            const strands = 26;
+            const segments = 48;
+
+            for (let s = 0; s < strands; s++) {
+                const normS = s / (strands - 1);
+                heroCtx.beginPath();
+
+                for (let i = 0; i <= segments; i++) {
+                    const normI = i / segments;
+                    const x = normI * heroWidth;
+
+                    // Fluid 3D cloth wave harmonics influenced by pointer
+                    const waveA = Math.sin(normI * 4.5 + heroTime + normS * 2.4) * 38;
+                    const waveB = Math.cos(normI * 2.8 - heroTime * 0.7 + normS * 3.1) * 26;
+                    const pointerPull = Math.exp(-Math.pow(normI - smoothPointerX, 2) * 8) *
+                                        ((smoothPointerY - 0.5) * 95);
+
+                    const baseVertical = heroHeight * (0.2 + normS * 0.62);
+                    const y = baseVertical + waveA + waveB + pointerPull;
+
+                    if (i === 0) {
+                        heroCtx.moveTo(x, y);
+                    } else {
+                        heroCtx.lineTo(x, y);
+                    }
+                }
+
+                // Alternate subtle Champagne Bronze and Warm Stone gossamer threads
+                const alpha = 0.07 + Math.sin(normS * Math.PI) * 0.16;
+                heroCtx.strokeStyle = s % 4 === 0
+                    ? `rgba(184, 159, 122, ${alpha + 0.05})`
+                    : `rgba(140, 133, 123, ${alpha})`;
+                heroCtx.lineWidth = s % 4 === 0 ? 1.1 : 0.7;
+                heroCtx.stroke();
+            }
+        }
+
+        /* -----------------------------------------------------------
+         * 5. SECTION 04 SCHEMATIC CANVAS: 4-STAGE STUDIO PIPELINE
+         * ----------------------------------------------------------- */
+        const stageSpecs = [
+            {
+                code: 'SPEC // CLO-MESH-V4.2',
+                title: '3D Cloth Tension & Vertex Simulation',
+                metric1: '± 0.5 mm Digital',
+                metric2: '3D ZPRJ + Render',
+                metric3: 'Design Director'
+            },
+            {
+                code: 'SPEC // DXF-BLOCK-CAD',
+                title: 'Precision Bodice & Sleeve Block Drafting',
+                metric1: '0.0% Grain Drift',
+                metric2: 'Graded DXF / A0',
+                metric3: 'Lead Pattern Maker'
+            },
+            {
+                code: 'SPEC // GOLDEN-SEAL-01',
+                title: 'Internal Seam & Hardware Stress Calibration',
+                metric1: '14–16 SPI Stitch',
+                metric2: 'Physical Seal Toile',
+                metric3: 'Master Tailor'
+            },
+            {
+                code: 'SPEC // AQL-1.5-AUDIT',
+                title: 'Multi-Point Partner QC & Batch Serialization',
+                metric1: 'AQL 1.5 Strict',
+                metric2: 'Numbered Lot Pass',
+                metric3: 'QA Executive'
+            }
+        ];
+
+        let currentPipelineStage = 0;
+        const schCanvas = document.getElementById('schematicCanvas');
+        const schCtx = schCanvas.getContext('2d');
+        let schW = 0;
+        let schH = 0;
+        let schTick = 0;
+
+        function resizeSchematicCanvas() {
+            const rect = schCanvas.parentElement.getBoundingClientRect();
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            schW = rect.width;
+            schH = rect.height;
+            schCanvas.width = schW * dpr;
+            schCanvas.height = schH * dpr;
+            schCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function selectPipelineStage(index) {
+            currentPipelineStage = index;
+            const spec = stageSpecs[index];
+
+            document.getElementById('schematicCode').textContent = spec.code;
+            document.getElementById('schematicTitle').textContent = spec.title;
+            document.getElementById('specMetric1').textContent = spec.metric1;
+            document.getElementById('specMetric2').textContent = spec.metric2;
+            document.getElementById('specMetric3').textContent = spec.metric3;
+
+            document.querySelectorAll('.stage-btn').forEach(btn => {
+                const btnStage = parseInt(btn.getAttribute('data-stage'), 10);
+                const labelSpan = btn.querySelector('span.font-mono');
+                if (btnStage === index) {
+                    btn.className = 'stage-btn w-full text-left p-5 sm:p-6 rounded-2xl border transition-all duration-300 bg-obsidian border-bronze/60 shadow-lg';
+                    if (labelSpan) labelSpan.className = 'text-xs font-mono text-bronze';
+                } else {
+                    btn.className = 'stage-btn w-full text-left p-5 sm:p-6 rounded-2xl border transition-all duration-300 bg-obsidian/40 border-white/10 hover:border-white/25';
+                    if (labelSpan) labelSpan.className = 'text-xs font-mono text-stonewarm';
+                }
+            });
+        }
+
+        function renderSchematic() {
+            schCtx.clearRect(0, 0, schW, schH);
+            schTick += 0.02;
+
+            // Subtle technical CAD background grid
+            schCtx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+            schCtx.lineWidth = 1;
+            const gridStep = 28;
+            for (let x = 0; x < schW; x += gridStep) {
+                schCtx.beginPath();
+                schCtx.moveTo(x, 0);
+                schCtx.lineTo(x, schH);
+                schCtx.stroke();
+            }
+            for (let y = 0; y < schH; y += gridStep) {
+                schCtx.beginPath();
+                schCtx.moveTo(0, y);
+                schCtx.lineTo(schW, y);
+                schCtx.stroke();
+            }
+
+            const cx = schW / 2;
+            const cy = schH / 2;
+
+            if (currentPipelineStage === 0) {
+                // Stage 01: 3D Garment Drape Mesh Cylinder/Cone
+                const rings = 9;
+                const cols = 16;
+                for (let r = 0; r < rings; r++) {
+                    const nr = r / (rings - 1);
+                    const y = cy - 80 + nr * 160;
+                    const radiusX = 38 + nr * 58 + Math.sin(schTick + nr * 3) * 6;
+                    const radiusY = 12 + nr * 10;
+
+                    schCtx.beginPath();
+                    for (let c = 0; c <= cols; c++) {
+                        const angle = (c / cols) * Math.PI * 2 + schTick * 0.25;
+                        const px = cx + Math.cos(angle) * radiusX;
+                        const py = y + Math.sin(angle) * radiusY;
+                        if (c === 0) schCtx.moveTo(px, py);
+                        else schCtx.lineTo(px, py);
+                    }
+                    schCtx.strokeStyle = r % 2 === 0 ? 'rgba(184, 159, 122, 0.65)' : 'rgba(247, 245, 240, 0.22)';
+                    schCtx.lineWidth = 1;
+                    schCtx.stroke();
+                }
+            } else if (currentPipelineStage === 1) {
+                // Stage 02: Nested Multi-Size CAD Pattern Block Grading
+                for (let g = 0; g < 4; g++) {
+                    const scale = 0.72 + g * 0.11;
+                    schCtx.save();
+                    schCtx.translate(cx, cy);
+                    schCtx.scale(scale, scale);
+
+                    schCtx.beginPath();
+                    schCtx.moveTo(-65, -85);
+                    schCtx.quadraticCurveTo(0, -60, 65, -85);
+                    schCtx.quadraticCurveTo(95, -25, 72, 85);
+                    schCtx.lineTo(-72, 85);
+                    schCtx.quadraticCurveTo(-95, -25, -65, -85);
+                    schCtx.closePath();
+
+                    schCtx.strokeStyle = g === 3 ? '#B89F7A' : `rgba(247, 245, 240, ${0.18 + g * 0.12})`;
+                    schCtx.setLineDash(g === 3 ? [] : [4, 4]);
+                    schCtx.lineWidth = g === 3 ? 1.5 : 1;
+                    schCtx.stroke();
+                    schCtx.restore();
+                }
+
+                // Animated grainline axis
+                schCtx.setLineDash([]);
+                schCtx.strokeStyle = 'rgba(184, 159, 122, 0.5)';
+                schCtx.beginPath();
+                schCtx.moveTo(cx, cy - 95);
+                schCtx.lineTo(cx, cy + 95);
+                schCtx.stroke();
+            } else if (currentPipelineStage === 2) {
+                // Stage 03: Precision Seam & Custom Hardware Callout
+                schCtx.strokeStyle = 'rgba(247, 245, 240, 0.5)';
+                schCtx.lineWidth = 1.4;
+                schCtx.beginPath();
+                schCtx.moveTo(cx - 110, cy + 40);
+                schCtx.bezierCurveTo(cx - 40, cy - 50, cx + 40, cy - 50, cx + 110, cy + 40);
+                schCtx.stroke();
+
+                // Twin precision stitch line
+                schCtx.setLineDash([5, 4]);
+                schCtx.strokeStyle = '#B89F7A';
+                schCtx.beginPath();
+                schCtx.moveTo(cx - 106, cy + 47);
+                schCtx.bezierCurveTo(cx - 38, cy - 42, cx + 38, cy - 42, cx + 106, cy + 47);
+                schCtx.stroke();
+                schCtx.setLineDash([]);
+
+                // Pulsing hardware node
+                const pulse = 14 + Math.sin(schTick * 2) * 4;
+                schCtx.strokeStyle = 'rgba(184, 159, 122, 0.45)';
+                schCtx.beginPath();
+                schCtx.arc(cx, cy - 18, pulse, 0, Math.PI * 2);
+                schCtx.stroke();
+
+                schCtx.fillStyle = '#B89F7A';
+                schCtx.beginPath();
+                schCtx.arc(cx, cy - 18, 4, 0, Math.PI * 2);
+                schCtx.fill();
+            } else {
+                // Stage 04: QC Inspection Laser Scan & Tolerance Matrix
+                const scanY = cy - 75 + ((Math.sin(schTick * 1.4) + 1) / 2) * 150;
+
+                schCtx.strokeStyle = 'rgba(247, 245, 240, 0.35)';
+                schCtx.strokeRect(cx - 85, cy - 75, 170, 150);
+
+                // Checkpoints
+                const pts = [[-50, -40], [45, -30], [-30, 35], [50, 45], [0, 0]];
+                pts.forEach(([dx, dy]) => {
+                    const active = Math.abs((cy + dy) - scanY) < 18;
+                    schCtx.fillStyle = active ? '#B89F7A' : 'rgba(247, 245, 240, 0.4)';
+                    schCtx.beginPath();
+                    schCtx.arc(cx + dx, cy + dy, active ? 5 : 3, 0, Math.PI * 2);
+                    schCtx.fill();
+                });
+
+                // Horizontal QA scan beam
+                schCtx.strokeStyle = '#B89F7A';
+                schCtx.lineWidth = 1.5;
+                schCtx.beginPath();
+                schCtx.moveTo(cx - 98, scanY);
+                schCtx.lineTo(cx + 98, scanY);
+                schCtx.stroke();
+            }
+        }
+
+        /* -----------------------------------------------------------
+         * 6. SCROLL REVEAL OBSERVER & MAIN ANIMATION LOOP
+         * ----------------------------------------------------------- */
+        function setupScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.12 });
+
+            document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+        }
+
+        function animateLoop() {
+            renderHeroSilk();
+            renderSchematic();
+            requestAnimationFrame(animateLoop);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeHeroCanvas();
+            resizeSchematicCanvas();
+        });
+
+        window.onload = function () {
+            renderRoles();
+            resizeHeroCanvas();
+            resizeSchematicCanvas();
+            setupScrollReveal();
+            animateLoop();
+        };
+    </script>
+</body>
+</html>
