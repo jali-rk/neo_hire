@@ -49,7 +49,7 @@ export default function Header() {
         </nav>
 
         <div className="header-actions">
-          <a className="btn btn-primary btn-sm" href="#apply">
+          <a className="btn btn-light btn-sm" href="#apply">
             Apply now
           </a>
           <button

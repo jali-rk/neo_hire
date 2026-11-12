@@ -8,7 +8,7 @@ export default function House() {
           <div>
             <p className="eyebrow">The company</p>
             <h2 className="title" id="company-title">
-              {HOUSE.title}
+              {HOUSE.title} <em>{HOUSE.titleAccent}</em>
             </h2>
           </div>
           <div className="house-text">

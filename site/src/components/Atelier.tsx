@@ -9,7 +9,7 @@ export default function Atelier() {
           <div>
             <p className="eyebrow">3D studio</p>
             <h2 className="title" id="studio-title">
-              {ATELIER.title}
+              {ATELIER.title} <em>{ATELIER.titleAccent}</em>
             </h2>
           </div>
           <p className="intro">{ATELIER.intro}</p>

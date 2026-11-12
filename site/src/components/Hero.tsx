@@ -3,17 +3,19 @@ import JacketDrawing from './JacketDrawing';
 
 export default function Hero() {
   return (
-    <section className="hero" id="top" aria-labelledby="hero-title">
+    <section className="hero dark" id="top" aria-labelledby="hero-title">
       <div className="wrap hero-grid">
         <div className="hero-copy">
           <p className="eyebrow">{HERO.eyebrow}</p>
-          <h1 id="hero-title">{HERO.title}</h1>
+          <h1 id="hero-title">
+            {HERO.title} <em>{HERO.titleAccent}</em>
+          </h1>
           <p className="lede">{HERO.lede}</p>
           <div className="hero-actions">
-            <a className="btn btn-primary" href="#careers">
+            <a className="btn btn-light" href="#careers">
               View open roles
             </a>
-            <a className="btn btn-ghost" href="#apply">
+            <a className="btn btn-outline-light" href="#apply">
               Apply now
             </a>
           </div>

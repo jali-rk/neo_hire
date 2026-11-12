@@ -33,7 +33,7 @@ Current roles:
 | Headcount | **Never state how many people we're hiring.** The owner found "hiring five people" unprofessional |
 | Content | **Don't invent.** Use only the original preview's content. Anything new must be confirmed by the owner first |
 | Section order | **Follow the original preview:** hero → the company → divisions → 3D studio → careers → apply → footer |
-| Fonts | **Easy to read** (the first design's Bodoni display face was rejected as hard to read) |
+| Fonts and feel | **Luxurious and readable, balanced.** Bodoni everywhere was hard to read, and plain Source Serif everywhere lost the luxury feel. Now: an elegant serif (Cormorant Garamond) for large headings only, with italic accents; a plain sans (Source Sans 3) for all reading text |
 | Role details | **Not** a plain "+" expander. Each role has a card with a "View role details" button that opens a side panel |
 | 3D section | Must play a **video showing virtual 3D fitting** |
 | Language | English only |
@@ -48,7 +48,12 @@ Current roles:
 
 - [x] Page in the original preview's order: hero, the company (with 4 key figures), three divisions, 3D studio (4 stages and a video slot), careers (filters, role cards, role details panel, open application), apply form, footer
 - [x] All content from the original preview (see §8 for the audit)
-- [x] Readable type: Source Serif 4 for headings, Source Sans 3 for text, 18px body, AA-contrast colours
+- [x] Luxury pass, kept readable:
+  - dark hero and header with a champagne accent
+  - Cormorant Garamond headings with italic accent phrases
+  - tracked uppercase labels, buttons and navigation
+  - Source Sans 3 body text at 18px, AA contrast
+  - the jacket drawing in cream lines on a dark pattern sheet
 - [x] Role cards with a **"View role details"** button that opens a side panel (native `<dialog>`):
   - full role details, plus "Apply for this role" and "Apply by email"
   - each role has a shareable link (`…/#role-c`)
@@ -65,7 +70,7 @@ Current roles:
 ### Verified (`pnpm qa`, Chrome, local production build): all passing
 
 - **Structure:** sections in the original preview's order. The page never mentions a headcount.
-- **Fonts:** Source Serif 4 and Source Sans 3 load; body text is 18px.
+- **Fonts:** Cormorant Garamond (headings) and Source Sans 3 (text) load; body text is 18px.
 - **Hydration:** React hydrates with no errors. The only console message is the intended "set `CONFIG.careersEmail`" warning.
 - **Filters:** "Atelier & QC" shows only the two craft roles.
 - **Role panel:**
@@ -316,13 +321,15 @@ These were written by the previous build and are no longer on the site:
 
 ## 9. Design system
 
-- **Direction:** clear and professional first, with a quiet fashion-house feel. Pale shell-pink ground, garnet accent, dark sections for the 3D studio and the form.
-- **Type:**
-  - **Source Serif 4** (600) for headings
-  - **Source Sans 3** for everything else, 18px body text
-  - Labels are bold sans in uppercase with light letter-spacing
-  - Both fonts are self-hosted through `@fontsource`
-  - Don't go back to high-contrast display faces: the owner found them hard to read
+- **Direction:** a luxury fashion house that's still easy to read.
+  - **Dark:** the header, hero, 3D studio, apply section and footer (ink, with a champagne accent).
+  - **Light:** the company, divisions and careers sections (shell and paper, with a garnet accent).
+- **Type:** keep the balance. The owner rejected both extremes.
+  - **Cormorant Garamond** (weight 500–600) only for large headings: page and section titles, card titles, key figures, stage numbers, the wordmark. One phrase per title is set in *italic* in the accent colour.
+  - **Source Sans 3** for all reading text: body at 18px, form fields, details.
+  - **Labels** (eyebrows, buttons, navigation, filters, statuses): sans, uppercase, letter-spaced (0.12–0.22em), 12.5–14.5px, weight 600–700. Eyebrows have a short rule before them.
+  - Don't set Cormorant below about 1.6rem, and don't use it for body text.
+  - Both fonts are self-hosted through `@fontsource`.
 
 | Token | Value | Use |
 |---|---|---|
@@ -333,7 +340,9 @@ These were written by the previous build and are no longer on the site:
 | `--muted` | `#5B4A4D` | Secondary text |
 | `--line` | `#E0CFCB` | Hairlines |
 | `--garnet` | `#7A1F33` | The single accent |
-| `--rose` | `#F0B8C3` | Accent on dark |
+| `--rose` | `#F0B8C3` | Error text on dark |
+| `--champagne` | `#CDB088` | Accent on dark: eyebrows, italic accents, stage numbers, drawing details |
+| `--bronze` | `#8A6A42` | Fine rules and division numbers on light |
 
 - **Details:**
   - small garnet "notch" triangle bullets (from pattern pieces)
@@ -397,3 +406,4 @@ These were written by the previous build and are no longer on the site:
 | 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
 | 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
 | 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Source Sans 3<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
+| 2026-11-12 | **Owner review round 2:** "the plain text lost the luxury feeling; make it balanced" → Cormorant Garamond for large headings with italic accents; dark hero and header; champagne accent; tracked uppercase labels and buttons; body text kept in Source Sans 3 at 18px for readability; section titles use the original preview's phrasing |

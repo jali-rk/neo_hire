@@ -5,10 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fontsource-variable/cormorant-garamond':
+    specifier: ^5.3.0
+    version: 5.3.0
   '@fontsource-variable/source-sans-3':
-    specifier: ^5.3.1
-    version: 5.3.1
-  '@fontsource-variable/source-serif-4':
     specifier: ^5.3.1
     version: 5.3.1
   react:
@@ -65,12 +65,12 @@ packages:
     dev: true
     optional: true
 
-  /@fontsource-variable/source-sans-3@5.3.1:
-    resolution: {integrity: sha512-u0p5Z/PM2e1uxYOMiodLM6NVzxHwULcB6Oi7QSr2WU/sdoLBFP/BeOZ3YYHeJ6rHsjPZA1nZweZVaV7sf2MAyQ==}
+  /@fontsource-variable/cormorant-garamond@5.3.0:
+    resolution: {integrity: sha512-rgZJ/5w3hi60swAPnrOXpZf5wEH6NTrvm4H8D9Y4b1QIFUqlX14eM3QTMU/eAznjfh0eXpO1QUqsFhiy58aoMg==}
     dev: false
 
-  /@fontsource-variable/source-serif-4@5.3.1:
-    resolution: {integrity: sha512-4Rtay22SC4lMvw11r/+9kxANB6P3M0X8s1NudBC2v0J1KU2y3DcMoNcT3lBoZ/CqLirzf+StlO6UlJilyrvaUg==}
+  /@fontsource-variable/source-sans-3@5.3.1:
+    resolution: {integrity: sha512-u0p5Z/PM2e1uxYOMiodLM6NVzxHwULcB6Oi7QSr2WU/sdoLBFP/BeOZ3YYHeJ6rHsjPZA1nZweZVaV7sf2MAyQ==}
     dev: false
 
   /@napi-rs/wasm-runtime@1.2.6(@emnapi/core@2.0.0-beta.2)(@emnapi/runtime@2.0.0-beta.2):

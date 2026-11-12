@@ -186,7 +186,7 @@ export default function Apply({ request }: { request: ApplyRequest | null }) {
           <div>
             <p className="eyebrow">Apply</p>
             <h2 className="title" id="apply-title">
-              Apply to Aphrodite.
+              Apply to <em>Aphrodite.</em>
             </h2>
           </div>
           <p className="intro">

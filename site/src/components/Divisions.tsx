@@ -8,7 +8,7 @@ export default function Divisions() {
           <div>
             <p className="eyebrow">Divisions</p>
             <h2 className="title" id="divisions-title">
-              Three strategic divisions.
+              Three <em>strategic</em> divisions.
             </h2>
           </div>
           <p className="intro">

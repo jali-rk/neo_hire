@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useId, type CSSProperties } from 'react';
 
 /** Animation delay for the line-drawing intro. */
 const delay = (seconds: number) => ({ '--d': `${seconds}s` }) as CSSProperties;
@@ -22,11 +22,13 @@ const MIRROR = 'translate(420 0) scale(-1 1)';
 
 /** A tailored jacket drawn as a technical flat. Decorative. */
 export default function JacketDrawing() {
+  // Unique per drawing, as the page can show more than one.
+  const arrowId = `flat-arrow-${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   return (
     <svg className="flat" viewBox="40 20 340 400" aria-hidden="true" focusable="false">
       <defs>
-        <marker id="flat-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M1,1 L9,5 L1,9" fill="none" stroke="#7A1F33" strokeWidth="1.4" />
+        <marker id={arrowId} viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M1,1 L9,5 L1,9" fill="none" stroke="currentColor" strokeWidth="1.4" />
         </marker>
       </defs>
 
@@ -61,7 +63,7 @@ export default function JacketDrawing() {
         <path className="stitch" d="M157,114 C170,160 195,204 212,230" />
         <path className="stitch" d="M263,114 C250,160 225,204 208,230" />
       </g>
-      <path className="measure fade" style={delay(1.4)} d="M142,206 H278" markerStart="url(#flat-arrow)" markerEnd="url(#flat-arrow)" />
+      <path className="measure fade" style={delay(1.4)} d="M142,206 H278" markerStart={`url(#${arrowId})`} markerEnd={`url(#${arrowId})`} />
     </svg>
   );
 }

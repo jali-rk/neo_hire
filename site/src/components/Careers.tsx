@@ -19,7 +19,7 @@ export default function Careers({ openRole, onOpenRole, onApply }: Props) {
           <div>
             <p className="eyebrow">Careers</p>
             <h2 className="title" id="careers-title">
-              Founding roles.
+              Founding <em>careers.</em>
             </h2>
           </div>
           <p className="intro">

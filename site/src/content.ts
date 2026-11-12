@@ -40,8 +40,9 @@ export const COMPANY = 'Aphrodite (Pvt) Ltd';
    Hero
    ------------------------------------------------------------------ */
 export const HERO = {
-  eyebrow: 'Now hiring · Founding team',
-  title: 'Build the foundation with us.',
+  eyebrow: 'House of Modern Attire · Now hiring',
+  title: 'Build the foundation',
+  titleAccent: 'with us.',
   lede:
     'Aphrodite (Pvt) Ltd is an emerging Sri Lankan fashion group, built on the European multi-house model. We unite 3D digital garment engineering, precision pattern-making and tightly controlled manufacturing across several apparel divisions, and we’re recruiting our founding team.',
 };
@@ -58,7 +59,8 @@ export const BENEFITS = [
    The company ("The House" in the original preview)
    ------------------------------------------------------------------ */
 export const HOUSE = {
-  title: 'Creative autonomy backed by commercial rigour.',
+  title: 'Creative autonomy,',
+  titleAccent: 'backed by commercial rigour.',
   paragraphs: [
     `${COMPANY} is an emerging Sri Lankan fashion group structured on the European multi-house model. Rather than operating as a single label, our central technical studio powers distinct apparel divisions, from high-rotation island-wide retail distribution to stealth-mode luxury craftsmanship.`,
     'By building new creative labels on active wholesale revenue and tightly audited partner factories, we avoid the usual start-up volatility. That gives Sri Lanka’s leading designers, pattern engineers and master tailors long-term stability alongside real R&D freedom.',
@@ -130,7 +132,8 @@ export const DIVISIONS: {
    3D studio ("3D Atelier" in the original preview)
    ------------------------------------------------------------------ */
 export const ATELIER = {
-  title: 'From digital twin to final stitch.',
+  title: 'Precision, from digital twin',
+  titleAccent: 'to final stitch.',
   intro: 'Every style moves through four stages, from 3D simulation in our Central Studio to controlled production with our partners.',
   videoCaption: 'Virtual fitting in CLO 3D: each style is draped and fitted on a 3D avatar before any cloth is cut.',
   stages: [
