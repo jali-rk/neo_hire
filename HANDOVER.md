@@ -343,16 +343,11 @@ Generate a still image first, then animate it. Going straight from text to video
 
 An earlier "loop prompt" kept the dress on the whole time, which loses the fit-on effect. The owner rejected it. This version tells a full cycle instead: the pieces sew on, then release and float back to where they started, so the clip ends on its own first frame.
 
-Settings: 9:16, **1080p** (at least 720p), **12 seconds**.
+Settings: 9:16, **1080p** (at least 720p), **12 seconds**. If the tool only offers up to 8 seconds, set 8 and change "12 seconds" in the prompt to "8 seconds"; the prompt has no fixed timestamps, so nothing else changes.
 
-> Luxury fashion-technology film, vertical 9:16, 12 seconds, seamless loop: the final frame is identical to the first frame. A stylised 3D fashion display mannequin with a smooth, simplified, abstract form (no anatomical detail), a calm faceless head, and a modest long-sleeved high-neck charcoal bodysuit and leggings stands on a circular platform in a dark, minimal studio with a soft warm key light from the upper left. The camera is locked off at chest height, facing the mannequin, and does not move.
->
-> 0–2 s: flat pattern pieces of a garnet-red silk wrap dress float in the air around the mannequin, gently drifting.
-> 2–6 s: thin glowing champagne-gold seam lines connect matching edges; the pieces glide onto the mannequin over the charcoal base layer and stitch together along the seams, then the silk drapes and settles with realistic cloth physics into a beautifully fitted long wrap dress. A faint wireframe mesh shows on the fabric and fades as it settles.
-> 6–8 s: the finished dress sways softly; the platform turns gently left and back to face the camera.
-> 8–12 s: the gold seam lines glow again, the seams release, and the pieces lift off and float back out to exactly the same positions they started in, ready to begin again.
->
-> Palette: deep charcoal, garnet silk, champagne-gold accents. Photoreal cloth, cinematic, premium. Silent, no text, no logos, no watermark.
+This is the **final prompt** (one paragraph, confirmed by the owner):
+
+> Luxury fashion-technology film, vertical 9:16, 12 seconds, designed as a seamless loop: the final frame must be identical to the first frame. A stylised 3D fashion display mannequin with a smooth, simplified, abstract form (no anatomical detail, like a high-end boutique mannequin) and a calm faceless head, wearing a modest long-sleeved high-neck fitted charcoal bodysuit and full-length charcoal leggings, stands facing the camera on a dark circular platform in a dark, minimal studio, lit by a soft warm key light from the upper left with deep charcoal shadows. The camera is locked off at chest height and never moves. The film opens with flat pattern pieces of a garnet-red silk wrap dress (two bodice fronts, two sleeves, two long skirt panels) floating in the air on both sides of the mannequin, gently drifting, each outlined by a thin champagne-gold line. In the first half, glowing champagne-gold seam lines connect matching edges, the pieces glide onto the mannequin over the charcoal base layer and stitch together along the seams, and the silk drapes and settles with realistic cloth physics (weight, gentle sway, soft highlights running along each fold) into a beautifully fitted, elegant long wrap dress, while a faint wireframe mesh shows on the fabric and fades as it settles. In the middle, the finished dress sways softly as the platform turns gently to the left and back to face the camera. In the second half, the gold seam lines glow again, the seams release, and the pieces lift off and float back out to exactly the same positions they had at the start, so the film ends on the same frame it began with. Palette: deep charcoal, garnet silk, champagne-gold accents. Photoreal cloth, high detail, cinematic, premium fashion campaign. Silent, no music, no text, no logos, no watermark.
 
 **To guarantee the loop:** use image-to-video with the **same image as both the first and the last frame** (Google Flow / Veo 3.1 first-and-last-frame mode). Make the image first:
 
