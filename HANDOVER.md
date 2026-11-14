@@ -132,7 +132,7 @@ Current roles:
 - **Safari** (desktop and iPhone) and **Firefox**
 - **Lighthouse** on the reworked site. Earlier scores (before the rework): Performance 92, Accessibility 96, Best Practices 100, SEO 91; the issues it raised were fixed
 - **A real form submission end to end.** That needs the real inbox and hosting
-- **A 1080p film.** The current film is 360p and soft; a 1080p regeneration is pending (§6)
+- **The upscaled film on real phones.** It's 1080×1920 now (AI-upscaled, §6); check that it looks sharp and loads quickly on an iPhone and an Android phone
 
 ---
 
@@ -255,18 +255,23 @@ The 3D studio section has a web-optimised video player (`FitOnVideo.tsx`). It wa
 
 Without a film configured, it shows the jacket drawing.
 
-### Current film (2026-11-12)
+### Current film (2026-11-12, upscaled to 1080p on 2026-11-14)
 
 - **Source:** `site/video-source/fit-on-source.mp4`, an AI-generated, illustrative clip made in Google AI Studio. It's 8 seconds, 360×640 (9:16), 24 fps.
+- **Upscaled source (what the site uses):** `site/video-source/fit-on-source-1080p.mp4`, 1080×1920. The owner tried regenerating at 1080p with the loop prompts (v2, v3 below), but the model kept adding a red tie belt and bow at the waist that vanished when the dress came off, so the owner chose to keep this clip and raise its quality instead. How it was made:
+  1. Frames extracted as PNG: `ffmpeg -i video-source/fit-on-source.mp4 -an in/f%04d.png`
+  2. Each frame upscaled 4× with **Real-ESRGAN** (`realesrgan-ncnn-vulkan`, model `realesrgan-x4plus`; the macOS build from github.com/xinntao/Real-ESRGAN releases v0.2.5.0, runs on the Mac's GPU, about 15 minutes for 192 frames on an M4): `realesrgan-ncnn-vulkan -i in -o out -n realesrgan-x4plus -m models -f png`. The `realesr-animevideov3` model was also tried; it looked more painted, so x4plus was chosen.
+  3. Reassembled at 1080×1920: `ffmpeg -framerate 24 -i out/f%04d.png -vf "scale=1080:1920:flags=lanczos,format=yuv420p" -c:v libx264 -crf 14 -preset slow video-source/fit-on-source-1080p.mp4`
+  4. Background flicker was measured (average frame-to-frame luma change in a background crop): 0.54 against 0.24 for the original, both under one level of 255, so not visible.
 - **What it shows:**
   - a faceless mannequin in a charcoal base layer, with garnet wrap-dress pieces floating around it
   - gold seam lines sew the pieces on
   - the camera turns to a side view of the finished dress
 - **Looping:** the first and last frames are very different (front view in the base layer, side view in the dress), so a plain loop would visibly jump. It's therefore made into a **boomerang**: it plays forward, holds on the finished dress for 0.8 s, then plays backward, about 16.75 s in total. Both joins were checked frame by frame and are seamless.
-- **Command:** `pnpm video video-source/fit-on-source.mp4 --boomerang`.
-- **Output:** 330 KB WebM and 490 KB MP4, at the film's own 9:16 shape. The frame fits the screen height.
+- **Command:** `pnpm video video-source/fit-on-source-1080p.mp4 --boomerang`.
+- **Output:** 1080×1920, 1.3 MB WebM and 2.8 MB MP4 (most browsers fetch only the WebM), at the film's own 9:16 shape. It loads only when the visitor nears the section. The frame fits the screen height.
 - **To improve:**
-  - **Resolution:** 360p looks soft. Regenerate at **1080p**, or at least 720p, with the same prompt.
+  - **Resolution:** done by AI upscaling (above). A native 1080p render (for example a CLO 3D export) would still be sharper.
   - **A natively seamless loop:** the "fit-on loop prompt" below. The pieces sew on, then release back to their starting places, so the motion never reverses.
 
 ### Adding the film (one command)
@@ -510,7 +515,7 @@ These were written by the previous build and are no longer on the site:
 
 ### Phase 2: Needs the owner
 
-1. **A 1080p virtual fitting film** (§6). The current 360p film is in place as a boomerang loop. Ideally regenerate with the loop prompt, or export from CLO 3D.
+1. **Optional: a native 1080p film** (§6). The current film is the 360p clip AI-upscaled to 1080p, as a boomerang loop. A CLO 3D export of the company's own work would be the best long-term film.
 2. The **careers inbox** (and optionally a corporate address).
 3. The **domain** (for `SITE_URL`) and where to host.
 4. Decisions on the "left out" and "worth confirming" lists in §8.
@@ -551,6 +556,7 @@ These were written by the previous build and are no longer on the site:
 | 2026-11-12 | FormSubmit chosen for form-to-email (free, CV attachments via a normal form post) |
 | 2026-11-12 | QA rounds 1–2: layout fixes, link previews, `pnpm qa`, keyboard and accessibility fixes |
 | 2026-11-12 | **Owner review round 1:**<br>• fonts hard to read → Source Serif 4 + Jost<br>• "hiring five people" unprofessional → no headcount anywhere<br>• "+" expanders → role cards with a "View role details" side panel<br>• "don't invent content" → rebuilt from the original preview's text, with the invented items listed in §8<br>• 3D section must play a virtual-fitting video → video player added, film to be supplied<br>• follow the original preview's section order → done<br>• spec-sheet hero, "Why join", "How we hire" and FAQ removed |
+| 2026-11-14 | **Owner review round 7:** regenerated films (prompts v2 and v3) kept adding a tie belt and bow at the waist → the owner chose to keep the existing clip. It was AI-upscaled from 360×640 to 1080×1920 with Real-ESRGAN (x4plus) and re-encoded as the same boomerang loop (§6) |
 | 2026-11-12 | **Owner review round 6:** the body font (Source Sans 3) felt plain → **Jost**, a geometric sans in the Futura lineage that pairs with Cormorant for a fashion-editorial look; bold values softened to weight 500; link-preview image updated |
 | 2026-11-12 | **Owner review round 5:** the full-screen garnet silk felt too heavy ("a lot filling") → replaced with fine silk threads on near-black (stone threads, with every fourth in gold; light catches them; mostly empty space); headline side kept clean |
 | 2026-11-12 | **Preview hosted on GitHub Pages** (https://jali-rk.github.io/neo_hire/) via Actions, with noindex while placeholders remain |

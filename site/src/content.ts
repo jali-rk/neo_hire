@@ -34,7 +34,7 @@ export const CONFIG: SiteConfig = {
   maxUploadMB: 10,
   // Boomerang loop made from video-source/fit-on-source.mp4 (AI-generated, illustrative).
   // 360×640 is soft: replace with a 1080p take when available (see HANDOVER §6).
-  fitOnVideo: { src: 'video/fit-on.mp4', webm: 'video/fit-on.webm', poster: 'video/fit-on-poster.jpg', width: 360, height: 640 },
+  fitOnVideo: { src: 'video/fit-on.mp4', webm: 'video/fit-on.webm', poster: 'video/fit-on-poster.jpg', width: 1080, height: 1920 },
 };
 
 export const COMPANY = 'Aphrodite (Pvt) Ltd';
